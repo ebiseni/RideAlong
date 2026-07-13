@@ -1,0 +1,173 @@
+.login-page {
+  display: flex;
+  height: 100%;
+  font-family: sans-serif;
+}
+
+/* Left side green panel */
+.login-left {
+  width: 50%;
+  background-color: #16A34A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.brand-name{
+  color: white;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+/* Right side */
+.login-right {
+  display: flex;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px 24px;
+  justify-content: center;
+}
+
+.form-container h2{
+  font-weight: 700;
+  font-size: 30px;
+  margin-bottom: 0%;
+  
+}
+
+.form-container p{
+  color:#6B7280;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 1%;
+  margin-bottom: 7%;
+  margin-left: 20px; 
+
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+
+
+
+.form-input:focus {
+  outline: none;
+  border-color: #12823B;
+}
+
+
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.login-remember {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color:#6B7280;
+  cursor: pointer;
+}
+
+.login-forgot {
+  font-size: 13px;
+  color: #12823B;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #12823B;
+  color: white;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+
+.login-btn:hover {
+  background-color: #16A34A;
+}
+
+.divide {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  color: black;
+  font-size: 15px;
+}
+
+.divide::before,
+.divide::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: black;
+}
+
+.socials {
+  width: 100%;
+  padding: 11px;
+  background: white;
+  border: 2px solid #12823B;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 12px;
+  color: #12823B;
+}
+
+.socials:hover {
+  background-color: #f9fafb;
+}
+
+.login-footer {
+  text-align: center;
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 8px;
+}
+
+.login-footer span{
+  color: #12823B;
+;
+}
+
+.login-page__link {
+  color: #12823B;
+  font-weight: 600;
+  cursor: pointer;
+}
