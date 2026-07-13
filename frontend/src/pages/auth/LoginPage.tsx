@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/pages/auth/LoginPage.css";
-import eyeIcon from "../../assets/eyeIcon.png";
+import eyeIcon from "../../assets/eyeIcon.svg";
+import eyeOffIcon from "../../assets/eyeOffIcon.svg";
 
 
 export default function LoginPage() {
@@ -47,27 +48,34 @@ export default function LoginPage() {
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleChanges}
+                    autoComplete="email"
+                    required
                     />
 
                     <label htmlFor="">Password</label>
-                    <div className="login-password">
+                    <div className="input-wrapper">
                          <input 
                     className="form-input"
-                    type="text"
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="Enter your password" 
                     value={formData.password}
                     onChange={handleChanges}
+                    autoComplete="new-password"
+                    required
                     />
-                    <div
-                 className="eye-btn" onClick={() => setShowPassword(!showPassword)}>
+                    <button
+                    type="button"
+                    className="eye-button" 
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
                     {showPassword ? (
-                        <img src={eyeIcon} alt="" />
+                        <img src={eyeOffIcon} alt="Hide password" style={{ width: '20px', height: '20px' }} />
                     ):(
-                        <img src={eyeIcon} alt="" />
-
+                        <img src={eyeIcon} alt="Show password" style={{ width: '20px', height: '20px' }} />
                     )}
-                 </div>
+                 </button>
 
                     </div>
                    

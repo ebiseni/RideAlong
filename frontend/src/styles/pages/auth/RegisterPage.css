@@ -4,11 +4,11 @@
     width: 100%;
     min-height: 100svh;
     background: #f5f7fb;
+    gap:19px;
 }
 
 .form-container {
     min-height: 100svh;
-    width: 50%;
     padding: 40px 48px;
     box-sizing: border-box;
     display: flex;
@@ -20,7 +20,7 @@
 
 .form-container > * {
     width: 100%;
-    max-width: 470px;
+    min-width: 500px;
 }
 
 .form-card {
@@ -59,8 +59,7 @@
 .field-row input {
     width: 100%;
     min-height: 46px;
-    border: 1px solid #d1d5db;
-    border-radius: 12px;
+    border: 2px solid #a9abad;
     padding: 0 1rem;
     font-size: 0.95rem;
     color: #111827;
@@ -102,8 +101,7 @@
     width: 100%;
     min-height: 48px;
     border: none;
-    border-radius: 12px;
-    background: #059669;
+    background: #12823B;
     color: white;
     font-weight: 700;
     font-size: 0.95rem;
@@ -130,14 +128,13 @@
 .divider-line {
     flex: 1;
     height: 1px;
-    background: #d1d5db;
+    background: #030303;
 }
 
 .divider-text {
-    color: #6b7280;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
+    color: black;
+    font-size: 1rem;
+    /* letter-spacing: 0.12em; */
 }
 
 .social-buttons {
@@ -148,10 +145,9 @@
 .secondary-button {
     width: 100%;
     min-height: 46px;
-    border: 1px solid #d1d5db;
-    border-radius: 12px;
+    border: 1px solid #12823B;
     background: white;
-    color: #111827;
+    color: #12823B;
     font-weight: 600;
     cursor: pointer;
 }
@@ -161,8 +157,8 @@
 }
 
 .login-text {
-    color: #6b7280;
-    text-align: center;
+    color: #080808;
+    text-align:left;
     margin-top: 1.5rem;
 }
 
@@ -198,9 +194,8 @@
 }
 
 .form-text1 {
-    font-weight: 700;
+    font-weight: 900;
     font-style: bold;
-    font-size: 1.5rem;
     line-height: 100%;
     letter-spacing: 0;
     color: black;
@@ -211,7 +206,6 @@
 .form-text2 {
     font-weight: 600;
     font-style: semibold;
-    font-size: 1rem;
     line-height: 1.4;
     letter-spacing: 0;
     color: rgba(107, 114, 128, 1);
