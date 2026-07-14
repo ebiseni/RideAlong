@@ -44,8 +44,8 @@ const Onboarding = () => {
     if (step < onboardingData.length) {
       setStep(step + 1);
     } else {
-      // Final screen: Navigate to login
-      window.location.href = "/login";
+      // Final screen: Navigate to register
+      window.location.href = "/register"; // Replace with your desired route
     }
   };
 
