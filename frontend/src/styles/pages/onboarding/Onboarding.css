@@ -10,7 +10,6 @@
   background-color: #ffffff;
 }
 
-/* 2. The main content wrapper (the split-screen) */
 .onboarding-content {
   display: flex;
   justify-content: center;
@@ -70,4 +69,47 @@
   image-rendering: crisp-edges;
   max-width: 100%;
   height: auto;
+}
+
+/* --- Responsive Breakpoints --- */
+
+/* Tablet & Smaller Laptops */
+@media (max-width: 900px) {
+  .onboarding-content {
+    gap: 30px;
+  }
+
+  .onboarding-text h1 {
+    font-size: 36px;
+  }
+
+  .onboarding-text p {
+    font-size: 18px;
+  }
+}
+
+/* Mobile Devices */
+@media (max-width: 480px) {
+  .onboarding-container {
+    padding: 20px;
+  }
+
+  .onboarding-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .onboarding-image img {
+    max-width: 100%;
+  }
+
+  .onboarding-text h1 {
+    font-size: 28px;
+  }
+
+  .onboarding-text p {
+    font-size: 16px;
+    margin: 0 auto;
+  }
 }
