@@ -1,0 +1,73 @@
+/* Onboarding.css */
+
+/* 1. Full-screen container */
+.onboarding-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #ffffff;
+}
+
+/* 2. The main content wrapper (the split-screen) */
+.onboarding-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  width: 90%;
+  max-width: 1200px;
+}
+
+/* 3. The left (image) block */
+.onboarding-image {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.onboarding-image img {
+  max-width: 600px;
+  height: auto;
+  width: 100%;
+}
+
+.onboarding-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.onboarding-text h1 {
+  font-size: 48px;
+  color: #111827;
+  margin-bottom: 20px;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.onboarding-text p {
+  font-size: 20px;
+  color: #374151;
+  line-height: normal;
+  max-width: 507px;
+  font-weight: 600;
+  margin-top: 16px;
+}
+
+.onboarding-container.splash {
+  background-color: #00a651 !important;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.splash-logo {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  max-width: 100%;
+  height: auto;
+}
