@@ -1,5 +1,7 @@
 import {useState} from 'react'
 import '../../styles/pages/auth/RegisterPage.css'
+import eyeIcon from '../../assets/eyeIcon.svg'
+import eyeOffIcon from '../../assets/eyeOffIcon.svg'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
@@ -63,8 +65,10 @@ function RegisterPage(){
             
       {/* RIGHT: Form */}
       <div className="form-container">
-          <h2 className="form-text1">Create an account</h2>
-          <p className="form-text2">
+          <h2 className="form-text1" style={{ fontSize: '3rem' }}>
+            Create an account
+          </h2>
+          <p className="form-text2" style={{ fontSize: '1rem', marginTop: '20px' }}>
             Join to simplify the way you manage your vehicle documents.
           </p>
 
@@ -118,7 +122,7 @@ function RegisterPage(){
                   className="eye-button"
                   aria-label={showPass ? "Hide password" : "Show password"}
                 >
-                  {showPass ? "👁" : "👁"}
+                  {showPass ? <img src={eyeOffIcon} alt="Hide password" style={{ width: '20px', height: '20px' }} /> : <img src={eyeIcon} alt="Show password" style={{ width: '20px', height: '20px' }} />}
                 </button>
               </div>
               <p className="field-help">
@@ -133,7 +137,7 @@ function RegisterPage(){
 
           <div className="divider-row">
             <div className="divider-line"></div>
-            <span className="divider-text">or</span>
+            <span className="divider-text">Or</span>
             <div className="divider-line"></div>
           </div>
 
