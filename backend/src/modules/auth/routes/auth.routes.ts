@@ -1,0 +1,47 @@
+import { Router } from "express";
+
+import { validate } from "../../../middleware/validate";
+
+import { authController } from "../controllers/auth.controller";
+import {
+  loginSchema,
+  registerSchema,
+} from "../validators/auth.schemas";
+
+const router = Router();
+
+/**
+ * POST /api/auth/register
+ */
+router.post(
+  "/register",
+  validate(registerSchema),
+  authController.register.bind(authController)
+);
+
+/**
+ * POST /api/auth/login
+ */
+router.post(
+  "/login",
+  validate(loginSchema),
+  authController.login.bind(authController)
+);
+
+/**
+ * POST /api/auth/refresh
+ */
+router.post(
+  "/refresh",
+  authController.refresh.bind(authController)
+);
+
+/**
+ * POST /api/auth/logout
+ */
+router.post(
+  "/logout",
+  authController.logout.bind(authController)
+);
+
+export default router;
