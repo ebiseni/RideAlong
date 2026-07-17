@@ -65,10 +65,10 @@ function RegisterPage(){
             
       {/* RIGHT: Form */}
       <div className="form-container">
-          <h2 className="form-text1" style={{ fontSize: '3rem' }}>
+          <h2 className="form-text1" style={{ fontSize: '2.5rem' }}>
             Create an account
           </h2>
-          <p className="form-text2" style={{ fontSize: '1rem', marginTop: '20px' }}>
+          <p className="form-text2" style={{ fontSize: '0.8rem', marginTop: '20px' }}>
             Join to simplify the way you manage your vehicle documents.
           </p>
 
