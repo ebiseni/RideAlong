@@ -2,6 +2,7 @@ import shieldKeyIcon from "../../assets/icons/shield-key.svg";
 import notificationIcon from "../../assets/icons/notification-01.svg";
 import boltIcon from "../../assets/icons/bolt.svg";
 import guardCheckIcon from "../../assets/icons/gaurd-check.svg";
+import phoneMockup from "../../assets/images/rideAlong-phoneMockup.jpg";
 import "../../styles/components/marketing/WhyRideAlong.css";
 
 const FEATURES = [
@@ -46,6 +47,8 @@ export default function WhyRideAlong() {
       </div>
 
       <div className="why-showcase">
+          <img src={phoneMockup} alt="RideAlong app" className="phone-mockup-image" />
+
         {FEATURES.map((feature) => (
           <div className={`why-card why-card-${feature.position}`} key={feature.title}>
             <div className="why-card-header">
