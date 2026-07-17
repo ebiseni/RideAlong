@@ -172,26 +172,12 @@
     text-decoration: underline;
 }
 
-.left-side {
-    width: 50%;
-    min-height: 100svh;
-    padding: 2rem 0;
-    margin: 0;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    background-color: rgba(22, 163, 74, 1);
+.left-side img {
+    width: 100%;
+    min-height: 100%;
+   
 }
 
-.brand-text {
-    font-style: bold;
-    line-height: 100%;
-    letter-spacing: 0;
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: white;
-}
 
 .form-text1 {
     font-weight: 900;

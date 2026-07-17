@@ -2,7 +2,7 @@ import {useState} from 'react'
 import '../../styles/pages/auth/RegisterPage.css'
 import eyeIcon from '../../assets/eyeIcon.svg'
 import eyeOffIcon from '../../assets/eyeOffIcon.svg'
-
+import authImage from "../../assets/Auth-img.png"
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 function RegisterPage(){
@@ -59,9 +59,9 @@ function RegisterPage(){
     // const [name, setName] = useState('')
 
   return <div className="register-page">
-  <div className="left-side">
-    <div className="brand-text">RIDEALONG</div>
-  </div>
+ <div className="left-side">
+                <img src={authImage} alt="" />
+            </div>
             
       {/* RIGHT: Form */}
       <div className="form-container">
