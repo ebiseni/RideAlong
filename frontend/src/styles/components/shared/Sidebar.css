@@ -1,0 +1,130 @@
+.sidebar {
+  width: 220px;
+  min-height: 100vh;
+  border-radius: 0px 20px 20px 0px;
+  background: linear-gradient(130deg, #111827 0%, #12823b);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 0 1.5rem 1rem;
+}
+
+.sidebar-logo {
+  height: auto;
+  width: 70%;
+  margin: 0 1rem 2rem 0.25rem;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.sidebar-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: 999px 0 0 999px;
+  color: #d1d5db;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.sidebar-link.active {
+  background: #f4f8fb;
+  color: #111827;
+  font-weight: 700;
+  font-size: 1.3rem;
+  border-radius: 999px 0 0 999px;
+}
+
+.sidebar-link.active::before,
+.sidebar-link.active::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.sidebar-link.active::before {
+  top: -20px;
+  background: radial-gradient(circle at top left, transparent 20px, #f4f8fb 0);
+}
+
+.sidebar-link.active::after {
+  bottom: -20px;
+  background: radial-gradient(
+    circle at bottom left,
+    transparent 20px,
+    #f4f8fb 0
+  );
+}
+
+.sidebar-link:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: filter 0.15s ease;
+}
+
+.sidebar-link.active .sidebar-icon {
+  filter: brightness(0) saturate(100%) invert(9%) sepia(12%) saturate(1826%)
+    hue-rotate(190deg) brightness(94%) contrast(90%);
+}
+
+.sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: transparent;
+  border: none;
+  color: #d1d5db;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.7rem 1.25rem;
+  transition: color 0.15s ease;
+}
+
+.sidebar-logout:hover {
+  color: #ef4444;
+}
+
+.sidebar-logout .sidebar-icon {
+  transition: filter 0.15s ease;
+}
+
+.sidebar-logout:hover .sidebar-icon {
+  filter: brightness(0) saturate(100%) invert(38%) sepia(89%) saturate(3346%)
+    hue-rotate(342deg) brightness(97%) contrast(96%);
+}
+
+/* Mobile: collapse to a top bar or off-canvas — placeholder for now */
+@media (max-width: 900px) {
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    overflow-x: auto;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex: none;
+  }
+
+  .sidebar-logout {
+    display: none; /* TODO: move into a mobile menu once designed */
+  }
+}
