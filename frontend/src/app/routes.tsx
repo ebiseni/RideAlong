@@ -1,16 +1,44 @@
 import { Routes, Route } from "react-router-dom";
+import PublicLayout from "./PublicLayout";
+import AppShell from "./AppShell";
+// import ProtectedRoute from "./ProtectedRoute";
+
+import LandingPage from "../pages/marketing/LandingPage";
 import LoginPage from "../pages/auth/LoginPage";
 import RegisterPage from "../pages/auth/RegisterPage";
 import Onboarding from "../pages/onboarding/Onboarding";
-import LandingPage from "../pages/marketing/LandingPage";
+
+import DashboardPage from "../pages/dashboard/DashboardPage";
+import DocumentUploadPage from "../pages/documents/DocumentUploadPage";
+import DocumentDetailPage from "../pages/documents/DocumentDetailPage";
+import RemindersPage from "../pages/reminders/RemindersPage";
+import VehicleListPage from "../pages/vehicles/VehicleListPage";
+import ProfilePage from "../pages/profile/ProfilePage";
+import SettingsPage from "../pages/settings/SettingsPage";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/onboarding" element={<Onboarding />} />
+      {/* Public routes */}
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/onboarding" element={<Onboarding />} />
+      </Route>
+
+      {/* Protected routes, wrapped in AppShell (sidebar layout) */}
+      <Route element={<PublicLayout />}>
+        <Route element={<AppShell />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/documents" element={<DocumentUploadPage />} />
+          <Route path="/documents/:documentId" element={<DocumentDetailPage />} />
+          <Route path="/reminders" element={<RemindersPage />} />
+          <Route path="/vehicles" element={<VehicleListPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Route>
+      </Route>
     </Routes>
   );
 }
