@@ -30,7 +30,7 @@ export default function LoginPage() {
        setLoading(true);
 
        try{
-        const res = await fetch(`${API_URL}/auth/login`,{
+        const res = await fetch(`${API_URL}/api/auth/login`,{
             method: "POST",
             headers: {"Content-type": "application/json"},
             body: JSON.stringify(formData),
@@ -39,7 +39,7 @@ export default function LoginPage() {
         const data = await res.json();
         if (!res.ok) throw Error(data.message || "failed to login");
 
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("token", data.accessToken);
 
         navigate("/dashboard");
        } catch (err: unknown){

@@ -12,7 +12,7 @@ const envSchema = z.object({
 
   DATABASE_URL: z.url(),
 
-  CLIENT_URL: z.url(),
+  CLIENT_URL: z.url().default("http://localhost:5173"),
 
   JWT_SECRET: z
     .string()
