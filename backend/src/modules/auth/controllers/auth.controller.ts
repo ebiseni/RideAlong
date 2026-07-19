@@ -146,6 +146,26 @@ export class AuthController {
       next(error);
     }
   }
+
+  /**
+ * POST /api/auth/forgot-password
+ */
+  async forgotPassword(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      await authService.forgotPassword(req.body.email);
+
+      res.status(200).json({
+        message:
+          "If that email exists, a reset link has been sent.",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const authController = new AuthController();

@@ -9,6 +9,10 @@ import {
   REFRESH_TOKEN_EXPIRES_IN_DAYS,
 } from "../constants/refresh-token.constants";
 
+import {
+  PASSWORD_RESET_TOKEN_EXPIRES_IN_MINUTES,
+} from "../constants/password-reset.constants";
+
 import { authRepository } from "../repositories/auth.repository";
 import {
   AuthResponse,
@@ -366,6 +370,61 @@ export class AuthService {
     }
 
     return this.toAuthUserResponse(user);
+  }
+
+  /**
+ * Generate a password reset token.
+ */
+  async forgotPassword(email: string): Promise<void> {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const user = await authRepository.findUserByEmail(
+      normalizedEmail
+    );
+
+    // Always return success to prevent email enumeration.
+    if (!user) {
+      return;
+    }
+
+    const resetToken =
+      passwordService.generateResetToken();
+
+    const tokenHash =
+      passwordService.hashResetToken(resetToken);
+
+    const expiresAt = new Date(
+      Date.now() +
+        PASSWORD_RESET_TOKEN_EXPIRES_IN_MINUTES *
+          60 *
+          1000
+    );
+
+    await authRepository.transaction(async (tx) => {
+      await authRepository.invalidateUnusedPasswordResetTokens(
+        user.id, tx
+      );
+
+      await authRepository.createPasswordResetToken(
+        {
+          tokenHash,
+          expiresAt,
+          user: {
+            connect: {
+              id: user.id,
+            },
+          },
+        },
+        tx
+      );
+    });
+
+    const resetLink =
+      `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+    // TODO: Replace with email service (Resend) when email
+    // infrastructure is implemented.
+    console.log("Password reset link:", resetLink);
   }
 }
 

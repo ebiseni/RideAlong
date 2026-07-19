@@ -165,9 +165,10 @@ export class AuthRepository {
    */
 
   async createPasswordResetToken(
-    data: Prisma.PasswordResetTokenCreateInput
+    data: Prisma.PasswordResetTokenCreateInput,
+    tx?: Prisma.TransactionClient
   ): Promise<PasswordResetToken> {
-    return prisma.passwordResetToken.create({
+    return this.getClient(tx).passwordResetToken.create({
       data,
     });
   }
@@ -183,9 +184,10 @@ export class AuthRepository {
   }
 
   async invalidateUnusedPasswordResetTokens(
-    userId: string
+    userId: string,
+    tx?: Prisma.TransactionClient
   ): Promise<Prisma.BatchPayload> {
-    return prisma.passwordResetToken.updateMany({
+    return this.getClient(tx).passwordResetToken.updateMany({
       where: {
         userId,
         usedAt: null,

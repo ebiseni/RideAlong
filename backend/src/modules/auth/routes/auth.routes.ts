@@ -5,6 +5,7 @@ import { validate } from "../../../middleware/validate";
 
 import { authController } from "../controllers/auth.controller";
 import {
+  forgotPasswordSchema,
   loginSchema,
   registerSchema,
 } from "../validators/auth.schemas";
@@ -27,6 +28,15 @@ router.post(
   "/login",
   validate(loginSchema),
   authController.login.bind(authController)
+);
+
+/**
+ * POST /api/auth/forgot-password
+ */
+router.post(
+  "/forgot-password",
+  validate(forgotPasswordSchema),
+  authController.forgotPassword.bind(authController)
 );
 
 /**
