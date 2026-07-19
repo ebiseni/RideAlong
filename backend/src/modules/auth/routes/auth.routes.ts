@@ -8,6 +8,7 @@ import {
   forgotPasswordSchema,
   loginSchema,
   registerSchema,
+  resetPasswordSchema,
 } from "../validators/auth.schemas";
 
 const router = Router();
@@ -37,6 +38,15 @@ router.post(
   "/forgot-password",
   validate(forgotPasswordSchema),
   authController.forgotPassword.bind(authController)
+);
+
+/**
+ * POST /api/auth/reset-password
+ */
+router.post(
+  "/reset-password",
+  validate(resetPasswordSchema),
+  authController.resetPassword.bind(authController)
 );
 
 /**

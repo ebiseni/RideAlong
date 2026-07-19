@@ -166,6 +166,30 @@ export class AuthController {
       next(error);
     }
   }
+
+  /**
+ * POST /api/auth/reset-password
+ */
+  async resetPassword(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { token, newPassword } = req.body;
+
+      await authService.resetPassword(
+        token,
+        newPassword
+      );
+
+      res.status(200).json({
+        message: "Password updated. Please log in again.",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const authController = new AuthController();

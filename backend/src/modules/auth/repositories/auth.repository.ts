@@ -145,9 +145,10 @@ export class AuthRepository {
   }
 
   async revokeAllUserRefreshTokens(
-    userId: string
+    userId: string,
+    tx?: Prisma.TransactionClient
   ): Promise<Prisma.BatchPayload> {
-    return prisma.refreshToken.updateMany({
+    return this.getClient(tx).refreshToken.updateMany({
       where: {
         userId,
         revokedAt: null,
@@ -199,9 +200,10 @@ export class AuthRepository {
   }
 
   async markPasswordResetTokenUsed(
-    id: string
+    id: string,
+    tx?: Prisma.TransactionClient
   ): Promise<PasswordResetToken> {
-    return prisma.passwordResetToken.update({
+    return this.getClient(tx).passwordResetToken.update({
       where: {
         id,
       },
@@ -219,9 +221,10 @@ export class AuthRepository {
 
   async updatePassword(
     userId: string,
-    password: string
+    password: string,
+    tx?: Prisma.TransactionClient
   ): Promise<User> {
-    return prisma.user.update({
+    return this.getClient(tx).user.update({
       where: {
         id: userId,
       },

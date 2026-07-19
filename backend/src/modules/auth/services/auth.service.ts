@@ -426,6 +426,55 @@ export class AuthService {
     // infrastructure is implemented.
     console.log("Password reset link:", resetLink);
   }
+
+  /**
+ * Reset a user's password using a password reset token.
+ */
+  async resetPassword(
+    token: string,
+    newPassword: string
+  ): Promise<void> {
+    const tokenHash =
+      passwordService.hashResetToken(token);
+
+    const resetToken =
+      await authRepository.findPasswordResetToken(
+        tokenHash
+      );
+
+    if (
+      !resetToken ||
+      resetToken.usedAt ||
+      resetToken.expiresAt.getTime() <= Date.now()
+    ) {
+      throw new AppError(
+        400,
+        "INVALID_RESET_TOKEN",
+        "Invalid or expired reset link"
+      );
+    }
+
+    const passwordHash =
+      await passwordService.hashPassword(newPassword);
+
+    await authRepository.transaction(async (tx) => {
+      await authRepository.updatePassword(
+        resetToken.userId,
+        passwordHash,
+        tx
+      );
+
+      await authRepository.markPasswordResetTokenUsed(
+        resetToken.id,
+        tx
+      );
+
+      await authRepository.revokeAllUserRefreshTokens(
+        resetToken.userId,
+        tx
+      );
+    });
+  }
 }
 
 
