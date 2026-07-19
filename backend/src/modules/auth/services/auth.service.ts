@@ -350,6 +350,23 @@ export class AuthService {
       existingToken.id
     );
   }
+
+  /**
+ * Get the currently authenticated user.
+ */
+  async getCurrentUser(userId: string): Promise<AuthUserResponse> {
+    const user = await authRepository.findUserById(userId);
+
+    if (!user) {
+      throw new AppError(
+        401,
+        "UNAUTHORIZED",
+        "Unauthorized"
+      );
+    }
+
+    return this.toAuthUserResponse(user);
+  }
 }
 
 

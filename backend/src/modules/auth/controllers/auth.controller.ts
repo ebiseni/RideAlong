@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { AuthenticatedRequest } from "../../../middleware/authenticate";
 
 import {
   REFRESH_COOKIE_OPTIONS,
@@ -122,6 +123,25 @@ export class AuthController {
       );
 
       res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+ * GET /api/auth/me
+ */
+  async me(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { id } = (req as AuthenticatedRequest).user;
+
+      const user = await authService.getCurrentUser(id);
+
+      res.status(200).json(user);
     } catch (error) {
       next(error);
     }

@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import { authenticate } from "../../../middleware/authenticate";
 import { validate } from "../../../middleware/validate";
 
 import { authController } from "../controllers/auth.controller";
@@ -42,6 +43,15 @@ router.post(
 router.post(
   "/logout",
   authController.logout.bind(authController)
+);
+
+/**
+ * GET /api/auth/me
+ */
+router.get(
+  "/me",
+  authenticate,
+  authController.me.bind(authController)
 );
 
 export default router;
