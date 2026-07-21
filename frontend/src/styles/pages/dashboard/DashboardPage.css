@@ -1,0 +1,163 @@
+.dashboard-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-card-wrapper {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.summary-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  /* Make summary row stack vertically on smaller screens */
+  flex-wrap: wrap;
+}
+
+.summary-row > * {
+  flex: 1;
+  min-width: 200px; /* Ensures summary cards don't shrink too small before wrapping */
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.main-grid h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 15px;
+}
+
+.card-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.welcome-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+/* Primary Green Button */
+.action-button-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  background-color: #0a5c36;
+  color: white;
+  border: 1px solid #0a5c36;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* All quick action buttons share this base style */
+.action-button-outline {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 35px;
+  gap: 15px;
+  height: 48px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: transparent;
+  color: #0a5c36;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.action-button-outline:hover {
+  background-color: #0a5c36;
+  color: white;
+  border-color: #0a5c36;
+}
+
+.action-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.vehicle-card {
+  background-color: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* =========================================
+   RESPONSIVE MEDIA QUERIES (Mobile & Tablet)
+   ========================================= */
+
+@media (max-width: 900px) {
+  /* Stack the main grid into a single column on tablets and mobile */
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-container {
+    padding: 10px; /* Reduce outer padding on smaller phones */
+  }
+
+  .dashboard-card-wrapper {
+    padding: 16px; /* Tighten up card padding */
+  }
+
+  .welcome-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .vehicle-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+/* Responsive adjustments for Empty State */
+.empty-state-container {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .empty-state-container {
+    padding: 24px 12px;
+  }
+
+  .empty-state-container p {
+    max-width: 100% !important; /* Prevents text crowding on very small screens */
+  }
+}

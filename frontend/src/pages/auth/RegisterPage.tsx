@@ -2,11 +2,11 @@ import {useState} from 'react'
 import '../../styles/pages/auth/RegisterPage.css'
 import eyeIcon from '../../assets/eyeIcon.svg'
 import eyeOffIcon from '../../assets/eyeOffIcon.svg'
-
+import authImage from "../../assets/Auth-img.png"
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 function RegisterPage(){
- const [form, setForm] = useState({ name: "", email: "", password: "" });
+ const [form, setForm] = useState({ fullName: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -32,9 +32,10 @@ function RegisterPage(){
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_URL}/auth/register`, {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials:"include",
         body: JSON.stringify(form), // {name, email, password}
       });
 
@@ -42,7 +43,7 @@ function RegisterPage(){
       if (!res.ok) throw new Error(data.message || "Failed to create account");
 
       // 1. Save token from backend
-      localStorage.setItem("token", data.token); 
+      localStorage.setItem("token", data.accessToken); 
       
       // 2. Redirect to dashboard after 1.5s
       setTimeout(() => {
@@ -59,16 +60,16 @@ function RegisterPage(){
     // const [name, setName] = useState('')
 
   return <div className="register-page">
-  <div className="left-side">
-    <div className="brand-text">RIDEALONG</div>
-  </div>
+ <div className="left-side">
+                <img src={authImage} alt="" />
+            </div>
             
       {/* RIGHT: Form */}
       <div className="form-container">
-          <h2 className="form-text1" style={{ fontSize: '3rem' }}>
+          <h2 className="form-text1" style={{ fontSize: '2.5rem' }}>
             Create an account
           </h2>
-          <p className="form-text2" style={{ fontSize: '1rem', marginTop: '20px' }}>
+          <p className="form-text2" style={{ fontSize: '0.8rem', marginTop: '20px' }}>
             Join to simplify the way you manage your vehicle documents.
           </p>
 
@@ -76,12 +77,12 @@ function RegisterPage(){
 
           <form onSubmit={handleSubmit} className="form-card" autoComplete="off">
             <div className="field-row">
-              <label htmlFor="name">Name</label>
+              <label htmlFor="fullName">Name</label>
               <input
                 type="text"
-                name="name"
-                id="name"
-                value={form.name}
+                name="fullName"
+                id="fullName"
+                value={form.fullName}
                 onChange={handleChange}
                 placeholder="Enter your full name"
                 autoComplete="name"

@@ -1,6 +1,5 @@
 /* Onboarding.css */
 
-/* 1. Full-screen container */
 .onboarding-container {
   display: flex;
   justify-content: center;
@@ -8,28 +7,33 @@
   min-height: 100vh;
   width: 100vw;
   background-color: #ffffff;
+  cursor: pointer;
+  position: relative;
 }
 
 .onboarding-content {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 60px;
+  gap: 40px 60px;
   width: 90%;
   max-width: 1200px;
 }
 
-/* 3. The left (image) block */
 .onboarding-image {
   flex: 1;
   display: flex;
   justify-content: flex-end;
+  min-width: 300px;
 }
 
 .onboarding-image img {
   max-width: 600px;
-  height: auto;
+  max-height: 450px;
   width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .onboarding-text {
@@ -37,6 +41,7 @@
   display: flex;
   flex-direction: column;
   text-align: left;
+  min-width: 300px;
 }
 
 .onboarding-text h1 {
@@ -56,6 +61,46 @@
   margin-top: 16px;
 }
 
+/* Footer Controls: Progress Bar & Skip Button */
+.onboarding-footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.progress-bar-container {
+  display: flex;
+  gap: 6px;
+}
+
+.progress-bar-dot {
+  width: 40px;
+  height: 4px;
+  background-color: #e2e8f0;
+  border-radius: 2px;
+  transition: background-color 0.3s ease;
+}
+
+.progress-bar-dot.active {
+  background-color: #0a5c36;
+}
+
+.skip-button {
+  background: none;
+  border: none;
+  color: #0a5c36;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+}
+
+.skip-button:hover {
+  text-decoration: underline;
+}
+
 .onboarding-container.splash {
   background-color: #00a651 !important;
   height: 100vh;
@@ -64,6 +109,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .splash-logo {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
@@ -73,7 +119,6 @@
 
 /* --- Responsive Breakpoints --- */
 
-/* Tablet & Smaller Laptops */
 @media (max-width: 900px) {
   .onboarding-content {
     gap: 30px;
@@ -88,7 +133,6 @@
   }
 }
 
-/* Mobile Devices */
 @media (max-width: 480px) {
   .onboarding-container {
     padding: 20px;
@@ -100,8 +144,20 @@
     gap: 20px;
   }
 
+  .onboarding-image {
+    justify-content: center;
+    min-width: 100%;
+  }
+
   .onboarding-image img {
+    max-height: 260px;
     max-width: 100%;
+  }
+
+  .onboarding-text {
+    align-items: center;
+    text-align: center;
+    min-width: 100%;
   }
 
   .onboarding-text h1 {
@@ -111,5 +167,9 @@
   .onboarding-text p {
     font-size: 16px;
     margin: 0 auto;
+  }
+
+  .onboarding-footer {
+    margin-top: 20px;
   }
 }

@@ -1,0 +1,30 @@
+.notification-bell-container {
+  position: relative;
+  cursor: pointer;
+
+  padding: 10px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.notification-bell-container:hover {
+  background-color: #f7fafc;
+}
+
+.notification-indicator {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 7px;
+  height: 7px;
+  background-color: #ecc94b;
+  border-radius: 50%;
+}
+
+.notification-icon {
+  stroke: #4a5568;
+}
