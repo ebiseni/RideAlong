@@ -1,0 +1,134 @@
+/* Outer white container card matching My Vehicles & Quick Actions */
+.reminder-section-wrapper {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 30px;
+}
+
+.reminder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.reminder-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.view-all-link {
+  font-size: 13px;
+  color: #0a5c36;
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+.view-all-arrow {
+  font-weight: 400;
+}
+
+.reminder-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Individual reminder cards keep their orange border */
+.reminder-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background-color: #ffffff;
+  border: 1px solid #fbd38d; /* Orange/gold border */
+  border-radius: 12px;
+  background-color: transparent; /* Makes it blend with the background canvas */
+}
+
+.reminder-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.reminder-icon-container {
+  background-color: #ed8936;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.reminder-img-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.reminder-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.reminder-title {
+  margin: 0 0 2px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.reminder-vehicle {
+  margin: 0 0 2px 0;
+  font-size: 12px;
+  color: #718096;
+}
+
+.reminder-expiry {
+  margin: 0;
+  font-size: 11px;
+  color: #a0aec0;
+}
+
+.reminder-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reminder-days-box {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+}
+
+.reminder-days-number {
+  font-size: 18px;
+  font-weight: 700;
+  color: #dd6b20;
+  line-height: 1.1;
+}
+
+.reminder-days-label {
+  font-size: 10px;
+  color: #dd6b20;
+  font-weight: 500;
+}
+
+.reminder-arrow {
+  font-size: 16px;
+  color: #a0aec0;
+  font-weight: 300;
+}

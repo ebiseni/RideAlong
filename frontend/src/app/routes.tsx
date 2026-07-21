@@ -32,7 +32,10 @@ export default function AppRoutes() {
         <Route element={<AppShell />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/documents" element={<DocumentUploadPage />} />
-          <Route path="/documents/:documentId" element={<DocumentDetailPage />} />
+          <Route
+            path="/documents/:documentId"
+            element={<DocumentDetailPage />}
+          />
           <Route path="/reminders" element={<RemindersPage />} />
           <Route path="/vehicles" element={<VehicleListPage />} />
           <Route path="/profile" element={<ProfilePage />} />
