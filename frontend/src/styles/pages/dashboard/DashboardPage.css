@@ -15,6 +15,13 @@
   display: flex;
   gap: 12px;
   margin-bottom: 24px;
+  /* Make summary row stack vertically on smaller screens */
+  flex-wrap: wrap;
+}
+
+.summary-row > * {
+  flex: 1;
+  min-width: 200px; /* Ensures summary cards don't shrink too small before wrapping */
 }
 
 .main-grid {
@@ -65,7 +72,6 @@
 .action-button-outline {
   display: flex;
   align-items: center;
-
   justify-content: flex-start;
   padding-left: 35px;
   gap: 15px;
@@ -106,4 +112,52 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
+}
+
+/* =========================================
+   RESPONSIVE MEDIA QUERIES (Mobile & Tablet)
+   ========================================= */
+
+@media (max-width: 900px) {
+  /* Stack the main grid into a single column on tablets and mobile */
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-container {
+    padding: 10px; /* Reduce outer padding on smaller phones */
+  }
+
+  .dashboard-card-wrapper {
+    padding: 16px; /* Tighten up card padding */
+  }
+
+  .welcome-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .vehicle-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+/* Responsive adjustments for Empty State */
+.empty-state-container {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .empty-state-container {
+    padding: 24px 12px;
+  }
+
+  .empty-state-container p {
+    max-width: 100% !important; /* Prevents text crowding on very small screens */
+  }
 }
