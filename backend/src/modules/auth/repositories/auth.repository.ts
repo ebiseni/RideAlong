@@ -159,6 +159,25 @@ export class AuthRepository {
     });
   }
 
+  async revokeOtherUserRefreshTokens(
+    userId: string,
+    currentTokenHash: string,
+    tx?: Prisma.TransactionClient
+  ): Promise<Prisma.BatchPayload> {
+    return this.getClient(tx).refreshToken.updateMany({
+      where: {
+        userId,
+        revokedAt: null,
+        tokenHash: {
+          not: currentTokenHash,
+        },
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+  }
+
   /**
    * ----------------------------------------------------------------
    * Password Reset Tokens

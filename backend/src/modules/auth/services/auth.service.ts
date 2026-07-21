@@ -475,6 +475,65 @@ export class AuthService {
       );
     });
   }
+
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+    currentRefreshToken?: string
+  ): Promise<void> {
+    const user = await authRepository.findUserById(userId);
+
+    if (!user) {
+      throw new AppError(
+        401,
+        "UNAUTHORIZED",
+        "Unauthorized"
+      );
+    }
+
+    const passwordMatches =
+      await passwordService.verifyPassword(
+        currentPassword,
+        user.password
+      );
+
+    if (!passwordMatches) {
+      throw new AppError(
+        400,
+        "INVALID_PASSWORD",
+        "Current password is incorrect"
+      );
+    }
+
+    const passwordHash =
+      await passwordService.hashPassword(newPassword);
+
+    const currentTokenHash = currentRefreshToken
+      ? tokenService.hashRefreshToken(currentRefreshToken)
+      : undefined;
+
+    await authRepository.transaction(async (tx) => {
+      await authRepository.updatePassword(
+        user.id,
+        passwordHash,
+        tx
+      );
+
+      if (currentTokenHash) {
+        await authRepository.revokeOtherUserRefreshTokens(
+          user.id,
+          currentTokenHash,
+          tx
+        );
+      } else {
+        await authRepository.revokeAllUserRefreshTokens(
+          user.id,
+          tx
+        );
+      }
+    });
+  }
 }
 
 
