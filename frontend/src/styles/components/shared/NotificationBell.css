@@ -1,8 +1,7 @@
-/* src/styles/components/shared/NotificationBell.css */
 .notification-bell-container {
   position: relative;
   cursor: pointer;
-  /* background-color: #ffffff; */
+
   padding: 10px;
   border-radius: 50%;
   border: 1px solid #e2e8f0;

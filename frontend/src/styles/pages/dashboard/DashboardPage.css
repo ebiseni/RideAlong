@@ -5,7 +5,6 @@
 }
 
 .dashboard-card-wrapper {
-  /* background-color: #ffffff; */
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 24px;
@@ -24,7 +23,6 @@
   gap: 20px;
 }
 
-/* Updated h2 styles to match Figma font weight */
 .main-grid h2 {
   font-size: 18px;
   font-weight: 600;
@@ -35,7 +33,7 @@
 .card-box {
   display: flex;
   flex-direction: column;
-  gap: 12px; /* Controls spacing between the buttons */
+  gap: 12px;
 }
 
 .welcome-header {
@@ -67,15 +65,14 @@
 .action-button-outline {
   display: flex;
   align-items: center;
-  /* Use flex-start instead of center, and add a fixed left padding 
-     so all text blocks start at the exact same horizontal coordinate */
+
   justify-content: flex-start;
-  padding-left: 35px; /* Adjust this value until the text words line up perfectly */
-  gap: 15px; /* Space between the icon and the text */
+  padding-left: 35px;
+  gap: 15px;
   height: 48px;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
-  background-color: transparent; /* Changed from solid white to blend with canvas */
+  background-color: transparent;
   color: #0a5c36;
   text-decoration: none;
   font-weight: 500;
@@ -97,12 +94,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0; /* Prevents the icon from resizing or shifting */
+  flex-shrink: 0;
 }
-/* Add or update this class in your vehicle card CSS */
+
 .vehicle-card {
-  background-color: transparent; /* Makes it blend with the background canvas */
-  border: 1px solid #e2e8f0; /* Soft neutral border */
+  background-color: transparent;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 16px 20px;
   display: flex;

@@ -1,4 +1,3 @@
-// src/hooks/useDocuments.ts
 import { useState } from "react";
 
 interface DocumentItem {

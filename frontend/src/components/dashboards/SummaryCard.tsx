@@ -1,4 +1,3 @@
-// src/components/dashboards/SummaryCard.tsx
 interface CardProps {
   title: string;
   value: number | string;
@@ -52,7 +51,7 @@ export const SummaryCard = ({
         borderRadius: "12px",
         border: `1px solid ${styles.border}`,
         backgroundColor: styles.bg,
-        color: "#1a202c", // Keeps text color clean and consistent like Figma
+        color: "#1a202c",
         flex: 1,
       }}
     >

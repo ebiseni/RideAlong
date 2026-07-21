@@ -1,4 +1,3 @@
-// src/hooks/useReminders.ts
 import { useState } from "react";
 
 export const useReminders = () => {

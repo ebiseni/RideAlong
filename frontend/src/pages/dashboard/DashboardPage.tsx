@@ -230,9 +230,9 @@ export default function DashboardPage() {
           >
             <h2
               style={{
-                fontSize: "18px", // Adjust size if needed
-                fontWeight: "600", // Change from bold (700) to semi-bold (600) to match Figma
-                color: "#1a202c", // Use a softer dark slate instead of harsh black
+                fontSize: "18px",
+                fontWeight: "600",
+                color: "#1a202c",
                 margin: "0 0 16px 0",
               }}
             >

@@ -51,9 +51,9 @@
   justify-content: space-between;
   padding: 16px 20px;
   background-color: #ffffff;
-  border: 1px solid #fbd38d; /* Orange/gold border */
+  border: 1px solid #fbd38d;
   border-radius: 12px;
-  background-color: transparent; /* Makes it blend with the background canvas */
+  background-color: transparent;
 }
 
 .reminder-left {
