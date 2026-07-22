@@ -222,4 +222,11 @@
   .progress-bar-dot {
     background-color: #e2e8f0;
   }
+
+  .tap-hint-popup {
+    position: absolute;
+    top: calc(50% + 150px);
+    bottom: auto;
+    margin-top: 0;
+  }
 }
