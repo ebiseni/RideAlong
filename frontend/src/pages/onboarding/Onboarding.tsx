@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import splashImg from "../../assets/Vector.png";
-import img1 from "../../assets/images/onboarding1.svg";
-import img2 from "../../assets/images/onboarding2.svg";
-import img3 from "../../assets/images/onboarding3.svg";
-import img4 from "../../assets/images/onboarding4.svg";
+import img1 from "../../assets/images/onboarding10.svg";
+import img2 from "../../assets/images/onboarding11.svg";
+import img3 from "../../assets/images/onboarding12.svg";
+import img4 from "../../assets/images/onboarding13.svg";
 import "../../styles/pages/onboarding/Onboarding.css";
 
 const onboardingData = [
