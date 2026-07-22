@@ -1,140 +1,208 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+
+import { useAuth } from "../../hooks/useAuth";
+
 import "../../styles/pages/auth/LoginPage.css";
+
 import eyeIcon from "../../assets/eyeIcon.svg";
 import eyeOffIcon from "../../assets/eyeOffIcon.svg";
-import authImage from "../../assets/Auth-img.png"
-
-const API_URL = import.meta.env.VITE_API_URL || ""
+import authImage from "../../assets/Auth-img.png";
 
 export default function LoginPage() {
-    const [formData, setFormData] = useState({
-        email: "",
-        password:"",
+  const navigate = useNavigate();
+
+  const { login } = useAuth();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const handleChanges = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
     });
+  };
 
-    const [showPassword, setShowPassword] = useState (false);
-    const [loading, setLoading] = useState(false);
-    const[error, setError]= useState ("");
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
 
-    const handleChanges = (e: React.ChangeEvent<HTMLInputElement>) =>{
-        setFormData({ ...formData, [e.target.name]: e.target.value});
-    };
+    setError("");
+    setLoading(true);
 
-    const navigate = useNavigate();
-    const [rememberMe, setRememberMe] = useState(false);
-    
-    const handleSubmit = async(e: React.FormEvent) => {
-       e.preventDefault();
-       setError("")
-       setLoading(true);
+    try {
+      if (!formData.email.trim()) {
+        setError("Email is required");
+        return;
+      }
 
-       try{
-        const res = await fetch(`${API_URL}/api/auth/login`,{
-            method: "POST",
-            headers: {"Content-type": "application/json"},
-            body: JSON.stringify(formData),
-        });
+      if (!formData.password) {
+        setError("Password is required");
+        return;
+      }
 
-        const data = await res.json();
-        if (!res.ok) throw Error(data.message || "failed to login");
+      await login({
+        email: formData.email,
+        password: formData.password,
+      });
 
-        localStorage.setItem("token", data.accessToken);
+      navigate("/dashboard");
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Unable to login."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        navigate("/dashboard");
-       } catch (err: unknown){
-        setError((err as Error).message);
-       } finally {
-        setLoading(false);
-       }
-    };
+  return (
+    <div className="login-page">
+      {/* left side */}
+      <div className="login-left">
+        <img src={authImage} alt="" />
+      </div>
 
-    return(
-        <div className="login-page">
-            {/*left side */}
-            <div className="login-left">
-                <img src={authImage} alt="" />
+      {/* right side */}
+      <div className="login-right">
+        <div className="form-contain">
+          <h2>Login to your account</h2>
+          <p>
+            Welcome back! Enter your details to access your account.
+          </p>
+
+          {error && (
+            <p className="error-message">
+              {error}
+            </p>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <label>Email</label>
+
+            <input
+              className="form-input"
+              type="text"
+              name="email"
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleChanges}
+              autoComplete="email"
+              required
+            />
+
+            <label>Password</label>
+
+            <div className="input-wrapper">
+              <input
+                className="form-input"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChanges}
+                autoComplete="current-password"
+                required
+              />
+
+              <button
+                type="button"
+                className="eye-button"
+                onClick={() =>
+                  setShowPassword(!showPassword)
+                }
+                aria-label={
+                  showPassword
+                    ? "Hide password"
+                    : "Show password"
+                }
+              >
+                {showPassword ? (
+                  <img
+                    src={eyeOffIcon}
+                    alt="Hide password"
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={eyeIcon}
+                    alt="Show password"
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                    }}
+                  />
+                )}
+              </button>
             </div>
 
-            {/*right side */}
-            <div className="login-right">
-                <div className="form-contain">
-                    <h2>Login to your account</h2>
-                    <p>Welcome back! Enter your details to access your account.</p>
-                
-            {error && <p className="error-message">{error}</p> }
+            <div className="remember-forgot">
+              <label className="remember-me">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) =>
+                    setRememberMe(e.target.checked)
+                  }
+                />
+                Remember me
+              </label>
 
-                    <label htmlFor="">Email</label>
-                    <input 
-                    className="form-input"
-                    type="text"
-                    name="email"
-                    placeholder="Enter your email"
-                    value={formData.email}
-                    onChange={handleChanges}
-                    autoComplete="email"
-                    required
-                    />
-
-                    <label htmlFor="">Password</label>
-                    <div className="input-wrapper">
-                         <input 
-                    className="form-input"
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Enter your password" 
-                    value={formData.password}
-                    onChange={handleChanges}
-                    autoComplete="new-password"
-                    required
-                    />
-                    <button
-                    type="button"
-                    className="eye-button" 
-                    onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                    >
-                    {showPassword ? (
-                        <img src={eyeOffIcon} alt="Hide password" style={{ width: '20px', height: '20px' }} />
-                    ):(
-                        <img src={eyeIcon} alt="Show password" style={{ width: '20px', height: '20px' }} />
-                    )}
-                 </button>
-
-                    </div>
-                   
-
-                    <div className="remember-forgot">
-                        <label className="remember-me">
-                        <input 
-                        type="checkbox"
-                        checked={rememberMe}
-                        onChange={(e) => setRememberMe(e.target.checked)}
-                         />
-                        Remember me
-                        </label>
-                        <a href="/forgot-password" className="forgot-pass">Forgot password?</a>
-                    </div>
-
-                    <button 
-                    type="button"
-                    className="login-btn" onClick={handleSubmit} disabled={loading}> {loading ? "Logging you in...": "Log in"} </button>
-
-                    <div className="divide">
-                        <span>Or</span>
-                    </div>
-
-                    {/*social media buttons */}
-                    <button className="socials">Login with Google</button>
-                    <button className="socials">Login with Apple</button>
-
-                    {/*footer */}
-                    <p className="login-footer">Don’t have an account? <span onClick={() => navigate ("/register")}>Create an account</span></p>
-
-                </div>
-
+              <Link
+                to="/forgot-password"
+                className="forgot-pass"
+              >
+                Forgot password?
+              </Link>
             </div>
 
+            <button
+              type="submit"
+              className="login-btn"
+              disabled={loading}
+            >
+              {loading
+                ? "Logging you in..."
+                : "Log in"}
+            </button>
+          </form>
+
+          <div className="divide">
+            <span>Or</span>
+          </div>
+
+          {/* social media buttons */}
+          <button className="socials">
+            Login with Google
+          </button>
+
+          <button className="socials">
+            Login with Apple
+          </button>
+
+          {/* footer */}
+          <p className="login-footer">
+            Don’t have an account?{" "}
+            <span onClick={() => navigate("/register")}>Create an account</span>
+          </p>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
