@@ -1,5 +1,5 @@
 // src/pages/dashboard/DashboardPage.tsx
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDocuments } from "../../hooks/useDocuments";
 import { useVehicles } from "../../hooks/useVehicles";
 import { SummaryCard } from "../../components/dashboards/SummaryCard";
@@ -26,6 +26,7 @@ import _identityCard from "../../assets/icons/identity-card.svg";
 import _insuranceCard from "../../assets/icons/shield-energy.svg";
 
 export default function DashboardPage() {
+  const navigate = useNavigate();
   const { validCount, expiringCount, expiredCount, expiringSubtext } =
     useDocuments();
   const { totalVehicles, vehicles } = useVehicles();
@@ -71,39 +72,50 @@ export default function DashboardPage() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <NotificationBell />
+          <NotificationBell
+            hasUnread={
+              reminders.length > 0 || expiredCount > 0 || expiringCount > 0
+            }
+            onClick={() => navigate("/reminders")}
+          />
 
-          {user.avatarUrl ? (
-            <img
-              src={user.avatarUrl}
-              alt={user.name}
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
-                objectFit: "cover",
-                border: "1px solid #cbd5e0",
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
-                backgroundColor: "#e6fffa",
-                color: "#319795",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 600,
-                fontSize: "16px",
-                border: "1px solid #b2f5ea",
-              }}
-            >
-              {getInitials(user.name)}
-            </div>
-          )}
+          <div
+            onClick={() => navigate("/profile")}
+            style={{ cursor: "pointer", display: "flex", alignItems: "center" }}
+            title="Go to profile"
+          >
+            {user.avatarUrl ? (
+              <img
+                src={user.avatarUrl}
+                alt={user.name}
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  border: "1px solid #cbd5e0",
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  backgroundColor: "#e6fffa",
+                  color: "#319795",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  border: "1px solid #b2f5ea",
+                }}
+              >
+                {getInitials(user.name)}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -186,10 +198,12 @@ export default function DashboardPage() {
               title="You haven't added any vehicle yet."
               description="Add your vehicles to start organizing and managing their documents."
               actionText="Add Your Vehicle"
-              actionLink="/vehicles"
+              actionLink="/vehicles/add"
             />
           ) : (
-            vehicles.map((v: any) => <VehicleCard key={v.id} {...v} />)
+            vehicles
+              .slice(0, 2)
+              .map((v: any) => <VehicleCard key={v.id} {...v} />)
           )}
         </section>
 
@@ -200,7 +214,7 @@ export default function DashboardPage() {
               Quick Actions
             </h2>
             <div className="card-box">
-              <Link to="/vehicles" className="action-button-outline">
+              <Link to="/vehicles/add" className="action-button-outline">
                 <img src={AddVehicleIcon} alt="" className="action-icon" />
                 Add Vehicle
               </Link>

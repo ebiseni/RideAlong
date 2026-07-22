@@ -66,6 +66,11 @@ const Onboarding = () => {
       {currentData.isSplash ? (
         <div className="onboarding-content">
           <img src={currentData.image} alt="Logo" className="splash-logo" />
+
+          {/* Helpful tap hint popup for first-time users */}
+          <div className="tap-hint-popup">
+            <span>👆 Tap anywhere to continue</span>
+          </div>
         </div>
       ) : (
         <div className="onboarding-content">

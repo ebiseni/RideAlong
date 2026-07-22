@@ -117,6 +117,34 @@
   height: auto;
 }
 
+/* --- Tap Hint Popup Styles --- */
+.tap-hint-popup {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #111827;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: bounce 1.5s infinite;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-6px);
+  }
+}
+
 /* --- Responsive Breakpoints --- */
 
 @media (max-width: 900px) {
@@ -136,6 +164,8 @@
 @media (max-width: 480px) {
   .onboarding-container {
     padding: 20px;
+    align-items: flex-end;
+    padding-bottom: 70px;
   }
 
   .onboarding-content {
