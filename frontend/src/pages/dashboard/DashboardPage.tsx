@@ -25,18 +25,26 @@ import emptyReminderIllustration from "../../assets/icons/bell-outline.svg";
 import _identityCard from "../../assets/icons/identity-card.svg";
 import _insuranceCard from "../../assets/icons/shield-energy.svg";
 
-export default function DashboardPage() {
+interface DashboardProps {
+  currentUser?: {
+    name: string;
+    email?: string;
+    avatarUrl?: string | null;
+  };
+}
+
+export default function DashboardPage({ currentUser }: DashboardProps) {
   const navigate = useNavigate();
   const { validCount, expiringCount, expiredCount, expiringSubtext } =
     useDocuments();
   const { totalVehicles, vehicles } = useVehicles();
   const { reminders } = useReminders();
 
-  // TODO: Backend team will replace this with real auth/user context
+  // Uses passed user prop, or falls back to local storage/auth data, or defaults to "User"
   const user = {
-    name: "User", // Default fallback if no user data yet
-    email: "",
-    avatarUrl: null,
+    name: currentUser?.name || localStorage.getItem("userName") || "User",
+    email: currentUser?.email || "",
+    avatarUrl: currentUser?.avatarUrl || null,
   };
 
   const getInitials = (name: string) => {
