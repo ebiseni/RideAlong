@@ -1,0 +1,123 @@
+.vehicle-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.vehicle-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.vehicle-avatar {
+  background-color: #e6fffa;
+  color: #319795;
+  font-weight: 600;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.vehicle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vehicle-name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.vehicle-plate {
+  margin: 0;
+  font-size: 13px;
+  color: #718096;
+}
+
+.vehicle-documents {
+  margin: 0;
+  font-size: 13px;
+  color: #718096;
+}
+
+.vehicle-meta {
+  margin: 0;
+  font-size: 13px;
+  color: #718096;
+}
+
+.vehicle-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.compliance-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.compliance-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.compliance-badge.green {
+  background-color: #f0fff4;
+  color: #276749;
+  border-color: #c6f6d5;
+}
+
+.compliance-badge.green .badge-icon {
+  color: #38a169;
+}
+
+.compliance-badge.yellow {
+  background-color: #fffaf0;
+  color: #b7791f;
+  border-color: #feebc8;
+}
+
+.compliance-badge.yellow .badge-icon {
+  color: #d69e2e;
+}
+
+.badge-icon {
+  flex-shrink: 0;
+}
+
+.compliance-subtext {
+  font-size: 12px;
+  color: #718096;
+}
+
+.vehicle-arrow {
+  font-size: 16px;
+  color: #a0aec0;
+  font-weight: 400;
+}
+.compliance-badge.red {
+  background-color: #fff5f5;
+  color: #e53e3e;
+}

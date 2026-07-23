@@ -1,0 +1,176 @@
+.how-it-works {
+  background: #f2f8fc;
+  padding: 3rem;
+  scroll-margin-top: 100px;
+}
+
+.how-header {
+  max-width: 640px;
+  margin: 0 auto 3rem;
+  text-align: center;
+}
+
+.how-badge {
+  display: inline-block;
+  background: #e5fced;
+  color: #16a34a;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.25rem;
+  border-radius: 20px;
+  border: 1px solid #a7e1bc;
+  margin-bottom: 1.5rem;
+}
+
+.how-headline {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.5rem;
+}
+
+.how-headline .highlight {
+  color: #16a34a;
+}
+
+.how-subtext {
+  color: #6b7280;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.how-steps {
+  max-width: 1100px;
+  padding-top: 1rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+.how-step {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.how-step-icon {
+  border: 1px solid #16a34a;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  padding: 0.7rem;
+}
+
+.how-step-icon img {
+  width: 35px;
+  height: 35px;
+}
+
+.how-step-title {
+  color: #1a1a1a;
+  font-weight: 600;
+  font-size: 20px;
+  margin: 0 0 0.5rem;
+}
+
+.how-step-description {
+  color: #1a1a1a;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 270px;
+}
+
+.how-connector {
+  position: absolute;
+  top: -20px;
+  left: calc(43% + 70px);
+  width: 265px;
+  height: auto;
+  z-index: 1;
+}
+
+/* Tablet / mobile */
+@media (max-width: 900px) {
+  .how-it-works {
+    padding: 3rem 1.5rem;
+  }
+
+  .how-headline {
+    font-size: 2rem;
+  }
+
+  .how-steps {
+    gap: 1.5rem;
+    padding-top: 0px;
+  }
+
+  .how-step-icon img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .how-step-title {
+    font-size: 0.98rem;
+  }
+
+  .how-step-description {
+    font-size: 0.85rem;
+  }
+
+  .how-connector {
+    top: 0px;
+    left: calc(37% + 70px);
+    width: 160px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .how-it-works {
+    padding: 2.5rem 1.25rem;
+  }
+
+  .how-badge {
+    font-size: 0.65rem;
+    padding: 0.4rem 0.9rem;
+  }
+
+  .how-headline {
+    font-size: 1.6rem;
+  }
+
+  .how-subtext {
+    font-size: 0.9rem;
+  }
+
+  .how-step-icon img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .how-steps {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .how-connector {
+    display: none;
+  }
+
+  .how-step-title {
+    font-size: 0.95rem;
+  }
+
+  .how-step-description {
+    font-size: 0.85rem;
+    max-width: 90%;
+  }
+}

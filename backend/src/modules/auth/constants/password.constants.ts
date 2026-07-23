@@ -1,0 +1,9 @@
+export const BCRYPT_COST_FACTOR = 12;
+
+export const MIN_PASSWORD_LENGTH = 8;
+
+export const MAX_FAILED_LOGIN_ATTEMPTS = 5;
+
+export const LOGIN_LOCK_DURATION_MINUTES = 15;
+
+export const PASSWORD_RESET_TOKEN_EXPIRY_MINUTES = 15;

@@ -1,11 +1,12 @@
-import { Routes, Route } from 'react-router-dom'
-import VehicleFormPage from './pages/vehicles/VehicleFormPage'
+import { BrowserRouter } from "react-router-dom";
+import AppRoutes from "./app/routes";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<VehicleFormPage />} />
-    </Routes>
-  )
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  );
 }
-export default App
+
+export default App;
