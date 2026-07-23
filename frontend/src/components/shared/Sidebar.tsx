@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import sidebarLogo from "../../assets/logos/sidebar-logo.svg";
 import dashboardIcon from "../../assets/icons/dashboard-icon.svg";
@@ -6,7 +7,6 @@ import reminderIcon from "../../assets/icons/reminder-icon.svg";
 import vehicleIcon from "../../assets/icons/vehicle-icon.svg";
 import profileIcon from "../../assets/icons/profile-icon.svg";
 import settingIcon from "../../assets/icons/setting-icon.svg";
-import logoutIcon from "../../assets/icons/logout-iocn.svg";
 import "../../styles/components/shared/Sidebar.css";
 
 const NAV_ITEMS = [
@@ -19,33 +19,76 @@ const NAV_ITEMS = [
 ];
 
 interface SidebarProps {
-  onLogoutClick: () => void;
+  userName: string;
+  userEmail: string;
+  userAvatarUrl?: string;
 }
 
-export default function Sidebar({ onLogoutClick }: SidebarProps) {
+export default function Sidebar({ userName, userEmail, userAvatarUrl }: SidebarProps) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const closeMobileMenu = () => setMobileOpen(false);
+
   return (
-    <aside className="sidebar">
-      <img src={sidebarLogo} alt="RideAlong" className="sidebar-logo" />
+    <>
+      <div className="sidebar-mobile-bar">
+        <img src={sidebarLogo} alt="RideAlong" className="sidebar-logo" />
+        <button
+          className="sidebar-hamburger"
+          onClick={() => setMobileOpen(true)}
+          aria-label="Open navigation menu"
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+      </div>
 
-      <nav className="sidebar-nav">
-        {NAV_ITEMS.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) =>
-              `sidebar-link ${isActive ? "active" : ""}`
-            }
+      {mobileOpen && (
+        <div className="sidebar-backdrop" onClick={closeMobileMenu} aria-hidden="true" />
+      )}
+
+      <aside className={`sidebar ${mobileOpen ? "mobile-open" : ""}`}>
+        <div className="sidebar-header">
+          <img src={sidebarLogo} alt="RideAlong" className="sidebar-logo" />
+          <button
+            className="sidebar-close"
+            onClick={closeMobileMenu}
+            aria-label="Close navigation menu"
           >
-            <img src={item.icon} alt="" aria-hidden="true" className="sidebar-icon" />
-            {item.label}
-          </NavLink>
-        ))}
-      </nav>
+            ✕
+          </button>
+        </div>
 
-      <button className="sidebar-logout" onClick={onLogoutClick}>
-        <img src={logoutIcon} alt="" aria-hidden="true" className="sidebar-icon" />
-        Logout
-      </button>
-    </aside>
+        <nav className="sidebar-nav">
+          {NAV_ITEMS.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={closeMobileMenu}
+              className={({ isActive }) =>
+                `sidebar-link ${isActive ? "active" : ""}`
+              }
+            >
+              <img src={item.icon} alt="" aria-hidden="true" className="sidebar-icon" />
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="sidebar-profile">
+          {userAvatarUrl ? (
+            <img src={userAvatarUrl} alt={userName} className="sidebar-avatar" />
+          ) : (
+            <div className="sidebar-avatar sidebar-avatar-placeholder">
+              {userName.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div className="sidebar-profile-text">
+            <p className="sidebar-profile-name">{userName}</p>
+            <p className="sidebar-profile-email">{userEmail}</p>
+          </div>
+        </div>
+      </aside>
+    </>
   );
 }

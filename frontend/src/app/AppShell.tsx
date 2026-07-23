@@ -1,18 +1,17 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Sidebar from "../components/shared/Sidebar";
+import sidebarProfileImage from "../assets/images/sidebar-profile-image.jpg";
 import "../styles/components/layout/AppShell.css";
 
 export default function AppShell() {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    // TODO: clear auth state via AuthContext once implemented
-    navigate("/login");
-  };
-
   return (
     <div className="app-shell">
-      <Sidebar onLogoutClick={handleLogout} />
+      {/* TEMP: hardcoded placeholder values until AuthContext/useAuth is implemented */}
+       <Sidebar
+        userName="Precious Aree"
+        userEmail="preciousaree56@gmail.com"
+        userAvatarUrl={sidebarProfileImage}
+      />
       <main className="app-shell-content">
         <Outlet />
       </main>
