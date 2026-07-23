@@ -13,6 +13,8 @@ import DocumentUploadPage from "../pages/documents/DocumentUploadPage";
 import DocumentDetailPage from "../pages/documents/DocumentDetailPage";
 import RemindersPage from "../pages/reminders/RemindersPage";
 import VehicleListPage from "../pages/vehicles/VehicleListPage";
+import VehicleFormPage from "../pages/vehicles/VehicleFormPage";
+import VehicleDetailPage from "../pages/vehicles/VehicleDetailPage"; // 1. Import your vehicle details page
 import ProfilePage from "../pages/profile/ProfilePage";
 import SettingsPage from "../pages/settings/SettingsPage";
 
@@ -32,9 +34,15 @@ export default function AppRoutes() {
         <Route element={<AppShell />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/documents" element={<DocumentUploadPage />} />
-          <Route path="/documents/:documentId" element={<DocumentDetailPage />} />
+          <Route
+            path="/documents/:documentId"
+            element={<DocumentDetailPage />}
+          />
           <Route path="/reminders" element={<RemindersPage />} />
           <Route path="/vehicles" element={<VehicleListPage />} />
+          <Route path="/vehicles/add" element={<VehicleFormPage />} />
+          <Route path="/vehicles/:id" element={<VehicleDetailPage />} />{" "}
+          {/* 2. Add the dynamic detail route */}
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>

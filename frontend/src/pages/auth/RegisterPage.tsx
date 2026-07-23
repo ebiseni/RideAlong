@@ -6,7 +6,7 @@ import authImage from "../../assets/Auth-img.png"
 const API_URL = import.meta.env.VITE_API_URL || ''
 
 function RegisterPage(){
- const [form, setForm] = useState({ name: "", email: "", password: "" });
+ const [form, setForm] = useState({ fullName: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -32,9 +32,10 @@ function RegisterPage(){
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_URL}/auth/register`, {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials:"include",
         body: JSON.stringify(form), // {name, email, password}
       });
 
@@ -42,7 +43,7 @@ function RegisterPage(){
       if (!res.ok) throw new Error(data.message || "Failed to create account");
 
       // 1. Save token from backend
-      localStorage.setItem("token", data.token); 
+      localStorage.setItem("token", data.accessToken); 
       
       // 2. Redirect to dashboard after 1.5s
       setTimeout(() => {
@@ -76,12 +77,12 @@ function RegisterPage(){
 
           <form onSubmit={handleSubmit} className="form-card" autoComplete="off">
             <div className="field-row">
-              <label htmlFor="name">Name</label>
+              <label htmlFor="fullName">Name</label>
               <input
                 type="text"
-                name="name"
-                id="name"
-                value={form.name}
+                name="fullName"
+                id="fullName"
+                value={form.fullName}
                 onChange={handleChange}
                 placeholder="Enter your full name"
                 autoComplete="name"

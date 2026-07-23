@@ -30,15 +30,26 @@ export class AuthController {
         user,
         accessToken,
       });
-    } catch (error) {
-      next(error);
+    } catch (error: any) {
+      // Prisma unique constraint error = email already exists
+      if (error.code === 'P2002') {
+        res.status(400).json({ message: "Email already exists" });
+        return;
+      }
+      
+      // Validation error from authService
+      if (error.message) {
+        res.status(400).json({ message: error.message });
+        return;
+      }
+
+      res.status(500).json({ message: "Server error" });
     }
   }
 
-
   /**
- * POST /api/auth/login
- */
+   * POST /api/auth/login
+   */
   async login(
     req: Request,
     res: Response,
@@ -58,14 +69,18 @@ export class AuthController {
         user,
         accessToken,
       });
-    } catch (error) {
-      next(error);
+    } catch (error: any) {
+      if (error.message) {
+        res.status(401).json({ message: error.message });
+        return;
+      }
+      res.status(500).json({ message: "Server error" });
     }
   }
 
   /**
- * POST /api/auth/refresh
- */
+   * POST /api/auth/refresh
+   */
   async refresh(
     req: Request,
     res: Response,
@@ -97,12 +112,16 @@ export class AuthController {
       res.status(200).json({
         accessToken,
       });
-    } catch (error) {
-      next(error);
+    } catch (error: any) {
+      if (error.message) {
+        res.status(401).json({ message: error.message });
+        return;
+      }
+      res.status(500).json({ message: "Server error" });
     }
   }
 
-    /**
+  /**
    * POST /api/auth/logout
    */
   async logout(
@@ -122,8 +141,12 @@ export class AuthController {
       );
 
       res.sendStatus(204);
-    } catch (error) {
-      next(error);
+    } catch (error: any) {
+      if (error.message) {
+        res.status(400).json({ message: error.message });
+        return;
+      }
+      res.status(500).json({ message: "Server error" });
     }
   }
 }
