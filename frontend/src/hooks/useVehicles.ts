@@ -47,7 +47,26 @@ const calculateCompliance = (expiryDateString?: string) => {
 
 export const useVehicles = () => {
   // Empty array ready for backend data integration
-  const rawVehicles: any[] = [];
+  const rawVehicles: any[] = [
+    {
+      id: "v1",
+      name: "Toyota Corolla",
+      plateNumber: "ABC-123-XY",
+      expiryDate: "2026-07-20", // Already expired based on your baseline date
+    },
+    {
+      id: "v2",
+      name: "Honda Civic",
+      plateNumber: "XYZ-789-AB",
+      expiryDate: "2026-08-10", // Expiring soon (within 30 days)
+    },
+    {
+      id: "v3",
+      name: "Ford Explorer",
+      plateNumber: "LND-456-ZZ",
+      expiryDate: "2027-01-15", // Fully compliant
+    },
+  ];
 
   // Map through raw data and dynamically compute status, statusClass, subText, and diffDays
   const mappedVehicles = rawVehicles.map((vehicle) => {

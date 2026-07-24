@@ -1,17 +1,22 @@
 .app-shell {
   background: rgb(244, 248, 251);
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .app-shell-content {
   flex: 1;
   padding: 2rem;
-  box-sizing: border-box;
+  overflow-y: auto;
 }
 
 @media (max-width: 900px) {
   .app-shell {
     flex-direction: column;
   }
+
+  .app-shell-content {
+  padding: 1rem;
+}
 }
