@@ -14,7 +14,7 @@ export type Reminder = {
   expiryText: string;
 };
 
-type RawReminder = Omit<Reminder, "daysLeft" | "expiryText">;
+//type RawReminder = Omit<Reminder, "daysLeft" | "expiryText">;
 
 const calculateTimeRemaining = (expiryDateString: string) => {
   const today = new Date("2026-07-22"); // Current date baseline
