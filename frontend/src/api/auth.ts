@@ -17,6 +17,10 @@ export interface AuthResponse {
   accessToken: string;
 }
 
+export interface RefreshResponse {
+  accessToken: string;
+}
+
 export interface RegisterRequest {
   fullName: string;
   email: string;
@@ -54,14 +58,22 @@ export interface MessageResponse {
 export const register = async (
   data: RegisterRequest
 ): Promise<AuthResponse> => {
-  const response = await apiClient.post<AuthResponse>("/auth/register", data);
+  const response = await apiClient.post<AuthResponse>(
+    "/auth/register",
+    data
+  );
+
   return response.data;
 };
 
 export const login = async (
   data: LoginRequest
 ): Promise<AuthResponse> => {
-  const response = await apiClient.post<AuthResponse>("/auth/login", data);
+  const response = await apiClient.post<AuthResponse>(
+    "/auth/login",
+    data
+  );
+
   return response.data;
 };
 
@@ -69,13 +81,17 @@ export const logout = async (): Promise<void> => {
   await apiClient.post("/auth/logout");
 };
 
-export const refresh = async (): Promise<AuthResponse> => {
-  const response = await apiClient.post<AuthResponse>("/auth/refresh");
+export const refresh = async (): Promise<RefreshResponse> => {
+  const response = await apiClient.post<RefreshResponse>(
+    "/auth/refresh"
+  );
+
   return response.data;
 };
 
 export const getCurrentUser = async (): Promise<AuthUser> => {
   const response = await apiClient.get<AuthUser>("/auth/me");
+
   return response.data;
 };
 
