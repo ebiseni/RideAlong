@@ -134,7 +134,6 @@
    ========================================= */
 
 @media (max-width: 900px) {
-  /* Force stack the main grid into a single column on tablets and mobile, overriding inline style */
   .main-grid {
     grid-template-columns: 1fr !important;
   }
@@ -159,7 +158,6 @@
     min-width: 100%;
   }
 
-  /* Keep vehicle card nicely aligned horizontally on mobile */
   .vehicle-card {
     flex-direction: row;
     align-items: center;
@@ -167,15 +165,27 @@
     gap: 8px;
   }
 
-  /* Fix Upcoming Reminder sub-cards so they stack cleanly instead of clipping horizontally */
-  .dashboard-card-wrapper div[style*="flex"] {
-    flex-direction: column !important;
-    gap: 12px !important;
+  /* HARD OVERRIDE FOR UPCOMING REMINDERS ON MOBILE */
+  .dashboard-card-wrapper div {
+    max-width: 100% !important;
   }
 
-  .dashboard-card-wrapper div[style*="flex"] > div {
+  /* Force any flex containers inside the reminder banner to stack cleanly */
+  .dashboard-card-wrapper section, 
+  .dashboard-card-wrapper div[style*="display: flex"] {
+    flex-wrap: wrap !important;
+  }
+
+  /* Target the individual reminder sub-cards to stack vertically and stop text collision */
+  .dashboard-card-wrapper [style*="border: 1px solid"],
+  .dashboard-card-wrapper [style*="border:1px solid"] {
     width: 100% !important;
-    box-sizing: border-box;
+    min-width: 100% !important;
+    margin-right: 0 !important;
+    margin-bottom: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
   }
 }
 
