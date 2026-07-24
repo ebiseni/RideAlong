@@ -165,18 +165,17 @@
     gap: 8px;
   }
 
-  /* HARD OVERRIDE FOR UPCOMING REMINDERS ON MOBILE */
+  /* FORCE STACKING FOR THE REMINDER CARDS */
   .dashboard-card-wrapper div {
     max-width: 100% !important;
   }
 
-  /* Force any flex containers inside the reminder banner to stack cleanly */
   .dashboard-card-wrapper section, 
   .dashboard-card-wrapper div[style*="display: flex"] {
     flex-wrap: wrap !important;
   }
 
-  /* Target the individual reminder sub-cards to stack vertically and stop text collision */
+  /* Target the reminder cards to force vertical layout and block text side-by-side clashing */
   .dashboard-card-wrapper [style*="border: 1px solid"],
   .dashboard-card-wrapper [style*="border:1px solid"] {
     width: 100% !important;
@@ -185,7 +184,16 @@
     margin-bottom: 12px !important;
     display: flex !important;
     flex-direction: column !important;
+    align-items: flex-start !important;
     position: relative !important;
+  }
+
+  /* Force the inner text element of the days count block to stack below the title */
+  .dashboard-card-wrapper [style*="border: 1px solid"] div,
+  .dashboard-card-wrapper [style*="border:1px solid"] div {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
   }
 }
 
