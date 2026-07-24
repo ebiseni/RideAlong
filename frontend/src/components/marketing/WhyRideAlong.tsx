@@ -2,7 +2,7 @@ import shieldKeyIcon from "../../assets/icons/shield-key.svg";
 import notificationIcon from "../../assets/icons/notification-01.svg";
 import boltIcon from "../../assets/icons/bolt.svg";
 import guardCheckIcon from "../../assets/icons/gaurd-check.svg";
-import phoneMockup from "../../assets/images/rideAlong-phoneMockup.jpg";
+import phoneMockup from "../../assets/images/phone-mockup.png";
 import "../../styles/components/marketing/WhyRideAlong.css";
 
 const FEATURES = [
