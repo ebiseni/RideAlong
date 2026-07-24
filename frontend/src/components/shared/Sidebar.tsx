@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 import sidebarLogo from "../../assets/logos/sidebar-logo.svg";
 import dashboardIcon from "../../assets/icons/dashboard-icon.svg";
 import documentIcon from "../../assets/icons/document-icon.svg";
@@ -18,15 +19,10 @@ const NAV_ITEMS = [
   { label: "Settings", path: "/settings", icon: settingIcon },
 ];
 
-interface SidebarProps {
-  userName: string;
-  userEmail: string;
-  userAvatarUrl?: string;
-}
-
-export default function Sidebar({ userName, userEmail, userAvatarUrl }: SidebarProps) {
+export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const closeMobileMenu = () => setMobileOpen(false);
+  const user = useCurrentUser();
 
   return (
     <>
@@ -76,16 +72,16 @@ export default function Sidebar({ userName, userEmail, userAvatarUrl }: SidebarP
         </nav>
 
         <div className="sidebar-profile">
-          {userAvatarUrl ? (
-            <img src={userAvatarUrl} alt={userName} className="sidebar-avatar" />
+          {user.avatarUrl ? (
+            <img src={user.avatarUrl} alt={user.name} className="sidebar-avatar" />
           ) : (
             <div className="sidebar-avatar sidebar-avatar-placeholder">
-              {userName.charAt(0).toUpperCase()}
+              {user.name.charAt(0).toUpperCase()}
             </div>
           )}
           <div className="sidebar-profile-text">
-            <p className="sidebar-profile-name">{userName}</p>
-            <p className="sidebar-profile-email">{userEmail}</p>
+            <p className="sidebar-profile-name">{user.name}</p>
+            <p className="sidebar-profile-email">{user.email}</p>
           </div>
         </div>
       </aside>

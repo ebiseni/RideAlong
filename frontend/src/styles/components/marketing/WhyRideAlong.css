@@ -48,11 +48,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 0;
+  /* padding: 2rem 0; */
 }
 
 .phone-mockup-image {
-  width: 260px;
+  display: block;
+  width: 300px;
   height: auto;
   border-radius: 30px;
 }
@@ -76,21 +77,21 @@
 
 .why-card-top-left {
   top: 26%;
-  left: -15%;
+  left: -18%;
 }
 
 .why-card-top-right {
-  top: 8%;
-  right: -8%;
+  top: 15%;
+  right: -10%;
 }
 
 .why-card-bottom-right {
-  bottom: 37%;
-  right: -23%;
+  bottom: 36%;
+  right: -21%;
 }
 
 .why-card-bottom-left {
-  bottom: 18%;
+  bottom: 21%;
   left: -17%;
 }
 
@@ -169,10 +170,6 @@
 
   .why-subtext {
     font-size: 0.9rem;
-  }
-
-  .phone-mockup-image {
-    width: 160px;
   }
 
   .why-card {
