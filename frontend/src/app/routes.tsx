@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import PublicLayout from "./PublicLayout";
 import AppShell from "./AppShell";
 // import ProtectedRoute from "./ProtectedRoute";
@@ -13,15 +13,14 @@ import DocumentUploadPage from "../pages/documents/DocumentUploadPage";
 import DocumentDetailPage from "../pages/documents/DocumentDetailPage";
 import RemindersPage from "../pages/reminders/RemindersPage";
 import VehicleListPage from "../pages/vehicles/VehicleListPage";
-import VehicleFormPage from "../pages/vehicles/VehicleFormPage";
-import VehicleDetailPage from "../pages/vehicles/VehicleDetailPage"; // 1. Import your vehicle details page
+import VehicleDetailPage from "../pages/vehicles/VehicleDetailPage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import SettingsPage from "../pages/settings/SettingsPage";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* Public routes */}
+      {/* 1. Public routes with PublicLayout */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -29,24 +28,20 @@ export default function AppRoutes() {
         <Route path="/onboarding" element={<Onboarding />} />
       </Route>
 
-      {/* Protected routes, wrapped in AppShell (sidebar layout) */}
-      <Route element={<PublicLayout />}>
-        <Route element={<AppShell />}>
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/documents" element={<DocumentUploadPage />} />
-          <Route
-            path="/documents/:documentId"
-            element={<DocumentDetailPage />}
-          />
-          <Route path="/reminders" element={<RemindersPage />} />
-          <Route path="/vehicles" element={<VehicleListPage />} />
-          <Route path="/vehicles/add" element={<VehicleFormPage />} />
-          <Route path="/vehicles/:id" element={<VehicleDetailPage />} />{" "}
-          {/* 2. Add the dynamic detail route */}
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-        </Route>
+      {/* 2. Protected routes with AppShell - NO PublicLayout here */}
+      <Route element={<AppShell />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/documents" element={<DocumentUploadPage />} />
+        <Route path="/documents/:documentId" element={<DocumentDetailPage />} />
+        <Route path="/reminders" element={<RemindersPage />} />
+        <Route path="/vehicles" element={<VehicleListPage />} />
+        <Route path="/vehicles/:id" element={<VehicleDetailPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/settings" element={<SettingsPage />} />
       </Route>
+
+      {/* 3. Catch all */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

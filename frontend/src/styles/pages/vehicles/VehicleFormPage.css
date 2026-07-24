@@ -1,0 +1,89 @@
+/* src/styles/components/vehicles/VehicleFormPage.css */
+
+.vehicle-form-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.vehicle-form-container {
+  background: #ffffff;
+  padding: 32px;
+  width: 680px;
+  max-width: 90%;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.vehicle-form-title {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  color: #111827;
+  margin: 0 0 8px 0;
+}
+
+.vehicle-form-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  text-align: center;
+  margin: 0 0 24px 0;
+  font-weight: 500;
+}
+
+.vehicle-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.vehicle-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.vehicle-form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111112;
+  margin-bottom: 6px;
+  margin-left: 100px;
+}
+
+.vehicle-form-group input {
+  width: 70%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s;
+  margin-left: 100px;
+}
+
+.vehicle-form-group input:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.vehicle-form-btn {
+  width: 70%;
+  background: #0a7330;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+  margin-left:100px;
+}
+
+.vehicle-form-btn:hover {
+  background: #15803d;
+}

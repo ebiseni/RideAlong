@@ -1,7 +1,14 @@
 import { Link } from "react-router-dom";
 import "../../styles/components/dashboard/ReminderBanner.css";
+import type { Reminder } from "../../hooks/useReminders"; // 1. import the type
 
-export const ReminderBanner = ({ reminders }: { reminders: any[] }) => {
+interface ReminderBannerProps {
+  reminders: Reminder[]; // 2. use it here
+}
+
+export const ReminderBanner = ({ reminders }: ReminderBannerProps) => {
+  if (reminders.length === 0) return null;
+
   return (
     <div className="reminder-section-wrapper">
       <div className="reminder-header">
@@ -12,7 +19,7 @@ export const ReminderBanner = ({ reminders }: { reminders: any[] }) => {
       </div>
 
       <div className="reminder-grid">
-        {reminders.map((reminder) => (
+        {reminders.map((reminder) => ( // TS now knows all fields
           <Link
             to={`/reminders`}
             key={reminder.id}
@@ -23,7 +30,6 @@ export const ReminderBanner = ({ reminders }: { reminders: any[] }) => {
               display: "flex",
             }}
           >
-            {/* Left side: Icon + Details */}
             <div className="reminder-left">
               <div className="reminder-icon-container">
                 <img src={reminder.icon} alt="" className="reminder-img-icon" />
@@ -35,7 +41,6 @@ export const ReminderBanner = ({ reminders }: { reminders: any[] }) => {
               </div>
             </div>
 
-            {/* Right side: Days Left + Arrow */}
             <div className="reminder-right">
               <div className="reminder-days-box">
                 <span className="reminder-days-number">

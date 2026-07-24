@@ -3,7 +3,19 @@ import { useMemo, useState } from "react";
 import _identityCard from "../assets/icons/identity-card.svg";
 import _insuranceCard from "../assets/icons/shield-energy.svg";
 
-// Helper function to dynamically calculate the time remaining until a reminder's expiry date
+// 1. Define the type here so both files can use it
+export type Reminder = {
+  id: string;
+  title: string;
+  vehicle: string;
+  expiryDate: string; // "2026-08-15" format
+  icon: string;
+  daysLeft: number;
+  expiryText: string;
+};
+
+type RawReminder = Omit<Reminder, "daysLeft" | "expiryText">;
+
 const calculateTimeRemaining = (expiryDateString: string) => {
   const today = new Date("2026-07-22"); // Current date baseline
   const expiry = new Date(expiryDateString);
@@ -133,19 +145,17 @@ export const useReminders = () => {
     },
   ]);
 
-  // Dynamically compute daysLeft and expiry text for each reminder
-  const calculatedReminders = rawReminders.map((reminder) => {
+  const calculatedReminders: Reminder[] = rawReminders.map((reminder) => {
     const timeCalc = calculateTimeRemaining(reminder.expiryDate);
     return {
-      ...reminder,
-      ...timeCalc,
+     ...reminder,
+     ...timeCalc,
     };
   });
 
-  // Sort by urgency (lowest daysLeft first) and take only the top 2 most urgent ones
   const sortedAndSlicedReminders = calculatedReminders
-    .sort((a, b) => a.daysLeft - b.daysLeft)
-    .slice(0, 2);
+   .sort((a, b) => a.daysLeft - b.daysLeft)
+   .slice(0, 2);
 
 
   // ---------- NEW: everything below is additive for the full Reminders page ----------
