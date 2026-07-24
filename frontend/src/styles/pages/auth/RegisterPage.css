@@ -3,38 +3,22 @@
     flex-direction: row;
     width: 100%;
     min-height: 100svh;
-<<<<<<< HEAD
-    background: #f5f7fb;
-=======
     gap:19px;
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
 }
 
 .form-container {
     min-height: 100svh;
-<<<<<<< HEAD
-    width: 50%;
-=======
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
     padding: 40px 48px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-<<<<<<< HEAD
-    background: #f5f7fb;
-=======
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
 }
 
 .form-container > * {
     width: 100%;
-<<<<<<< HEAD
-    max-width: 470px;
-=======
     max-width: 500px;
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
 }
 
 .form-card {
@@ -73,12 +57,7 @@
 .field-row input {
     width: 100%;
     min-height: 46px;
-<<<<<<< HEAD
-    border: 1px solid #d1d5db;
-    border-radius: 12px;
-=======
     border: 2px solid #a9abad;
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
     padding: 0 1rem;
     font-size: 0.95rem;
     color: #111827;
@@ -120,12 +99,7 @@
     width: 100%;
     min-height: 48px;
     border: none;
-<<<<<<< HEAD
-    border-radius: 12px;
-    background: #059669;
-=======
     background: #12823B;
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
     color: white;
     font-weight: 700;
     font-size: 0.95rem;
@@ -152,16 +126,6 @@
 .divider-line {
     flex: 1;
     height: 1px;
-<<<<<<< HEAD
-    background: #d1d5db;
-}
-
-.divider-text {
-    color: #6b7280;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-=======
     background: #030303;
 }
 
@@ -169,7 +133,6 @@
     color: black;
     font-size: 1rem;
     /* letter-spacing: 0.12em; */
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
 }
 
 .social-buttons {
@@ -180,16 +143,9 @@
 .secondary-button {
     width: 100%;
     min-height: 46px;
-<<<<<<< HEAD
-    border: 1px solid #d1d5db;
-    border-radius: 12px;
-    background: white;
-    color: #111827;
-=======
     border: 1px solid #12823B;
     background: white;
     color: #12823B;
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
     font-weight: 600;
     cursor: pointer;
 }
@@ -199,13 +155,8 @@
 }
 
 .login-text {
-<<<<<<< HEAD
-    color: #6b7280;
-    text-align: center;
-=======
     color: #080808;
     text-align:left;
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
     margin-top: 1.5rem;
 }
 
@@ -219,33 +170,6 @@
     text-decoration: underline;
 }
 
-<<<<<<< HEAD
-.left-side {
-    width: 50%;
-    min-height: 100svh;
-    padding: 2rem 0;
-    margin: 0;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    background-color: rgba(22, 163, 74, 1);
-}
-
-.brand-text {
-    font-style: bold;
-    line-height: 100%;
-    letter-spacing: 0;
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: white;
-}
-
-.form-text1 {
-    font-weight: 700;
-    font-style: bold;
-    font-size: 1.5rem;
-=======
 .left-side img {
     width: 100%;
     min-height: 30%;
@@ -256,7 +180,6 @@
 .form-text1 {
     font-weight: 900;
     font-style: bold;
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
     line-height: 100%;
     letter-spacing: 0;
     color: black;
@@ -267,10 +190,6 @@
 .form-text2 {
     font-weight: 600;
     font-style: semibold;
-<<<<<<< HEAD
-    font-size: 1rem;
-=======
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
     line-height: 1.4;
     letter-spacing: 0;
     color: rgba(107, 114, 128, 1);
@@ -333,30 +252,16 @@
         flex-direction: column;
     }
 
-<<<<<<< HEAD
-    .left-side {
-        width: 100%;
-        min-height: auto;
-        padding: 1.25rem 1rem 1rem;
-    }
-
-    .form-container {
-        width: 100%;
-=======
     
     .form-container {
        max-width: 100%;
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
         min-height: auto;
         padding: 1.25rem 1rem 2rem;
     }
 
     .form-container > * {
         max-width: 100%;
-<<<<<<< HEAD
-=======
      
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
     }
 
     .form-card {
@@ -370,19 +275,12 @@
     }
 
     .form-container {
-<<<<<<< HEAD
-=======
         min-width: 100%;
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
         padding: 1rem 1rem calc(1.5rem + env(safe-area-inset-bottom));
     }
 
     .left-side {
-<<<<<<< HEAD
-        padding: 1rem 1rem 0.75rem;
-=======
       display:none;
->>>>>>> 725ca66c2811a19a94aadf77633a2127736b3666
     }
 
     .brand-text {

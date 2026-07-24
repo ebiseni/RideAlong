@@ -9,6 +9,8 @@ import NotificationBell from "../../components/shared/NotificationBell";
 import EmptyState from "../../components/shared/EmptyState";
 import "../../styles/pages/dashboard/DashboardPage.css";
 import { useReminders } from "../../hooks/useReminders";
+import { useState } from "react"; // ADDED
+import AddVehicleModal from "../../components/vehicles/AddVehicleModal";
 
 // Importing icons
 import TotalIcon from "../../assets/icons/icon-total-vehicles 24x24.svg";
@@ -22,8 +24,8 @@ import emptyVehicleIllustration from "../../assets/icons/empty-vehicle.svg";
 import emptyReminderIllustration from "../../assets/icons/bell-outline.svg";
 
 // Prefixing with underscore or keeping imported safely if needed later
-import _identityCard from "../../assets/icons/identity-card.svg";
-import _insuranceCard from "../../assets/icons/shield-energy.svg";
+// import _identityCard from "../../assets/icons/identity-card.svg";
+// import _insuranceCard from "../../assets/icons/shield-energy.svg";
 
 interface DashboardProps {
   currentUser?: {
@@ -35,11 +37,18 @@ interface DashboardProps {
 
 export default function DashboardPage({ currentUser }: DashboardProps) {
   const navigate = useNavigate();
+  const [showVehicleModal, setShowVehicleModal] = useState(false); // ADDED
+
   const { validCount, expiringCount, expiredCount, expiringSubtext } =
     useDocuments();
   const { totalVehicles, vehicles } = useVehicles();
   const { reminders } = useReminders();
-
+   
+  const handleSaveVehicle = (data: unknown) => { // ADDED
+    console.log("Saving vehicle:", data); 
+    setShowVehicleModal(false);
+  }
+  
   // Uses passed user prop, or falls back to local storage/auth data, or defaults to "User"
   const user = {
     name: currentUser?.name || localStorage.getItem("userName") || "User",
@@ -190,28 +199,30 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
           </div>
 
           {vehicles.length === 0 ? (
-            <EmptyState
-              icon={
-                <img
-                  src={emptyVehicleIllustration}
-                  alt="No vehicles"
-                  style={{
-                    width: "150px",
-                    height: "90px",
-                    objectFit: "contain",
-                    marginBottom: "8px",
-                  }}
-                />
-              }
-              title="You haven't added any vehicle yet."
-              description="Add your vehicles to start organizing and managing their documents."
-              actionText="Add Your Vehicle"
-              actionLink="/vehicles/add"
-            />
+            <div onClick={() => setShowVehicleModal(true)} style={{cursor: 'pointer'}}> {/* CHANGED: wrapped to open modal */}
+              <EmptyState
+                icon={
+                  <img
+                    src={emptyVehicleIllustration}
+                    alt="No vehicles"
+                    style={{
+                      width: "150px",
+                      height: "90px",
+                      objectFit: "contain",
+                      marginBottom: "8px",
+                    }}
+                  />
+                }
+                title="You haven't added any vehicle yet."
+                description="Add your vehicles to start organizing and managing their documents."
+                actionText="Add Your Vehicle"
+                actionLink="#" // CHANGED: was /vehicles/add
+              />
+            </div>
           ) : (
             vehicles
               .slice(0, 2)
-              .map((v: any) => <VehicleCard key={v.id} {...v} />)
+              .map((v: any) => <VehicleCard key={v.id} {...v} />) // CHANGED: was unknown
           )}
         </section>
 
@@ -222,10 +233,10 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
               Quick Actions
             </h2>
             <div className="card-box">
-              <Link to="/vehicles/add" className="action-button-outline">
+              <button onClick={() => setShowVehicleModal(true)} className="action-button-outline"> {/* CHANGED: was Link */}
                 <img src={AddVehicleIcon} alt="" className="action-icon" />
                 Add Vehicle
-              </Link>
+              </button>
               <Link to="/documents" className="action-button-outline">
                 <img src={UploadDocIcon} alt="" className="action-icon" />
                 Upload Document
@@ -287,6 +298,13 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
       ) : (
         <ReminderBanner reminders={reminders} />
       )}
+
+      {/* ADDED: Modal at bottom */}
+      <AddVehicleModal 
+        isOpen={showVehicleModal}
+        onClose={() => setShowVehicleModal(false)}
+        onSave={handleSaveVehicle}
+      />
     </div>
   );
 }

@@ -1,12 +1,8 @@
-import { BrowserRouter } from "react-router-dom";
+// src/App.tsx - FIXED
 import AppRoutes from "./app/routes";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
-  );
+  return <AppRoutes />;
 }
 
 export default App;
