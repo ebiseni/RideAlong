@@ -3,13 +3,33 @@ import { useState } from "react";
 interface DocumentItem {
   id: number;
   name: string;
-  status: "valid" | "expiring" | "expired";
   expiryDate: string;
 }
 
 export const useDocuments = () => {
-  // Empty mock data array as requested
-  const [documents] = useState<DocumentItem[]>([]);
+  // Empty array ready for real backend data
+  const [documentsData] = useState<DocumentItem[]>([]);
+
+  const today = new Date();
+
+  // Automatically calculate status based on expiryDate vs today
+  const documents = documentsData.map((doc) => {
+    const expDate = new Date(doc.expiryDate);
+    const diffTime = expDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    let status: "valid" | "expiring" | "expired" = "valid";
+
+    if (diffDays < 0) {
+      status = "expired";
+    } else if (diffDays <= 30) {
+      status = "expiring";
+    } else {
+      status = "valid";
+    }
+
+    return { ...doc, status, diffDays };
+  });
 
   const validCount = documents.filter((d) => d.status === "valid").length;
   const expiredCount = documents.filter((d) => d.status === "expired").length;
@@ -17,19 +37,10 @@ export const useDocuments = () => {
   const expiringDocs = documents.filter((d) => d.status === "expiring");
   const expiringCount = expiringDocs.length;
 
-  // dynamically calculate the shortest time until expiry for expiring documents
-
   const getExpiringSubtext = () => {
     if (expiringDocs.length === 0) return "";
-    //   If there are expiring documents, calculate the minimum days until expiry
-    const today = new Date();
-    const daysArr = expiringDocs.map((doc) => {
-      const expDate = new Date(doc.expiryDate);
-      const diffTime = expDate.getTime() - today.getTime();
-      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    });
 
-    const minDays = Math.min(...daysArr);
+    const minDays = Math.min(...expiringDocs.map((d) => d.diffDays));
 
     if (minDays <= 0) return "Expiring today";
     return `Within ${minDays} ${minDays === 1 ? "day" : "days"}`;

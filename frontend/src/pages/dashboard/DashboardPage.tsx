@@ -1,5 +1,5 @@
 // src/pages/dashboard/DashboardPage.tsx
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDocuments } from "../../hooks/useDocuments";
 import { useVehicles } from "../../hooks/useVehicles";
 import { SummaryCard } from "../../components/dashboards/SummaryCard";
@@ -20,26 +20,33 @@ import UploadDocIcon from "../../assets/icons/upload-document.svg";
 import CreateReminderIcon from "../../assets/icons/create-reminder.svg";
 import emptyVehicleIllustration from "../../assets/icons/empty-vehicle.svg";
 import emptyReminderIllustration from "../../assets/icons/bell-outline.svg";
+import UserAvatarButton from "../../hooks/UserAvatarButton";
+
 
 // Prefixing with underscore or keeping imported safely if needed later
-import _identityCard from "../../assets/icons/identity-card.svg";
-import _insuranceCard from "../../assets/icons/shield-energy.svg";
+// import _identityCard from "../../assets/icons/identity-card.svg";
+// import _insuranceCard from "../../assets/icons/shield-energy.svg";
 
-export default function DashboardPage() {
+interface DashboardProps {
+  currentUser?: {
+    name: string;
+    email?: string;
+    avatarUrl?: string | null;
+  };
+}
+
+export default function DashboardPage({ currentUser }: DashboardProps) {
+  const navigate = useNavigate();
   const { validCount, expiringCount, expiredCount, expiringSubtext } =
     useDocuments();
   const { totalVehicles, vehicles } = useVehicles();
   const { reminders } = useReminders();
 
-  // TODO: Backend team will replace this with real auth/user context
+  // Uses passed user prop, or falls back to local storage/auth data, or defaults to "User"
   const user = {
-    name: "User", // Default fallback if no user data yet
-    email: "",
-    avatarUrl: null,
-  };
-
-  const getInitials = (name: string) => {
-    return name ? name.charAt(0).toUpperCase() : "U";
+    name: currentUser?.name || localStorage.getItem("userName") || "User",
+    email: currentUser?.email || "",
+    avatarUrl: currentUser?.avatarUrl || null,
   };
 
   return (
@@ -71,39 +78,13 @@ export default function DashboardPage() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <NotificationBell />
-
-          {user.avatarUrl ? (
-            <img
-              src={user.avatarUrl}
-              alt={user.name}
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
-                objectFit: "cover",
-                border: "1px solid #cbd5e0",
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
-                backgroundColor: "#e6fffa",
-                color: "#319795",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 600,
-                fontSize: "16px",
-                border: "1px solid #b2f5ea",
-              }}
-            >
-              {getInitials(user.name)}
-            </div>
-          )}
+          <NotificationBell
+            hasUnread={
+              reminders.length > 0 || expiredCount > 0 || expiringCount > 0
+            }
+            onClick={() => navigate("/reminders")}
+          />
+          <UserAvatarButton />
         </div>
       </div>
 
@@ -186,10 +167,12 @@ export default function DashboardPage() {
               title="You haven't added any vehicle yet."
               description="Add your vehicles to start organizing and managing their documents."
               actionText="Add Your Vehicle"
-              actionLink="/vehicles"
+              actionLink="/vehicles/add"
             />
           ) : (
-            vehicles.map((v: any) => <VehicleCard key={v.id} {...v} />)
+            vehicles
+              .slice(0, 2)
+              .map((v: any) => <VehicleCard key={v.id} {...v} />)
           )}
         </section>
 
@@ -200,7 +183,7 @@ export default function DashboardPage() {
               Quick Actions
             </h2>
             <div className="card-box">
-              <Link to="/vehicles" className="action-button-outline">
+              <Link to="/vehicles/add" className="action-button-outline">
                 <img src={AddVehicleIcon} alt="" className="action-icon" />
                 Add Vehicle
               </Link>

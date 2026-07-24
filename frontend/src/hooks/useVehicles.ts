@@ -1,30 +1,89 @@
-// export const useVehicles = () => {
-//   const vehicles = [
-//     {
-//       id: 1,
-//       name: "Toyota Camry",
-//       plate: "ABC-123",
-//       documents: "4",
-//       status: "Fully compliant",
-//       statusClass: "green",
-//     },
-//     {
-//       id: 2,
-//       name: "Honda Accord",
-//       plate: "XYZ-789",
-//       documents: "3",
-//       status: "Fully compliant",
-//       statusClass: "yellow",
-//       subText: "1 expiring in 12 days",
-// },
-//   ];
-
-//   return { totalVehicles: vehicles.length, vehicles };
-// };
-
 // src/hooks/useVehicles.ts
-export const useVehicles = () => {
-  const vehicles: any[] = [];
 
-  return { totalVehicles: vehicles.length, vehicles };
+// Helper function to calculate compliance status dynamically based on an expiry date
+const calculateCompliance = (expiryDateString?: string) => {
+  if (!expiryDateString) {
+    return {
+      status: "Fully compliant",
+      statusClass: "green",
+      subText: undefined,
+      diffDays: Infinity,
+    };
+  }
+
+  const today = new Date("2026-07-22"); // Current date baseline
+  const expiry = new Date(expiryDateString);
+  const diffTime = expiry.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  // 1. Expired (Past date)
+  if (diffDays < 0) {
+    return {
+      status: "Expired",
+      statusClass: "red",
+      subText: `Expired ${Math.abs(diffDays)} days ago`,
+      diffDays, // keeping diffDays for sorting
+    };
+  }
+
+  // 2. Expiring Soon (Within 30 days)
+  if (diffDays <= 30) {
+    return {
+      status: "Fully compliant",
+      statusClass: "yellow",
+      subText: `1 expiring in ${diffDays} day${diffDays === 1 ? "" : "s"}`,
+      diffDays,
+    };
+  }
+
+  // 3. Fully Compliant (More than 30 days or over a year)
+  return {
+    status: "Fully compliant",
+    statusClass: "green",
+    subText: undefined,
+    diffDays,
+  };
+};
+
+export const useVehicles = () => {
+  // Empty array ready for backend data integration
+  const rawVehicles: any[] = [
+    {
+      id: "v1",
+      name: "Toyota Corolla",
+      plateNumber: "ABC-123-XY",
+      expiryDate: "2026-07-20", // Already expired based on your baseline date
+    },
+    {
+      id: "v2",
+      name: "Honda Civic",
+      plateNumber: "XYZ-789-AB",
+      expiryDate: "2026-08-10", // Expiring soon (within 30 days)
+    },
+    {
+      id: "v3",
+      name: "Ford Explorer",
+      plateNumber: "LND-456-ZZ",
+      expiryDate: "2027-01-15", // Fully compliant
+    },
+  ];
+
+  // Map through raw data and dynamically compute status, statusClass, subText, and diffDays
+  const mappedVehicles = rawVehicles.map((vehicle) => {
+    const compliance = calculateCompliance(vehicle.expiryDate);
+    return {
+      ...vehicle,
+      ...compliance,
+    };
+  });
+
+  // Sort by urgency (most negative/expired first, then smallest positive days left) and take top 2
+  const sortedAndSlicedVehicles = mappedVehicles
+    .sort((a, b) => a.diffDays - b.diffDays)
+    .slice(0, 2);
+
+  return {
+    totalVehicles: mappedVehicles.length, // keeps the total count accurate if needed elsewhere
+    vehicles: sortedAndSlicedVehicles,
+  };
 };

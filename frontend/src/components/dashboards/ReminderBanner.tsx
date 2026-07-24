@@ -13,7 +13,16 @@ export const ReminderBanner = ({ reminders }: { reminders: any[] }) => {
 
       <div className="reminder-grid">
         {reminders.map((reminder) => (
-          <div key={reminder.id} className="reminder-card">
+          <Link
+            to={`/reminders`}
+            key={reminder.id}
+            className="reminder-card"
+            style={{
+              textDecoration: "none",
+              color: "inherit",
+              display: "flex",
+            }}
+          >
             {/* Left side: Icon + Details */}
             <div className="reminder-left">
               <div className="reminder-icon-container">
@@ -36,7 +45,7 @@ export const ReminderBanner = ({ reminders }: { reminders: any[] }) => {
               </div>
               <span className="reminder-arrow">&gt;</span>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

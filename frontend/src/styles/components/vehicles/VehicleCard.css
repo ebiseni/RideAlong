@@ -83,7 +83,6 @@
   border: 1px solid;
 }
 
-/* Green Status matching Figma */
 .compliance-badge.green {
   background-color: #f0fff4;
   color: #276749;
@@ -94,7 +93,6 @@
   color: #38a169;
 }
 
-/* Yellow Status matching Figma */
 .compliance-badge.yellow {
   background-color: #fffaf0;
   color: #b7791f;
@@ -118,4 +116,8 @@
   font-size: 16px;
   color: #a0aec0;
   font-weight: 400;
+}
+.compliance-badge.red {
+  background-color: #fff5f5;
+  color: #e53e3e;
 }
