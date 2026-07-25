@@ -1,0 +1,164 @@
+.vehicle-detail-page {
+  padding: 24px;
+  background: #F7FAFC;
+  min-height: 100vh;
+}
+
+.back-link {
+  background: none;
+  border: none;
+  color: #3182CE;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.detail-header-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.detail-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.detail-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2D3748;
+  margin: 0;
+}
+
+.detail-plate {
+  font-size: 16px;
+  color: #718096;
+  margin: 4px 0 0 0;
+}
+
+.detail-subtext {
+  font-size: 14px;
+  color: #718096;
+  margin-top: 8px;
+}
+
+/* Status Pills - same as dashboard */
+.status-pill {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.status-green {
+  background: #C6F6D5;
+  color: #22543D;
+}
+.status-yellow {
+  background: #FEFCBF;
+  color: #744210;
+}
+.status-red {
+  background: #FED7D7;
+  color: #742A2A;
+}
+
+.status-text-green { color: #38A169; }
+.status-text-yellow { color: #D69E2E; }
+.status-text-red { color: #E53E3E; }
+
+/* Stats */
+.detail-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #718096;
+  margin: 0 0 8px 0;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2D3748;
+  margin: 0;
+}
+
+/* Documents */
+.detail-documents-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.documents-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.documents-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2D3748;
+  margin: 0;
+}
+
+.btn-primary {
+  background: #3182CE;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+.btn-primary:hover {
+  background: #2C5282;
+}
+
+.btn-secondary {
+  background: #E2E8F0;
+  color: #2D3748;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.documents-empty {
+  text-align: center;
+  padding: 40px 20px;
+  border: 2px dashed #E2E8F0;
+  border-radius: 8px;
+  color: #718096;
+}
+
+.documents-subtext {
+  font-size: 14px;
+  margin-top: 4px;
+}
