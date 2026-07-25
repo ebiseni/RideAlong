@@ -9,7 +9,7 @@ import NotificationBell from "../../components/shared/NotificationBell";
 import EmptyState from "../../components/shared/EmptyState";
 import "../../styles/pages/dashboard/DashboardPage.css";
 import { useReminders } from "../../hooks/useReminders";
-import { useState } from "react"; // ADDED
+import { useState } from "react";
 import AddVehicleModal from "../../components/vehicles/AddVehicleModal";
 
 // Importing icons
@@ -23,10 +23,6 @@ import CreateReminderIcon from "../../assets/icons/create-reminder.svg";
 import emptyVehicleIllustration from "../../assets/icons/empty-vehicle.svg";
 import emptyReminderIllustration from "../../assets/icons/bell-outline.svg";
 
-// Prefixing with underscore or keeping imported safely if needed later
-// import _identityCard from "../../assets/icons/identity-card.svg";
-// import _insuranceCard from "../../assets/icons/shield-energy.svg";
-
 interface DashboardProps {
   currentUser?: {
     name: string;
@@ -35,21 +31,31 @@ interface DashboardProps {
   };
 }
 
+// ADDED: Type for vehicle to replace 'any'
+type Vehicle = {
+  id: string;
+  name: string;
+  plate: string;
+  documents: number;
+  status: string;
+  statusClass: "green" | "yellow" | "red";
+  subText?: string;
+}
+
 export default function DashboardPage({ currentUser }: DashboardProps) {
   const navigate = useNavigate();
-  const [showVehicleModal, setShowVehicleModal] = useState(false); // ADDED
+  const [showVehicleModal, setShowVehicleModal] = useState(false);
 
   const { validCount, expiringCount, expiredCount, expiringSubtext } =
     useDocuments();
   const { totalVehicles, vehicles } = useVehicles();
   const { reminders } = useReminders();
    
-  const handleSaveVehicle = (data: unknown) => { // ADDED
+  const handleSaveVehicle = (data: unknown) => {
     console.log("Saving vehicle:", data); 
     setShowVehicleModal(false);
   }
   
-  // Uses passed user prop, or falls back to local storage/auth data, or defaults to "User"
   const user = {
     name: currentUser?.name || localStorage.getItem("userName") || "User",
     email: currentUser?.email || "",
@@ -62,7 +68,6 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
 
   return (
     <div className="dashboard-container">
-      {/* Top Header Section */}
       <div
         className="dashboard-header-flex"
         style={{
@@ -163,7 +168,6 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
         />
       </div>
 
-      {/* Main Grid: Dynamically adjusts style based on whether vehicles exist */}
       <div
         className="main-grid"
         style={{
@@ -172,7 +176,6 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
           gap: "24px",
         }}
       >
-        {/* My Vehicles Section */}
         <section className="dashboard-card-wrapper" style={{ width: "100%" }}>
           <div
             className="section-header-flex"
@@ -199,7 +202,7 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
           </div>
 
           {vehicles.length === 0 ? (
-            <div onClick={() => setShowVehicleModal(true)} style={{cursor: 'pointer'}}> {/* CHANGED: wrapped to open modal */}
+            <div onClick={() => setShowVehicleModal(true)} style={{cursor: 'pointer'}}>
               <EmptyState
                 icon={
                   <img
@@ -216,24 +219,23 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
                 title="You haven't added any vehicle yet."
                 description="Add your vehicles to start organizing and managing their documents."
                 actionText="Add Your Vehicle"
-                actionLink="#" // CHANGED: was /vehicles/add
+                actionLink="#"
               />
             </div>
           ) : (
             vehicles
               .slice(0, 2)
-              .map((v: any) => <VehicleCard key={v.id} {...v} />) // CHANGED: was unknown
+              .map((v: Vehicle) => <VehicleCard key={v.id} {...v} />) // FIXED: was (v: any)
           )}
         </section>
 
-        {/* Quick Actions Section - Rendered ONLY when vehicles exist */}
         {vehicles.length > 0 && (
           <section className="dashboard-card-wrapper">
             <h2 style={{ marginTop: 0, marginBottom: "15px" }}>
               Quick Actions
             </h2>
             <div className="card-box">
-              <button onClick={() => setShowVehicleModal(true)} className="action-button-outline"> {/* CHANGED: was Link */}
+              <button onClick={() => setShowVehicleModal(true)} className="action-button-outline">
                 <img src={AddVehicleIcon} alt="" className="action-icon" />
                 Add Vehicle
               </button>
@@ -250,7 +252,6 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
         )}
       </div>
 
-      {/* Reminder Section */}
       {reminders.length === 0 ? (
         <div className="dashboard-card-wrapper" style={{ marginTop: "24px" }}>
           <div
@@ -299,7 +300,6 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
         <ReminderBanner reminders={reminders} />
       )}
 
-      {/* ADDED: Modal at bottom */}
       <AddVehicleModal 
         isOpen={showVehicleModal}
         onClose={() => setShowVehicleModal(false)}

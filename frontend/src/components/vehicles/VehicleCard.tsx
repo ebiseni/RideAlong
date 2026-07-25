@@ -2,6 +2,16 @@
 import { Link } from "react-router-dom";
 import "../../styles/components/vehicles/VehicleCard.css";
 
+type VehicleCardProps = {
+  id: string;
+  name: string;
+  plate: string;
+  documents: number;
+  status: string;
+  statusClass: "green" | "yellow" | "red"; // only allow these 3
+  subText?: string; // optional
+};
+
 export const VehicleCard = ({
   id,
   name,
@@ -10,7 +20,7 @@ export const VehicleCard = ({
   status,
   statusClass,
   subText,
-}: any) => (
+}: VehicleCardProps) => (
   <Link
     to={`/vehicles/${id}`}
     className="vehicle-card-link-wrapper"

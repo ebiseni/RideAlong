@@ -35,7 +35,7 @@ export default function AppRoutes() {
         <Route path="/documents/:documentId" element={<DocumentDetailPage />} />
         <Route path="/reminders" element={<RemindersPage />} />
         <Route path="/vehicles" element={<VehicleListPage />} />
-        <Route path="/vehicles/:id" element={<VehicleDetailPage />} />
+        <Route path="/vehicles/:id/documents" element={<VehicleDetailPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
