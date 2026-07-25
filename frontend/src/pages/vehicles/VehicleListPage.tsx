@@ -9,10 +9,10 @@ import "../../styles/pages/vehicles/VehicleListPage.css";
 
 export default function VehiclesPage() {
   const navigate = useNavigate();
-  const { vehicles, totalVehicles, addVehicle } = useVehicles();
+  const { vehicles, totalVehicles, addVehicle, deleteVehicle } = useVehicles(); // <-- ADDED deleteVehicle
   const [showVehicleModal, setShowVehicleModal] = useState(false);
   const [search, setSearch] = useState("");
-  const [view, setView] = useState<"grid" | "list">("grid"); // NEW: toggle state
+  const [view, setView] = useState<"grid" | "list">("grid"); 
 
   const handleSaveVehicle = (data: NewVehicleInput) => {
     addVehicle(data);
@@ -39,7 +39,7 @@ export default function VehiclesPage() {
         </div>
 
         <div className="vehicles-header-actions">
-          {/* NEW: View Toggle */}
+          {/* View Toggle */}
           <div className="view-toggle">
             <button 
               className={view === 'grid' ? 'active' : ''} 
@@ -74,7 +74,7 @@ export default function VehiclesPage() {
       />
 
       {/* Vehicles Grid/List */}
-      <div className={view === 'grid' ? 'vehicles-grid' : 'vehicles-list'}> {/* CHANGED */}
+      <div className={view === 'grid' ? 'vehicles-grid' : 'vehicles-list'}> 
         {filteredVehicles.length === 0? (
           <EmptyState
             icon={<img src={emptyVehicleIllustration} alt="No vehicles" style={{width: 150}}/>}
@@ -88,7 +88,7 @@ export default function VehiclesPage() {
           filteredVehicles.map((v: Vehicle) => (
             // Click card to go to documents
             <div key={v.id} onClick={() => navigate(`/vehicles/${v.id}/documents`)} style={{cursor: 'pointer'}}>
-              <VehicleCard {...v} />
+              <VehicleCard {...v} onDelete={deleteVehicle} /> {/* <-- ADDED onDelete */}
             </div>
           ))
         )}

@@ -30,7 +30,7 @@ export type NewVehicleInput = {
 
 const STORAGE_KEY = "ridealong_vehicles";
 
-const calculateCompliance = (expiryDateString?: string, documentCount: number = 0) => { // <-- added documentCount
+const calculateCompliance = (expiryDateString?: string, documentCount: number = 0) => {
   // 1. No documents yet
   if (!expiryDateString || documentCount === 0) {
     return {
@@ -100,9 +100,21 @@ export const useVehicles = () => {
     setRawVehicles(prev => [newVehicle, ...prev]);
   };
 
+  // NEW: Delete a vehicle
+  const deleteVehicle = (id: string) => {
+    setRawVehicles(prev => prev.filter(v => v.id !== id));
+  };
+
+  // NEW: Update a vehicle - for when you add documents later
+  const updateVehicle = (id: string, updates: Partial<RawVehicle>) => {
+    setRawVehicles(prev => 
+      prev.map(v => v.id === id ? { ...v, ...updates } : v)
+    );
+  };
+
   // Map through raw data and dynamically compute status
   const mappedVehicles: Vehicle[] = rawVehicles.map((vehicle) => {
-    const compliance = calculateCompliance(vehicle.expiryDate, vehicle.documents); // <-- pass documents
+    const compliance = calculateCompliance(vehicle.expiryDate, vehicle.documents);
     return {
       ...vehicle,
       ...compliance,
@@ -119,5 +131,7 @@ export const useVehicles = () => {
     vehicles: mappedVehicles,
     dashboardVehicles: sortedAndSlicedVehicles,
     addVehicle,
+    deleteVehicle, // <-- NEW
+    updateVehicle, // <-- NEW, useful for documents
   };
 };
