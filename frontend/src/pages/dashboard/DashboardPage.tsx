@@ -51,7 +51,7 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
   const { validCount, expiringCount, expiredCount, expiringSubtext } =
     useDocuments();
   
-  // WIRED: Pulled deleteVehicle from your partner's useVehicles hook
+  
   const { totalVehicles, vehicles, deleteVehicle } = useVehicles();
   const { reminders } = useReminders();
     
