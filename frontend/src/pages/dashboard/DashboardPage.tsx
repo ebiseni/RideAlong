@@ -33,7 +33,7 @@ interface DashboardProps {
   };
 }
 
-// ADDED: Type for vehicle to replace 'any'
+// Type for vehicle to replace 'any'
 type Vehicle = {
   id: string;
   name: string;
@@ -52,7 +52,7 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
     useDocuments();
   const { totalVehicles, vehicles } = useVehicles();
   const { reminders } = useReminders();
-   
+    
   const handleSaveVehicle = (data: unknown) => {
     console.log("Saving vehicle:", data); 
     setShowVehicleModal(false);
@@ -186,7 +186,13 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
           ) : (
             vehicles
               .slice(0, 2)
-              .map((v: Vehicle) => <VehicleCard key={v.id} {...v} />) // FIXED: was (v: any)
+              .map((v: Vehicle) => (
+                <VehicleCard 
+                  key={v.id} 
+                  {...v} 
+                  onDelete={(id) => console.log("Delete vehicle", id)} 
+                />
+              ))
           )}
         </section>
 
