@@ -50,7 +50,9 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
 
   const { validCount, expiringCount, expiredCount, expiringSubtext } =
     useDocuments();
-  const { totalVehicles, vehicles } = useVehicles();
+  
+  // WIRED: Pulled deleteVehicle from your partner's useVehicles hook
+  const { totalVehicles, vehicles, deleteVehicle } = useVehicles();
   const { reminders } = useReminders();
     
   const handleSaveVehicle = (data: unknown) => {
@@ -190,7 +192,7 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
                 <VehicleCard 
                   key={v.id} 
                   {...v} 
-                  onDelete={(id) => console.log("Delete vehicle", id)} 
+                  onDelete={(id) => deleteVehicle(id)} 
                 />
               ))
           )}
