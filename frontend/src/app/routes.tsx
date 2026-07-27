@@ -9,13 +9,15 @@ import RegisterPage from "../pages/auth/RegisterPage";
 import Onboarding from "../pages/onboarding/Onboarding";
 
 import DashboardPage from "../pages/dashboard/DashboardPage";
-import DocumentUploadPage from "../pages/documents/DocumentUploadPage";
+// import DocumentUploadPage from "../pages/documents/DocumentUploadPage";
 import DocumentDetailPage from "../pages/documents/DocumentDetailPage";
 import RemindersPage from "../pages/reminders/RemindersPage";
 import VehicleListPage from "../pages/vehicles/VehicleListPage";
 import VehicleDetailPage from "../pages/vehicles/VehicleDetailPage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import SettingsPage from "../pages/settings/SettingsPage";
+import DocumentsListPage from "../pages/documents/DocumentsListPage";
+import AddDocumentsPage from "../pages/documents/AddDocumentsPage";
 
 export default function AppRoutes() {
   return (
@@ -31,7 +33,9 @@ export default function AppRoutes() {
       {/* 2. Protected routes with AppShell - NO PublicLayout here */}
       <Route element={<AppShell />}>
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/documents" element={<DocumentUploadPage />} />
+         <Route path="/documents" element={<DocumentsListPage />} />
+        <Route path="/documents/add" element={<AddDocumentsPage />} />
+        {/* <Route path="/documents/upload" element={<DocumentUploadPage />} /> */}
         <Route path="/documents/:documentId" element={<DocumentDetailPage />} />
         <Route path="/reminders" element={<RemindersPage />} />
         <Route path="/vehicles" element={<VehicleListPage />} />
