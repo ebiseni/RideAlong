@@ -1,0 +1,169 @@
+.create-reminder-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.371);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.create-reminder-modal {
+  background: hsl(204, 63%, 98%);
+  padding: 26px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.create-reminder-title {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a202c;
+  text-align: center;
+}
+
+.create-reminder-subtitle {
+  margin: 0 0 24px;
+  font-size: 13px;
+  color: #718096;
+  text-align: center;
+}
+
+.create-reminder-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.create-reminder-field {
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.create-reminder-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 6px;
+}
+
+.create-reminder-hint {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: #a0aec0;
+}
+
+.create-reminder-field select {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #1a202c;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.create-reminder-radio,
+.create-reminder-checkbox {
+  position: relative;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a202c;
+  cursor: pointer;
+}
+
+.create-reminder-radio p,
+.create-reminder-checkbox p {
+  display: inline-flex;
+  margin-left: 25px;
+}
+
+.create-reminder-radio input[type="radio"],
+.create-reminder-checkbox input[type="checkbox"] {
+  position: absolute;
+  display: inline-block;
+  accent-color: #0a5c36;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.create-reminder-radio-group {
+  display: flex;
+  gap: 24px;
+}
+
+.create-reminder-pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.create-reminder-pill {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  background: transparent;
+  color: #1a202c;
+  cursor: pointer;
+  flex: 1;
+  text-align: center;
+}
+
+.create-reminder-pill.active {
+  border-color: #0a5c36;
+  background: #e6fff2;
+  color: #0a5c36;
+  font-weight: 600;
+}
+
+.create-reminder-checkbox-group {
+  display: flex;
+  gap: 24px;
+}
+
+.create-reminder-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.create-reminder-cancel-btn {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 20px;
+  background: #ffffff;
+  color: #1a202c;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.create-reminder-submit-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  background: #0a5c36;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .create-reminder-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}
