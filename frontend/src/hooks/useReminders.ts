@@ -1,23 +1,35 @@
 // src/hooks/useReminders.ts
 import { useMemo, useState } from "react";
+import { useVehicles } from "./useVehicles";
+import { useDocuments } from "./useDocuments";
 import _identityCard from "../assets/icons/identity-card.svg";
 import _insuranceCard from "../assets/icons/shield-energy.svg";
 
-// 1. Define the type here so both files can use it
 export type Reminder = {
   id: string;
   title: string;
   vehicle: string;
-  expiryDate: string; // "2026-08-15" format
+  expiryDate: string;
   icon: string;
   daysLeft: number;
   expiryText: string;
 };
 
-//type RawReminder = Omit<Reminder, "daysLeft" | "expiryText">;
+export type ReminderTab = "upcoming" | "overdue" | "all";
+
+// TEMP: no icon/type field exists on DocumentItem yet, so we infer which
+// icon to show from the document name. Replace with a real `type` field
+// on DocumentItem once the backend document schema is confirmed.
+const getIconForDocument = (documentName: string) => {
+  const name = documentName.toLowerCase();
+  if (name.includes("license") || name.includes("registration"))
+    return _identityCard;
+  if (name.includes("insurance")) return _insuranceCard;
+  return _identityCard; // fallback
+};
 
 const calculateTimeRemaining = (expiryDateString: string) => {
-  const today = new Date("2026-07-22"); // Current date baseline
+  const today = new Date("2026-07-22");
   const expiry = new Date(expiryDateString);
   const diffTime = expiry.getTime() - today.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -28,14 +40,9 @@ const calculateTimeRemaining = (expiryDateString: string) => {
       expiryText: `Expired ${Math.abs(diffDays)} days ago`,
     };
   }
-
   if (diffDays === 0) {
-    return {
-      daysLeft: 0,
-      expiryText: "Expires today",
-    };
+    return { daysLeft: 0, expiryText: "Expires today" };
   }
-
   return {
     daysLeft: diffDays,
     expiryText: `Expires on ${expiry.toLocaleDateString("en-GB", {
@@ -46,9 +53,6 @@ const calculateTimeRemaining = (expiryDateString: string) => {
   };
 };
 
-// NEW: mirrors calculateTimeRemaining but also returns an "upcoming"/"overdue" status label,
-// which the full Reminders page needs for tab-filtering and status badges. Kept separate
-// from calculateTimeRemaining so the original Dashboard-facing logic above is untouched.
 const calculateStatus = (expiryDateString: string) => {
   const today = new Date("2026-07-22");
   const expiry = new Date(expiryDateString);
@@ -61,7 +65,6 @@ const calculateStatus = (expiryDateString: string) => {
       label: `${Math.abs(diffDays)} days ago`,
     };
   }
-
   return {
     status: "upcoming" as const,
     label: `in ${diffDays} day${diffDays === 1 ? "" : "s"}`,
@@ -74,105 +77,155 @@ const formatDate = (dateString: string) =>
     month: "short",
     year: "numeric",
   });
-// NEW: mock reminders for the full Reminders page table.
-// TEMP: replace with real API data once a reminders endpoint exists.
-// Kept separate from the original `rawReminders` state below so the
-// Dashboard's existing empty-by-default behavior is not affected.
-export type ReminderTab = "upcoming" | "overdue" | "all";
+
+// Raw stored shape: reminders now reference vehicleId/documentId instead of
+// duplicating vehicleName/documentType as hardcoded strings.
+type RawReminder = {
+  id: number;
+  vehicleId: string;
+  documentId: number;
+  reminderType: "before" | "onExpiry";
+  notifyDays: number;
+  notificationMethods: ("inApp" | "email")[];
+};
 
 export const useReminders = () => {
-  // Empty array ready for backend data integration
-  const [rawReminders] = useState<any[]>([
+  const { vehicles } = useVehicles();
+  const { documents } = useDocuments();
+
+  // TEMP: seeded referencing the mock vehicle/document ids from useVehicles
+  // and useDocuments, so the table has data to render out of the box.
+  const [rawReminders, setRawReminders] = useState<RawReminder[]>([
     {
       id: 1,
-      title: "Vehicle Insurance Renewal",
-      documentType: "Driver's License",
-      documentNumber: "BU-485-7299",
-      vehicleName: "Toyota Highlander",
-      plateNumber: "ABE-234-XY",
-      expiryDate: "2026-08-02",
-      reminderDate: "2026-07-18",
-      type: "insurance",
-      icon: _identityCard,
+      vehicleId: "veh-1",
+      documentId: 1,
+      reminderType: "before",
+      notifyDays: 30,
+      notificationMethods: ["inApp"],
     },
     {
       id: 2,
-       title: "Driver's License Expiry",
-      documentType: "Insurance",
-      documentNumber: "INS-2024-44567",
-      vehicleName: "Lexus RX350",
-      plateNumber: "FST-543-LK",
-      expiryDate: "2026-08-15",
-      reminderDate: "2026-08-01",
-      type: "identity",
-      icon: _insuranceCard,
+      vehicleId: "veh-2",
+      documentId: 2,
+      reminderType: "before",
+      notifyDays: 14,
+      notificationMethods: ["inApp"],
     },
     {
       id: 3,
-      title: "Roadworthiness Test",
-      documentType: "Insurance",
-      documentNumber: "INS-2024-44567",
-      vehicleName: "Honda Civic (XYZ-789-AB)",
-      plateNumber: "FGH-123-LK",
-      expiryDate: "2026-08-15", // Expiring further out
-      reminderDate: "2026-08-07",
-      type: "inspection",
-      icon: _identityCard,
-    },
-    {
-      id: 4,
-      title: "Roadworthiness Test",
-      documentType: "Insurance",
-      documentNumber: "INS-2024-44567",
-      vehicleName: "Honda Civic (XYZ-789-AB)",
-      plateNumber: "FGH-123-LK",
-      expiryDate: "2026-08-15", // Expiring further out
-      reminderDate: "2026-08-07",
-      type: "inspection",
-      icon: _identityCard,
-    },
-    {
-      id: 5,
-      title: "Roadworthiness Test",
-      documentType: "Insurance",
-      documentNumber: "INS-2024-44567",
-      vehicleName: "Honda Civic (XYZ-789-AB)",
-      plateNumber: "FGH-123-LK",
-      expiryDate: "2026-08-15", // Expiring further out
-      reminderDate: "2026-08-07",
-      type: "inspection",
-      icon: _identityCard,
+      vehicleId: "veh-3",
+      documentId: 3,
+      reminderType: "before",
+      notifyDays: 7,
+      notificationMethods: ["inApp", "email"],
     },
   ]);
 
-  const calculatedReminders: Reminder[] = rawReminders.map((reminder) => {
+  const deleteReminder = (id: number) => {
+    setRawReminders((prev) => prev.filter((r) => r.id !== id));
+  };
+
+  // NEW: called by CreateReminderModal's onCreate. Resolves the selected
+  // document's expiryDate to compute reminderDate, then stores the reminder
+  // by reference (vehicleId/documentId) rather than duplicating display strings.
+  const addReminder = (data: {
+    vehicleId: string;
+    documentId: number;
+    reminderType: "before" | "onExpiry";
+    notifyDays: number;
+    notificationMethods: ("inApp" | "email")[];
+  }) => {
+    const newId = Math.max(0, ...rawReminders.map((r) => r.id)) + 1;
+    setRawReminders((prev) => [...prev, { id: newId, ...data }]);
+  };
+
+  // add alongside deleteReminder/addReminder
+  const updateReminder = (
+    id: number,
+    data: {
+      vehicleId: string;
+      documentId: number;
+      reminderType: "before" | "onExpiry";
+      notifyDays: number;
+      notificationMethods: ("inApp" | "email")[];
+    },
+  ) => {
+    setRawReminders((prev) =>
+      prev.map((r) => (r.id === id ? { id, ...data } : r)),
+    );
+  };
+
+  // NEW: lets RemindersPage pull the raw (unresolved) fields for a reminder
+  // so the edit modal can be pre-filled with vehicleId/documentId/etc.,
+  // rather than the display-only strings enrichedReminders exposes.
+  const getRawReminderById = (id: number) =>
+    rawReminders.find((r) => r.id === id) ?? null;
+
+  // Resolves a raw reminder (vehicleId/documentId) into full display data
+  // by looking up the current vehicle/document lists. If a referenced
+  // vehicle or document was deleted elsewhere, that reminder is filtered out
+  // rather than crashing on undefined fields.
+  const resolvedReminders = useMemo(() => {
+    return rawReminders
+      .map((r) => {
+        const vehicle = vehicles.find((v) => v.id === r.vehicleId);
+        const document = documents.find((d) => d.id === r.documentId);
+        if (!vehicle || !document) return null;
+
+        const expiryDate = document.expiryDate;
+        const reminderDate =
+          r.reminderType === "onExpiry"
+            ? expiryDate
+            : new Date(
+                new Date(expiryDate).getTime() -
+                  r.notifyDays * 24 * 60 * 60 * 1000,
+              )
+                .toISOString()
+                .split("T")[0];
+
+        return {
+          id: r.id,
+          vehicleName: vehicle.name,
+          plateNumber: vehicle.plate,
+          documentType: document.name,
+          documentNumber: `DOC-${document.id}`, // TEMP: DocumentItem has no real document number field yet
+          expiryDate,
+          reminderDate,
+          icon: getIconForDocument(document.name),
+        };
+      })
+      .filter((r): r is NonNullable<typeof r> => r !== null);
+  }, [rawReminders, vehicles, documents]);
+
+  const calculatedReminders: Reminder[] = resolvedReminders.map((reminder) => {
     const timeCalc = calculateTimeRemaining(reminder.expiryDate);
     return {
-     ...reminder,
-     ...timeCalc,
+      id: String(reminder.id),
+      title: reminder.documentType,
+      vehicle: reminder.vehicleName,
+      expiryDate: reminder.expiryDate,
+      icon: reminder.icon,
+      ...timeCalc,
     };
   });
 
   const sortedAndSlicedReminders = calculatedReminders
-   .sort((a, b) => a.daysLeft - b.daysLeft)
-   .slice(0, 2);
+    .sort((a, b) => a.daysLeft - b.daysLeft)
+    .slice(0, 2);
 
-
-  // ---------- NEW: everything below is additive for the full Reminders page ----------
-
-  const [allRawReminders] = useState(rawReminders);
   const [activeTab, setActiveTab] = useState<ReminderTab>("upcoming");
   const [searchQuery, setSearchQuery] = useState("");
 
   const enrichedReminders = useMemo(
     () =>
-      allRawReminders.map((r) => ({
+      resolvedReminders.map((r) => ({
         ...r,
         ...calculateStatus(r.expiryDate),
         expiryFormatted: formatDate(r.expiryDate),
         reminderFormatted: formatDate(r.reminderDate),
       })),
-    [allRawReminders],
+    [resolvedReminders],
   );
 
   const upcomingReminders = enrichedReminders.filter(
@@ -197,8 +250,6 @@ export const useReminders = () => {
 
   return {
     reminders: sortedAndSlicedReminders,
-
-    // NEW — for the full Reminders page
     allReminders: filteredReminders,
     reminderCounts: {
       upcoming: upcomingReminders.length,
@@ -209,5 +260,9 @@ export const useReminders = () => {
     setActiveTab,
     searchQuery,
     setSearchQuery,
+    deleteReminder,
+    addReminder,
+    updateReminder,
+    getRawReminderById,
   };
 };
