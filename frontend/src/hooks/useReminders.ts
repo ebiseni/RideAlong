@@ -82,7 +82,7 @@ export type ReminderTab = "upcoming" | "overdue" | "all";
 
 export const useReminders = () => {
   // Empty array ready for backend data integration
-  const [rawReminders, setRawReminders] = useState<any[]>([
+  const [rawReminders] = useState<any[]>([
     {
       id: 1,
       title: "Vehicle Insurance Renewal",
@@ -160,10 +160,6 @@ export const useReminders = () => {
 
   // ---------- NEW: everything below is additive for the full Reminders page ----------
 
-  const deleteReminder = (id: string) => {
-  setRawReminders((prev) => prev.filter((r) => r.id !== id));
-};
-
   const [allRawReminders] = useState(rawReminders);
   const [activeTab, setActiveTab] = useState<ReminderTab>("upcoming");
   const [searchQuery, setSearchQuery] = useState("");
@@ -213,6 +209,5 @@ export const useReminders = () => {
     setActiveTab,
     searchQuery,
     setSearchQuery,
-    deleteReminder,
   };
 };

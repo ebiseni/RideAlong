@@ -1,7 +1,8 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useReminders } from "../../hooks/useReminders";
 import NotificationBell from "../../components/shared/NotificationBell";
 import EmptyState from "../../components/shared/EmptyState";
+import CreateReminderModal from "../../components/reminders/CreateReminderModal";
 import "../../styles/pages/reminders/RemindersPage.css";
 
 import calendarIcon from "../../assets/icons/reminder-calendar-icon.svg";
@@ -16,7 +17,7 @@ import emptyStateIllustration from "../../assets/images/reminder-emptysate-illus
 import UserAvatarButton from "../../hooks/UserAvatarButton";
 
 export default function RemindersPage() {
-  const navigate = useNavigate();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const {
     allReminders: reminders,
     reminderCounts: counts,
@@ -24,7 +25,6 @@ export default function RemindersPage() {
     setActiveTab,
     searchQuery,
     setSearchQuery,
-    deleteReminder,
   } = useReminders();
 
   const tabs: { key: "upcoming" | "overdue" | "all"; label: string }[] = [
@@ -50,7 +50,7 @@ export default function RemindersPage() {
 
       <button
         className="create-reminder-btn"
-        onClick={() => navigate("/reminders/new")}
+        onClick={() => setIsCreateModalOpen(true)}
       >
         <img src={plusIcon} alt="" className="create-reminder-icon" />
         Create Reminder
@@ -210,14 +210,6 @@ export default function RemindersPage() {
                       <button
                         className="reminders-action-btn"
                         aria-label="Delete"
-                        onClick={() => {
-                          const confirmed = window.confirm(
-                            `Delete reminder for "${r.documentType}"? This can't be undone.`,
-                          );
-                          if (confirmed) {
-                            deleteReminder(r.id);
-                          }
-                        }}
                       >
                         <img src={deleteIcon} alt="" />
                       </button>
@@ -228,6 +220,19 @@ export default function RemindersPage() {
             </tbody>
           </table>
         </div>
+      )}
+      {isCreateModalOpen && (
+        <CreateReminderModal
+          onClose={() => setIsCreateModalOpen(false)}
+          onCreate={(data) => {
+            // TEMP: no create-reminder API/hook logic wired yet — this just closes
+            // the modal for now. Actual submission depends on backend endpoint
+            // shape for creating reminders, which isn't confirmed yet per your
+            // existing TRD gaps.
+            console.log("Create reminder payload:", data);
+            setIsCreateModalOpen(false);
+          }}
+        />
       )}
     </div>
   );

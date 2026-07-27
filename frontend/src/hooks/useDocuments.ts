@@ -6,9 +6,20 @@ interface DocumentItem {
   expiryDate: string;
 }
 
+// TEMP: mock data to unblock the Create Reminder modal's Document dropdown
+// until this hook is wired to real backend data. Remove once the backend
+// document-list endpoint is confirmed and integrated.
+const INITIAL_MOCK_DOCUMENTS: DocumentItem[] = [
+  { id: 1, name: "Driver's License", expiryDate: "2026-08-02" },
+  { id: 2, name: "Insurance", expiryDate: "2026-08-15" },
+  { id: 3, name: "Vehicle Registration", expiryDate: "2026-06-10" },
+  { id: 4, name: "Roadworthy Certificate", expiryDate: "2026-09-30" },
+];
+
 export const useDocuments = () => {
-  // Empty array ready for real backend data
-  const [documentsData] = useState<DocumentItem[]>([]);
+  // TEMP: seeded with mock data instead of empty array — swap back to
+  // useState<DocumentItem[]>([]) once real backend data replaces this
+  const [documentsData] = useState<DocumentItem[]>(INITIAL_MOCK_DOCUMENTS);
 
   const today = new Date();
 
@@ -18,7 +29,7 @@ export const useDocuments = () => {
     const diffTime = expDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    let status: "valid" | "expiring" | "expired" = "valid";
+    let status: "valid" | "expiring" | "expired";
 
     if (diffDays < 0) {
       status = "expired";
