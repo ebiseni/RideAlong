@@ -11,7 +11,7 @@ export default function FileDropzone({
   accept = ".jpg,.jpeg,.png,.pdf",
   maxSizeLabel = "Max 25 MB files are allowed",
 }: FileDropzoneProps) {
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer.files?.[0];
     if (droppedFile) onFileSelect(droppedFile);
