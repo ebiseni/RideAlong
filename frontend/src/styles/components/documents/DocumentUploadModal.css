@@ -1,0 +1,136 @@
+.document-upload-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.document-upload-modal {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px;
+  width: 100%;
+  max-width: 480px;
+  box-sizing: border-box;
+}
+
+.document-upload-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.document-upload-title {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a202c;
+}
+
+.document-upload-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #718096;
+  max-width: 340px;
+}
+
+.document-upload-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  color: #718096;
+  cursor: pointer;
+}
+
+.document-upload-supported-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: #a0aec0;
+}
+
+.document-upload-file-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 14px;
+}
+
+.document-upload-file-icon {
+  font-size: 16px;
+}
+
+.document-upload-file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.document-upload-file-name {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a202c;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.document-upload-file-size {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #a0aec0;
+}
+
+.document-upload-file-status {
+  color: #0a5c36;
+  font-weight: 700;
+}
+
+.document-upload-file-delete {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #e53e3e;
+}
+
+.document-upload-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.document-upload-cancel-btn {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 20px;
+  background: #ffffff;
+  color: #1a202c;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.document-upload-next-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  background: #0a5c36;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.document-upload-next-btn:disabled {
+  background: #a0c4b0;
+  cursor: not-allowed;
+}

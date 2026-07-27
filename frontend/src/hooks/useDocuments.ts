@@ -19,7 +19,9 @@ const INITIAL_MOCK_DOCUMENTS: DocumentItem[] = [
 export const useDocuments = () => {
   // TEMP: seeded with mock data instead of empty array — swap back to
   // useState<DocumentItem[]>([]) once real backend data replaces this
-  const [documentsData] = useState<DocumentItem[]>(INITIAL_MOCK_DOCUMENTS);
+  // FIX: was missing a setter, same bug pattern as the original useReminders —
+  // no way for any other code to ever add/change documents.
+  const [documentsData, setDocumentsData] = useState<DocumentItem[]>(INITIAL_MOCK_DOCUMENTS);
 
   const today = new Date();
 
@@ -57,11 +59,33 @@ export const useDocuments = () => {
     return `Within ${minDays} ${minDays === 1 ? "day" : "days"}`;
   };
 
+  // NEW: called from AddDocumentsPage once a file upload completes.
+  // TEMP: expiryDate has no real input source yet — nothing in the upload
+  // flow captures it. Defaults to 1 year from today until an expiry-date
+  // field is added to DocumentUploadModal or confirmed from the backend.
+  const addDocument = (name: string, expiryDate?: string) => {
+    const newId = Math.max(0, ...documentsData.map((d) => d.id)) + 1;
+    const fallbackExpiry = new Date();
+    fallbackExpiry.setFullYear(fallbackExpiry.getFullYear() + 1);
+
+    setDocumentsData((prev) => [
+      ...prev,
+      {
+        id: newId,
+        name,
+        expiryDate: expiryDate ?? fallbackExpiry.toISOString().split("T")[0],
+      },
+    ]);
+
+    return newId;
+  };
+
   return {
     documents,
     validCount,
     expiringCount,
     expiredCount,
     expiringSubtext: getExpiringSubtext(),
+    addDocument,
   };
 };

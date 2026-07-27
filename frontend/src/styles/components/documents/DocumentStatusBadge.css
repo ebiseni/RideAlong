@@ -1,0 +1,17 @@
+.document-status-badge {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.document-status-badge.valid strong {
+  color: #0a5c36;
+}
+
+.document-status-badge.expiring strong {
+  color: #d69e2e;
+}
+
+.document-status-badge.expired strong {
+  color: #e53e3e;
+}
