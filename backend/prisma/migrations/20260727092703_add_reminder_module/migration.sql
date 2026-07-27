@@ -1,0 +1,31 @@
+-- CreateEnum
+CREATE TYPE "ReminderStatus" AS ENUM ('PENDING', 'SENT', 'COMPLETED');
+
+-- CreateTable
+CREATE TABLE "Reminder" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "documentType" TEXT NOT NULL,
+    "expiryDate" TIMESTAMP(3) NOT NULL,
+    "reminderDate" TIMESTAMP(3) NOT NULL,
+    "status" "ReminderStatus" NOT NULL DEFAULT 'PENDING',
+    "notificationSent" BOOLEAN NOT NULL DEFAULT false,
+    "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Reminder_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE INDEX "Reminder_userId_idx" ON "Reminder"("userId");
+
+-- CreateIndex
+CREATE INDEX "Reminder_reminderDate_idx" ON "Reminder"("reminderDate");
+
+-- CreateIndex
+CREATE INDEX "Reminder_expiryDate_idx" ON "Reminder"("expiryDate");
+
+-- AddForeignKey
+ALTER TABLE "Reminder" ADD CONSTRAINT "Reminder_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
