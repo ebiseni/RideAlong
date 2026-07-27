@@ -9,20 +9,22 @@ import vehicleIcon from "../../assets/icons/vehicle-icon.svg";
 import profileIcon from "../../assets/icons/profile-icon.svg";
 import settingIcon from "../../assets/icons/setting-icon.svg";
 import "../../styles/components/shared/Sidebar.css";
-
-const NAV_ITEMS = [
-  { label: "Dashboard", path: "/dashboard", icon: dashboardIcon },
-  { label: "Documents", path: "/documents", icon: documentIcon },
-  { label: "Reminder", path: "/reminders", icon: reminderIcon },
-  { label: "Vehicles", path: "/vehicles", icon: vehicleIcon },
-  { label: "Profile", path: "/profile", icon: profileIcon },
-  { label: "Settings", path: "/settings", icon: settingIcon },
-];
+import { useSettings } from "../../context/SettingsContext";
 
 export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const closeMobileMenu = () => setMobileOpen(false);
   const user = useCurrentUser();
+  const { t } = useSettings();
+
+  const NAV_ITEMS = [
+    { label: t("dashboard"), path: "/dashboard", icon: dashboardIcon },
+    { label: t("documents"), path: "/documents", icon: documentIcon },
+    { label: t("reminder"), path: "/reminders", icon: reminderIcon },
+    { label: t("vehicles"), path: "/vehicles", icon: vehicleIcon },
+    { label: t("profile"), path: "/profile", icon: profileIcon },
+    { label: t("settings"), path: "/settings", icon: settingIcon },
+  ];
 
   return (
     <>
@@ -40,7 +42,11 @@ export default function Sidebar() {
       </div>
 
       {mobileOpen && (
-        <div className="sidebar-backdrop" onClick={closeMobileMenu} aria-hidden="true" />
+        <div
+          className="sidebar-backdrop"
+          onClick={closeMobileMenu}
+          aria-hidden="true"
+        />
       )}
 
       <aside className={`sidebar ${mobileOpen ? "mobile-open" : ""}`}>
@@ -65,7 +71,12 @@ export default function Sidebar() {
                 `sidebar-link ${isActive ? "active" : ""}`
               }
             >
-              <img src={item.icon} alt="" aria-hidden="true" className="sidebar-icon" />
+              <img
+                src={item.icon}
+                alt=""
+                aria-hidden="true"
+                className="sidebar-icon"
+              />
               {item.label}
             </NavLink>
           ))}
@@ -73,7 +84,11 @@ export default function Sidebar() {
 
         <div className="sidebar-profile">
           {user.avatarUrl ? (
-            <img src={user.avatarUrl} alt={user.name} className="sidebar-avatar" />
+            <img
+              src={user.avatarUrl}
+              alt={user.name}
+              className="sidebar-avatar"
+            />
           ) : (
             <div className="sidebar-avatar sidebar-avatar-placeholder">
               {user.name.charAt(0).toUpperCase()}

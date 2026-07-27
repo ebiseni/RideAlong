@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import splashImg from "../../assets/Vector.png";
+import splashImg from "../../assets/logos/LOGO.svg";
 import img1 from "../../assets/images/onboarding10.svg";
 import img2 from "../../assets/images/onboarding11.svg";
 import img3 from "../../assets/images/onboarding12.svg";

@@ -1,4 +1,5 @@
-/* Outer white container card matching My Vehicles & Quick Actions */
+/* src/styles/components/dashboards/ReminderBanner.css */
+
 .reminder-section-wrapper {
   border: 1px solid #e2e8f0;
   border-radius: 12px;
@@ -50,10 +51,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
   border: 1px solid #fbd38d;
   border-radius: 12px;
-  background-color: transparent;
 }
 
 .reminder-left {
@@ -131,4 +131,19 @@
   font-size: 16px;
   color: #a0aec0;
   font-weight: 300;
+}
+
+/* =========================================
+   RESPONSIVE STYLES FOR MOBILE
+   ========================================= */
+@media (max-width: 768px) {
+  .reminder-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .reminder-section-wrapper {
+    padding: 16px;
+    margin-top: 20px;
+  }
 }
