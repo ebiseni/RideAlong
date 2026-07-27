@@ -18,6 +18,9 @@ import UserAvatarButton from "../../hooks/UserAvatarButton";
 
 export default function RemindersPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [editingReminderId, setEditingReminderId] = useState<number | null>(
+    null,
+  );
   const {
     allReminders: reminders,
     reminderCounts: counts,
@@ -25,6 +28,10 @@ export default function RemindersPage() {
     setActiveTab,
     searchQuery,
     setSearchQuery,
+    deleteReminder,
+    addReminder,
+    updateReminder,
+    getRawReminderById,
   } = useReminders();
 
   const tabs: { key: "upcoming" | "overdue" | "all"; label: string }[] = [
@@ -204,12 +211,21 @@ export default function RemindersPage() {
                       <button
                         className="reminders-action-btn"
                         aria-label="Edit"
+                        onClick={() => setEditingReminderId(r.id)}
                       >
                         <img src={editIcon} alt="" />
                       </button>
                       <button
                         className="reminders-action-btn"
                         aria-label="Delete"
+                        onClick={() => {
+                          const confirmed = window.confirm(
+                            `Delete reminder for "${r.documentType}"? This can't be undone.`,
+                          );
+                          if (confirmed) {
+                            deleteReminder(r.id);
+                          }
+                        }}
                       >
                         <img src={deleteIcon} alt="" />
                       </button>
@@ -221,16 +237,25 @@ export default function RemindersPage() {
           </table>
         </div>
       )}
-      {isCreateModalOpen && (
+      {(isCreateModalOpen || editingReminderId !== null) && (
         <CreateReminderModal
-          onClose={() => setIsCreateModalOpen(false)}
-          onCreate={(data) => {
-            // TEMP: no create-reminder API/hook logic wired yet — this just closes
-            // the modal for now. Actual submission depends on backend endpoint
-            // shape for creating reminders, which isn't confirmed yet per your
-            // existing TRD gaps.
-            console.log("Create reminder payload:", data);
+          initialData={
+            editingReminderId !== null
+              ? getRawReminderById(editingReminderId)
+              : null
+          }
+          onClose={() => {
             setIsCreateModalOpen(false);
+            setEditingReminderId(null);
+          }}
+          onSave={(data) => {
+            if (editingReminderId !== null) {
+              updateReminder(editingReminderId, data);
+            } else {
+              addReminder(data);
+            }
+            setIsCreateModalOpen(false);
+            setEditingReminderId(null);
           }}
         />
       )}
