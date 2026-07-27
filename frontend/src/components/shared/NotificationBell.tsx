@@ -10,13 +10,26 @@ export default function NotificationBell({
   hasUnread = false,
   onClick,
 }: NotificationBellProps) {
+  // Check if in-app notifications are enabled in settings
+  const checkInAppEnabled = () => {
+    const savedPrefs = localStorage.getItem("notificationPreferences");
+    if (savedPrefs) {
+      const parsed = JSON.parse(savedPrefs);
+      return parsed.inApp ?? true;
+    }
+    return true;
+  };
+
+  // Only show unread indicator if prop is true AND in-app notifications are turned on
+  const showIndicator = hasUnread && checkInAppEnabled();
+
   return (
     <div
       className="notification-bell-container"
       onClick={onClick}
       style={{ cursor: "pointer", position: "relative" }}
     >
-      {hasUnread && <span className="notification-indicator" />}
+      {showIndicator && <span className="notification-indicator" />}
       <svg
         className="notification-icon"
         width="20"

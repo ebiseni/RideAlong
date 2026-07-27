@@ -17,6 +17,109 @@
   }
 
   .app-shell-content {
-  padding: 1rem;
+    padding: 1rem;
+  }
 }
+
+/* Full-screen Dark Theme overrides for AppShell */
+body.dark-theme,
+.dark-theme {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+.dark-theme .app-shell,
+body.dark-theme .app-shell {
+  background-color: #0f172a !important;
+}
+
+.dark-theme aside,
+.dark-theme .sidebar {
+  background-color: #090d16 !important;
+  border-color: #1e293b !important;
+}
+
+/* Target the main shell content wrapper */
+.dark-theme main,
+.dark-theme .content-area,
+.dark-theme .app-shell-content,
+body.dark-theme .app-shell-content {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+/* Professional Dark Theme Dashboard & Vehicles Styles */
+body.dark-theme .dashboard-container,
+.dark-theme .dashboard-main,
+.dark-theme .main-content-area,
+body.dark-theme .vehicles-page,
+.dark-theme .vehicles-page {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+/* Fix Headings and Paragraph Contrast */
+.dark-theme h1,
+.dark-theme h2,
+.dark-theme h3,
+.dark-theme h4,
+.dark-theme .welcome-title {
+  color: #ffffff !important;
+}
+
+.dark-theme p,
+.dark-theme span,
+.dark-theme .subtitle {
+  color: #94a3b8 !important; /* Clean readable gray on dark */
+}
+
+/* Fix Stat Cards & Vehicle cards in dark mode */
+.dark-theme .stat-card,
+.dark-theme .metric-card,
+.dark-theme .vehicles-section-card,
+.dark-theme .vehicle-card {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #f8fafc !important;
+}
+
+/* Ensure text inside metric cards is crisp and visible */
+.dark-theme .stat-card h3,
+.dark-theme .stat-card span,
+.dark-theme .stat-card p {
+  color: #f8fafc !important;
+}
+
+/* Override jarring light background badges/cards */
+.dark-theme .stat-card.warning,
+.dark-theme .stat-card.expiring {
+  background-color: #1e293b !important;
+  border-color: #f59e0b !important; /* Subtle amber border instead of harsh background */
+}
+
+.dark-theme .stat-card.danger,
+.dark-theme .stat-card.expired {
+  background-color: #1e293b !important;
+  border-color: #ef4444 !important; /* Subtle red border */
+}
+
+/* Force override inline background colors on dashboard stat cards in dark mode */
+body.dark-theme .dashboard-container div[style*="background"],
+body.dark-theme .dashboard-main div[style*="background"],
+body.dark-theme .stat-card {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+}
+
+/* Specifically target the third and fourth card backgrounds */
+body.dark-theme .stat-card:nth-child(3),
+body.dark-theme .stat-card:nth-child(4) {
+  background-color: #1e293b !important;
+}
+
+/* Ensure text and numbers inside those cards are pure white */
+body.dark-theme .stat-card:nth-child(3) *,
+body.dark-theme .stat-card:nth-child(4) * {
+  color: #f8fafc !important;
 }

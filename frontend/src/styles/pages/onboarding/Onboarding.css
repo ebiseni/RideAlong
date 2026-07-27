@@ -15,9 +15,8 @@
   align-items: center;
 }
 
-/* --- Splash Screen Fix (Removes the white box entirely) --- */
 .onboarding-container.splash {
-  background: #00a651 !important;
+  background: white !important;
   display: flex;
   justify-content: center;
   align-items: center;

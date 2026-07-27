@@ -24,7 +24,6 @@ import emptyVehicleIllustration from "../../assets/icons/empty-vehicle.svg";
 import emptyReminderIllustration from "../../assets/icons/bell-outline.svg";
 import UserAvatarButton from "../../hooks/UserAvatarButton";
 
-
 interface DashboardProps {
   currentUser?: {
     name: string;
@@ -42,7 +41,7 @@ type Vehicle = {
   status: string;
   statusClass: "green" | "yellow" | "red";
   subText?: string;
-}
+};
 
 export default function DashboardPage({ currentUser }: DashboardProps) {
   const navigate = useNavigate();
@@ -50,16 +49,15 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
 
   const { validCount, expiringCount, expiredCount, expiringSubtext } =
     useDocuments();
-  
-  
-  const { totalVehicles, vehicles, deleteVehicle } = useVehicles();
+
+  const { totalVehicles, vehicles, addVehicle } = useVehicles();
   const { reminders } = useReminders();
-    
-  const handleSaveVehicle = (data: unknown) => {
-    console.log("Saving vehicle:", data); 
+
+  const handleSaveVehicle = (data: any) => {
+    addVehicle(data);
     setShowVehicleModal(false);
-  }
-  
+  };
+
   const user = {
     name: currentUser?.name || localStorage.getItem("userName") || "User",
     email: currentUser?.email || "",
@@ -165,7 +163,10 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
           </div>
 
           {vehicles.length === 0 ? (
-            <div onClick={() => setShowVehicleModal(true)} style={{cursor: 'pointer'}}>
+            <div
+              onClick={() => setShowVehicleModal(true)}
+              style={{ cursor: "pointer" }}
+            >
               <EmptyState
                 icon={
                   <img
@@ -186,15 +187,15 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
               />
             </div>
           ) : (
-            vehicles
-              .slice(0, 2)
-              .map((v: Vehicle) => (
-                <VehicleCard 
-                  key={v.id} 
-                  {...v} 
-                  onDelete={(id) => deleteVehicle(id)} 
-                />
-              ))
+            vehicles.slice(0, 2).map((v: Vehicle) => (
+              <div
+                key={v.id}
+                onClick={() => navigate(`/vehicles/${v.id}/documents`)}
+                style={{ cursor: "pointer", marginBottom: "12px" }}
+              >
+                <VehicleCard {...v} />
+              </div>
+            ))
           )}
         </section>
 
@@ -204,7 +205,10 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
               Quick Actions
             </h2>
             <div className="card-box">
-              <button onClick={() => setShowVehicleModal(true)} className="action-button-outline">
+              <button
+                onClick={() => setShowVehicleModal(true)}
+                className="action-button-outline"
+              >
                 <img src={AddVehicleIcon} alt="" className="action-icon" />
                 Add Vehicle
               </button>
@@ -269,7 +273,7 @@ export default function DashboardPage({ currentUser }: DashboardProps) {
         <ReminderBanner reminders={reminders} />
       )}
 
-      <AddVehicleModal 
+      <AddVehicleModal
         isOpen={showVehicleModal}
         onClose={() => setShowVehicleModal(false)}
         onSave={handleSaveVehicle}

@@ -6,12 +6,12 @@ export type Vehicle = {
   name: string;
   plate: string;
   documents: number;
-  expiryDate?: string; 
+  expiryDate?: string;
   status: string;
   statusClass: "green" | "yellow" | "red";
   subText?: string;
   diffDays: number;
-}
+};
 
 type RawVehicle = {
   id: string;
@@ -19,18 +19,53 @@ type RawVehicle = {
   plate: string;
   documents: number;
   expiryDate?: string;
-}
+};
 
 export type NewVehicleInput = {
   vehicleNumber: string;
   make: string;
   model: string;
   year: string;
-}
+};
 
 const STORAGE_KEY = "ridealong_vehicles";
 
-const calculateCompliance = (expiryDateString?: string, documentCount: number = 0) => {
+// Initial mock data to preview your UI and responsiveness right away
+const INITIAL_MOCK_VEHICLES: RawVehicle[] = [
+  {
+    id: "veh-1",
+    name: "Toyota Corolla",
+    plate: "ABC-123-XY",
+    documents: 3,
+    expiryDate: "2026-08-15", // Expiring soon (Yellow)
+  },
+  {
+    id: "veh-2",
+    name: "Honda Accord",
+    plate: "LSR-456-BZ",
+    documents: 2,
+    expiryDate: "2026-09-30", // Fully compliant (Green)
+  },
+  {
+    id: "veh-3",
+    name: "Ford Transit",
+    plate: "KJA-789-VM",
+    documents: 4,
+    expiryDate: "2026-06-10", // Expired (Red)
+  },
+  {
+    id: "veh-4",
+    name: "Hyundai Elantra",
+    plate: "EPE-321-LK",
+    documents: 0,
+    expiryDate: undefined, // No documents
+  },
+];
+
+const calculateCompliance = (
+  expiryDateString?: string,
+  documentCount: number = 0,
+) => {
   // 1. No documents yet
   if (!expiryDateString || documentCount === 0) {
     return {
@@ -41,7 +76,7 @@ const calculateCompliance = (expiryDateString?: string, documentCount: number = 
     };
   }
 
-  const today = new Date("2026-07-22"); 
+  const today = new Date("2026-07-22");
   const expiry = new Date(expiryDateString);
   const diffTime = expiry.getTime() - today.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -79,9 +114,12 @@ export const useVehicles = () => {
   const [rawVehicles, setRawVehicles] = useState<RawVehicle[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : [];
+      if (saved && JSON.parse(saved).length > 0) {
+        return JSON.parse(saved);
+      }
+      return INITIAL_MOCK_VEHICLES;
     } catch {
-      return [];
+      return INITIAL_MOCK_VEHICLES;
     }
   });
 
@@ -95,33 +133,32 @@ export const useVehicles = () => {
       name: `${data.make} ${data.model}`,
       plate: data.vehicleNumber,
       documents: 0,
-      expiryDate: undefined, 
+      expiryDate: undefined,
     };
-    setRawVehicles(prev => [newVehicle, ...prev]);
+    setRawVehicles((prev) => [newVehicle, ...prev]);
   };
 
-  // NEW: Delete a vehicle
   const deleteVehicle = (id: string) => {
-    setRawVehicles(prev => prev.filter(v => v.id !== id));
+    setRawVehicles((prev) => prev.filter((v) => v.id !== id));
   };
 
-  // NEW: Update a vehicle - for when you add documents later
   const updateVehicle = (id: string, updates: Partial<RawVehicle>) => {
-    setRawVehicles(prev => 
-      prev.map(v => v.id === id ? { ...v, ...updates } : v)
+    setRawVehicles((prev) =>
+      prev.map((v) => (v.id === id ? { ...v, ...updates } : v)),
     );
   };
 
-  // Map through raw data and dynamically compute status
   const mappedVehicles: Vehicle[] = rawVehicles.map((vehicle) => {
-    const compliance = calculateCompliance(vehicle.expiryDate, vehicle.documents);
+    const compliance = calculateCompliance(
+      vehicle.expiryDate,
+      vehicle.documents,
+    );
     return {
       ...vehicle,
       ...compliance,
     };
   });
 
-  // For Dashboard: top 2 most urgent
   const sortedAndSlicedVehicles = [...mappedVehicles]
     .sort((a, b) => a.diffDays - b.diffDays)
     .slice(0, 2);
@@ -131,7 +168,7 @@ export const useVehicles = () => {
     vehicles: mappedVehicles,
     dashboardVehicles: sortedAndSlicedVehicles,
     addVehicle,
-    deleteVehicle, // <-- NEW
-    updateVehicle, // <-- NEW, useful for documents
+    deleteVehicle,
+    updateVehicle,
   };
 };

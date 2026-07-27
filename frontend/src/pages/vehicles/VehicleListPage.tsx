@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useVehicles, type Vehicle, type NewVehicleInput } from "../../hooks/useVehicles";
+import {
+  useVehicles,
+  type Vehicle,
+  type NewVehicleInput,
+} from "../../hooks/useVehicles";
 import { VehicleCard } from "../../components/vehicles/VehicleCard";
 import AddVehicleModal from "../../components/vehicles/AddVehicleModal";
 import EmptyState from "../../components/shared/EmptyState";
@@ -12,7 +16,7 @@ export default function VehiclesPage() {
   const { vehicles, totalVehicles, addVehicle, deleteVehicle } = useVehicles(); // <-- ADDED deleteVehicle
   const [showVehicleModal, setShowVehicleModal] = useState(false);
   const [search, setSearch] = useState("");
-  const [view, setView] = useState<"grid" | "list">("grid"); 
+  const [view, setView] = useState<"grid" | "list">("grid");
 
   const handleSaveVehicle = (data: NewVehicleInput) => {
     addVehicle(data);
@@ -22,9 +26,10 @@ export default function VehiclesPage() {
   const handleOpenModal = () => setShowVehicleModal(true);
 
   // search by name and plate
-  const filteredVehicles = vehicles.filter(v =>
-    v.name.toLowerCase().includes(search.toLowerCase()) ||
-    v.plate.toLowerCase().includes(search.toLowerCase())
+  const filteredVehicles = vehicles.filter(
+    (v) =>
+      v.name.toLowerCase().includes(search.toLowerCase()) ||
+      v.plate.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -33,32 +38,32 @@ export default function VehiclesPage() {
       <div className="vehicles-header">
         <div>
           <div className="vehicles-back" onClick={() => navigate("/dashboard")}>
-             My Vehicle
+            My Vehicle
           </div>
-          <p className="vehicles-subtitle">{totalVehicles} vehicle{totalVehicles!== 1? 's' : ''} • Add and manage your vehicle</p>
+          <p className="vehicles-subtitle">
+            {totalVehicles} vehicle{totalVehicles !== 1 ? "s" : ""} • Add and
+            manage your vehicle
+          </p>
         </div>
 
         <div className="vehicles-header-actions">
           {/* View Toggle */}
           <div className="view-toggle">
-            <button 
-              className={view === 'grid' ? 'active' : ''} 
-              onClick={() => setView('grid')}
+            <button
+              className={view === "grid" ? "active" : ""}
+              onClick={() => setView("grid")}
             >
               Grid
             </button>
-            <button 
-              className={view === 'list' ? 'active' : ''} 
-              onClick={() => setView('list')}
+            <button
+              className={view === "list" ? "active" : ""}
+              onClick={() => setView("list")}
             >
               List
             </button>
           </div>
 
-          <button
-            className="btn-add-vehicle"
-            onClick={handleOpenModal}
-          >
+          <button className="btn-add-vehicle" onClick={handleOpenModal}>
             + Add Vehicle
           </button>
         </div>
@@ -74,10 +79,16 @@ export default function VehiclesPage() {
       />
 
       {/* Vehicles Grid/List */}
-      <div className={view === 'grid' ? 'vehicles-grid' : 'vehicles-list'}> 
-        {filteredVehicles.length === 0? (
+      <div className={view === "grid" ? "vehicles-grid" : "vehicles-list"}>
+        {filteredVehicles.length === 0 ? (
           <EmptyState
-            icon={<img src={emptyVehicleIllustration} alt="No vehicles" style={{width: 150}}/>}
+            icon={
+              <img
+                src={emptyVehicleIllustration}
+                alt="No vehicles"
+                style={{ width: 150 }}
+              />
+            }
             title="You haven't added any vehicle yet."
             description="Add your vehicles to start organizing and managing their documents."
             actionText="Add Your Vehicle"
@@ -87,8 +98,13 @@ export default function VehiclesPage() {
         ) : (
           filteredVehicles.map((v: Vehicle) => (
             // Click card to go to documents
-            <div key={v.id} onClick={() => navigate(`/vehicles/${v.id}/documents`)} style={{cursor: 'pointer'}}>
-              <VehicleCard {...v} onDelete={deleteVehicle} /> {/* <-- ADDED onDelete */}
+            <div
+              key={v.id}
+              onClick={() => navigate(`/vehicles/${v.id}/documents`)}
+              style={{ cursor: "pointer" }}
+            >
+              <VehicleCard {...v} onDelete={deleteVehicle} />{" "}
+              {/* <-- ADDED onDelete */}
             </div>
           ))
         )}

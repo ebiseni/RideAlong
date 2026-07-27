@@ -119,7 +119,7 @@
 }
 
 /* =========================================
-    RESPONSIVE MEDIA QUERIES (Mobile & Tablet)
+   RESPONSIVE MEDIA QUERIES (Mobile & Tablet)
    ========================================= */
 
 @media (max-width: 900px) {
@@ -146,13 +146,6 @@
 
   .summary-row > * {
     min-width: 100%;
-  }
-
-  .vehicle-card {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
   }
 }
 

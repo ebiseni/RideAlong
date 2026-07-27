@@ -1,6 +1,6 @@
 .vehicles-page {
   padding: 24px 32px;
-  background: #F7FAFC;
+  background: #f7fafc;
   min-height: 100vh;
 }
 
@@ -28,7 +28,6 @@
   color: #6b7280;
   margin: 0;
 }
-
 
 .vehicles-header-actions {
   display: flex;
@@ -64,7 +63,6 @@
   border-color: #16a34a;
   box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
 }
-
 
 .vehicles-grid {
   display: grid;
