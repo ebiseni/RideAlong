@@ -12,16 +12,39 @@ interface DocumentItem {
   // object URLs are revoked on page reload, so this
   // is a stopgap until real file storage/upload to
   // a backend exists.
+  documentNumber?: string; // NEW: e.g. license/policy/plate number, captured
+  // at upload time. Optional since the 4 seeded
+  // mock documents predate this field.
 }
 
 // TEMP: mock data to unblock the Create Reminder modal's Document dropdown
 // until this hook is wired to real backend data. Remove once the backend
 // document-list endpoint is confirmed and integrated.
 const INITIAL_MOCK_DOCUMENTS: DocumentItem[] = [
-  { id: 1, name: "Driver's License", expiryDate: "2026-08-02" },
-  { id: 2, name: "Insurance", expiryDate: "2026-08-15" },
-  { id: 3, name: "Vehicle Registration", expiryDate: "2026-06-10" },
-  { id: 4, name: "Roadworthy Certificate", expiryDate: "2026-09-30" },
+  {
+    id: 1,
+    name: "Driver's License",
+    expiryDate: "2026-08-02",
+    documentNumber: "BU-485-7299",
+  },
+  {
+    id: 2,
+    name: "Insurance",
+    expiryDate: "2026-08-15",
+    documentNumber: "INS-2024-44567",
+  },
+  {
+    id: 3,
+    name: "Vehicle Registration",
+    expiryDate: "2026-06-10",
+    documentNumber: "REG-2023-11890",
+  },
+  {
+    id: 4,
+    name: "Roadworthy Certificate",
+    expiryDate: "2026-09-30",
+    documentNumber: "RW-2024-00321",
+  },
 ];
 
 export const useDocuments = () => {
@@ -81,6 +104,7 @@ export const useDocuments = () => {
     expiryDate?: string,
     vehicleId?: string,
     file?: File,
+    documentNumber?: string,
   ) => {
     const newId = Math.max(0, ...documentsData.map((d) => d.id)) + 1;
     const fallbackExpiry = new Date();
@@ -94,6 +118,7 @@ export const useDocuments = () => {
         expiryDate: expiryDate ?? fallbackExpiry.toISOString().split("T")[0],
         vehicleId,
         frontImageUrl: file ? URL.createObjectURL(file) : undefined,
+        documentNumber,
       },
     ]);
 

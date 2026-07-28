@@ -7,7 +7,7 @@ import deleteIcon from "../../assets/icons/document-delete-icon.svg";
 
 interface DocumentUploadModalProps {
   onClose: () => void;
-  onComplete: (expiryDate: string, file: File) => void;
+  onComplete: (expiryDate: string, file: File, documentNumber: string) => void;
 }
 
 export default function DocumentUploadModal({
@@ -16,6 +16,7 @@ export default function DocumentUploadModal({
 }: DocumentUploadModalProps) {
   const [file, setFile] = useState<File | null>(null);
   const [expiryDate, setExpiryDate] = useState("");
+  const [documentNumber, setDocumentNumber] = useState("");
 
   const formatSize = (bytes: number) => {
     const kb = bytes / 1024;
@@ -80,6 +81,17 @@ export default function DocumentUploadModal({
         )}
 
         <div className="document-upload-expiry-field">
+          <label htmlFor="document-number">Document Number</label>
+          <input
+            id="document-number"
+            type="text"
+            placeholder="e.g. BU-485-7299"
+            value={documentNumber}
+            onChange={(e) => setDocumentNumber(e.target.value)}
+          />
+        </div>
+
+        <div className="document-upload-expiry-field">
           <label htmlFor="document-expiry-date">Expiry Date</label>
           <input
             id="document-expiry-date"
@@ -89,14 +101,14 @@ export default function DocumentUploadModal({
           />
         </div>
 
-        <div className="document-upload-actions">
+         <div className="document-upload-actions">
           <button className="document-upload-cancel-btn" onClick={onClose}>
             Cancel
           </button>
           <button
             className="document-upload-next-btn"
             disabled={!canProceed}
-            onClick={() => file && onComplete(expiryDate, file)}
+            onClick={() => file && onComplete(expiryDate, file, documentNumber.trim())}
           >
             Next
           </button>
