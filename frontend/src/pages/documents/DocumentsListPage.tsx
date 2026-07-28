@@ -8,7 +8,7 @@ import "../../styles/pages/documents/DocumentsListPage.css";
 import documentIcon from "../../assets/icons/document-icon.svg";
 import searchIcon from "../../assets/icons/reminder-search-icon.svg";
 import plusIcon from "../../assets/icons/reminder-plus-icon.svg";
-import emptyDocumentsIllustration from "../../assets/images/reminder-emptysate-illustration.png";// TEMP: reusing reminders empty-state illustration until a documents-specific one is provided
+import emptyDocumentsIllustration from "../../assets/images/reminder-emptysate-illustration.png"; // TEMP: reusing reminders empty-state illustration until a documents-specific one is provided
 
 export default function DocumentsListPage() {
   const navigate = useNavigate();
@@ -83,7 +83,11 @@ export default function DocumentsListPage() {
               <img src={documentIcon} alt="" className="document-card-icon" />
               <div className="document-card-text">
                 <p className="document-card-name">{doc.name}</p>
-                <p className="document-card-mask">••••••••••••</p>
+                <p className="document-card-mask">
+                  {doc.documentNumber
+                    ? "•".repeat(Math.max(doc.documentNumber.length, 8))
+                    : "••••••••••••"}
+                </p>
               </div>
               <span className="document-card-arrow">›</span>
             </button>

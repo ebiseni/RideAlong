@@ -189,7 +189,7 @@ export const useReminders = () => {
           vehicleName: vehicle.name,
           plateNumber: vehicle.plate,
           documentType: document.name,
-          documentNumber: `DOC-${document.id}`, // TEMP: DocumentItem has no real document number field yet
+          documentNumber: document.documentNumber ?? `DOC-${document.id}`, // fallback for older mock docs without one
           expiryDate,
           reminderDate,
           icon: getIconForDocument(document.name),
