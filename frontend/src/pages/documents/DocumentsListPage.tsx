@@ -1,22 +1,37 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDocuments } from "../../hooks/useDocuments";
+import { useVehicles } from "../../hooks/useVehicles";
 import EmptyState from "../../components/shared/EmptyState";
 import "../../styles/pages/documents/DocumentsListPage.css";
 
 import documentIcon from "../../assets/icons/document-icon.svg";
 import searchIcon from "../../assets/icons/reminder-search-icon.svg";
 import plusIcon from "../../assets/icons/reminder-plus-icon.svg";
-import emptyDocumentsIllustration from "../../assets/images/reminder-emptysate-illustration.png"; // TEMP: reusing reminders empty-state illustration until a documents-specific one is provided
+import emptyDocumentsIllustration from "../../assets/images/reminder-emptysate-illustration.png";// TEMP: reusing reminders empty-state illustration until a documents-specific one is provided
 
 export default function DocumentsListPage() {
   const navigate = useNavigate();
   const { documents } = useDocuments();
+  const { vehicles } = useVehicles();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredDocuments = documents.filter((doc) =>
-    doc.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const query = searchQuery.toLowerCase();
+
+  const filteredDocuments = documents.filter((doc) => {
+    const matchesName = doc.name.toLowerCase().includes(query);
+
+    // NEW: resolve the document's linked vehicle (if any) and match against
+    // its name too, so "Search by vehicle, name" actually searches by vehicle.
+    const linkedVehicle = doc.vehicleId
+      ? vehicles.find((v) => v.id === doc.vehicleId)
+      : null;
+    const matchesVehicle = linkedVehicle
+      ? linkedVehicle.name.toLowerCase().includes(query)
+      : false;
+
+    return matchesName || matchesVehicle;
+  });
 
   return (
     <div className="documents-container">

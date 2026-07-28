@@ -1,33 +1,36 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useVehicles } from "../../hooks/useVehicles";
+import { useDocuments } from "../../hooks/useDocuments";
 import "../../styles/pages/vehicles/VehicleDetailPage.css";
 
 export default function VehicleDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { vehicles } = useVehicles();
+  const { documents } = useDocuments();
 
-  const vehicle = vehicles.find(v => v.id === id);
+  const vehicle = vehicles.find((v) => v.id === id);
+  const vehicleDocuments = documents.filter((d) => d.vehicleId === id);
 
   if (!vehicle) {
     return (
       <div className="vehicle-detail-page">
         <div className="detail-card">
           <h1>Vehicle not found</h1>
-          <button className="btn-secondary" onClick={() => navigate("/vehicles")}>
+          <button
+            className="btn-secondary"
+            onClick={() => navigate("/vehicles")}
+          >
             ← Back to Vehicles
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="vehicle-detail-page">
-      <button 
-        onClick={() => navigate("/vehicles")} 
-        className="back-link"
-      >
+      <button onClick={() => navigate("/vehicles")} className="back-link">
         ← Back to Vehicles
       </button>
 
@@ -43,20 +46,22 @@ export default function VehicleDetailPage() {
           </span>
         </div>
 
-        {vehicle.subText && (
-          <p className="detail-subtext">{vehicle.subText}</p>
-        )}
+        {vehicle.subText && <p className="detail-subtext">{vehicle.subText}</p>}
       </div>
 
       {/* Stats Grid */}
       <div className="detail-stats-grid">
         <div className="stat-card">
           <p className="stat-label">Documents</p>
-          <p className="stat-value">{vehicle.documents}</p>
+          {/* UPDATED: was vehicle.documents (static mock number), now the
+              real count of documents linked to this vehicle via vehicleId */}
+          <p className="stat-value">{vehicleDocuments.length}</p>
         </div>
         <div className="stat-card">
           <p className="stat-label">Compliance</p>
-          <p className={`stat-value status-text-${vehicle.statusClass}`}>{vehicle.status}</p>
+          <p className={`stat-value status-text-${vehicle.statusClass}`}>
+            {vehicle.status}
+          </p>
         </div>
       </div>
 
@@ -64,14 +69,37 @@ export default function VehicleDetailPage() {
       <div className="detail-documents-card">
         <div className="documents-header">
           <h2>Vehicle Documents</h2>
-          <button className="btn-primary">
+          <button
+            className="btn-primary"
+            onClick={() => navigate(`/documents/add?vehicleId=${vehicle.id}`)}
+          >
             + Upload Document
           </button>
         </div>
-        <div className="documents-empty">
-          <p>No documents uploaded yet</p>
-          <p className="documents-subtext">Upload insurance, registration, and other vehicle documents here</p>
-        </div>
+
+        {vehicleDocuments.length === 0 ? (
+          <div className="documents-empty">
+            <p>No documents uploaded yet</p>
+            <p className="documents-subtext">
+              Upload insurance, registration, and other vehicle documents here
+            </p>
+          </div>
+        ) : (
+          <div className="documents-list">
+            {vehicleDocuments.map((doc) => (
+              <button
+                key={doc.id}
+                className="documents-list-item"
+                onClick={() => navigate(`/documents/${doc.id}`)}
+              >
+                <span className="documents-list-item-name">{doc.name}</span>
+                <span className={`documents-list-item-status status-${doc.status}`}>
+                  {doc.status}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

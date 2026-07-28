@@ -9,7 +9,6 @@ import RegisterPage from "../pages/auth/RegisterPage";
 import Onboarding from "../pages/onboarding/Onboarding";
 
 import DashboardPage from "../pages/dashboard/DashboardPage";
-// import DocumentUploadPage from "../pages/documents/DocumentUploadPage";
 import DocumentDetailPage from "../pages/documents/DocumentDetailPage";
 import RemindersPage from "../pages/reminders/RemindersPage";
 import VehicleListPage from "../pages/vehicles/VehicleListPage";
@@ -35,7 +34,6 @@ export default function AppRoutes() {
         <Route path="/dashboard" element={<DashboardPage />} />
          <Route path="/documents" element={<DocumentsListPage />} />
         <Route path="/documents/add" element={<AddDocumentsPage />} />
-        {/* <Route path="/documents/upload" element={<DocumentUploadPage />} /> */}
         <Route path="/documents/:documentId" element={<DocumentDetailPage />} />
         <Route path="/reminders" element={<RemindersPage />} />
         <Route path="/vehicles" element={<VehicleListPage />} />

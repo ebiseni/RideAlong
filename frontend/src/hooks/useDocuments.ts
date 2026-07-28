@@ -4,6 +4,14 @@ interface DocumentItem {
   id: number;
   name: string;
   expiryDate: string;
+  vehicleId?: string; // NEW: links a document to a vehicle from useVehicles. Optional
+  // since documents uploaded via the standalone /documents/add
+  // flow (no vehicle context) won't have one.
+  frontImageUrl?: string; // NEW: object URL created from the uploaded File.
+  // Only persists for the current browser session —
+  // object URLs are revoked on page reload, so this
+  // is a stopgap until real file storage/upload to
+  // a backend exists.
 }
 
 // TEMP: mock data to unblock the Create Reminder modal's Document dropdown
@@ -21,7 +29,9 @@ export const useDocuments = () => {
   // useState<DocumentItem[]>([]) once real backend data replaces this
   // FIX: was missing a setter, same bug pattern as the original useReminders —
   // no way for any other code to ever add/change documents.
-  const [documentsData, setDocumentsData] = useState<DocumentItem[]>(INITIAL_MOCK_DOCUMENTS);
+  const [documentsData, setDocumentsData] = useState<DocumentItem[]>(
+    INITIAL_MOCK_DOCUMENTS,
+  );
 
   const today = new Date();
 
@@ -52,9 +62,7 @@ export const useDocuments = () => {
 
   const getExpiringSubtext = () => {
     if (expiringDocs.length === 0) return "";
-
     const minDays = Math.min(...expiringDocs.map((d) => d.diffDays));
-
     if (minDays <= 0) return "Expiring today";
     return `Within ${minDays} ${minDays === 1 ? "day" : "days"}`;
   };
@@ -63,7 +71,17 @@ export const useDocuments = () => {
   // TEMP: expiryDate has no real input source yet — nothing in the upload
   // flow captures it. Defaults to 1 year from today until an expiry-date
   // field is added to DocumentUploadModal or confirmed from the backend.
-  const addDocument = (name: string, expiryDate?: string) => {
+  // UPDATED: now accepts an optional vehicleId so uploads from
+  // VehicleDetailPage can be tagged to that vehicle.
+  // UPDATED: now accepts an optional File, converted to an object URL for
+  // display on DocumentDetailPage. TEMP — object URLs don't survive a page
+  // reload and there's no real backend upload yet.
+  const addDocument = (
+    name: string,
+    expiryDate?: string,
+    vehicleId?: string,
+    file?: File,
+  ) => {
     const newId = Math.max(0, ...documentsData.map((d) => d.id)) + 1;
     const fallbackExpiry = new Date();
     fallbackExpiry.setFullYear(fallbackExpiry.getFullYear() + 1);
@@ -74,6 +92,8 @@ export const useDocuments = () => {
         id: newId,
         name,
         expiryDate: expiryDate ?? fallbackExpiry.toISOString().split("T")[0],
+        vehicleId,
+        frontImageUrl: file ? URL.createObjectURL(file) : undefined,
       },
     ]);
 

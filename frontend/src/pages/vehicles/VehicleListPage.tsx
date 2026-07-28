@@ -5,6 +5,7 @@ import {
   type Vehicle,
   type NewVehicleInput,
 } from "../../hooks/useVehicles";
+import { useDocuments } from "../../hooks/useDocuments";
 import { VehicleCard } from "../../components/vehicles/VehicleCard";
 import AddVehicleModal from "../../components/vehicles/AddVehicleModal";
 import EmptyState from "../../components/shared/EmptyState";
@@ -14,6 +15,7 @@ import "../../styles/pages/vehicles/VehicleListPage.css";
 export default function VehiclesPage() {
   const navigate = useNavigate();
   const { vehicles, totalVehicles, addVehicle, deleteVehicle } = useVehicles(); // <-- ADDED deleteVehicle
+  const { documents } = useDocuments();
   const [showVehicleModal, setShowVehicleModal] = useState(false);
   const [search, setSearch] = useState("");
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -25,12 +27,16 @@ export default function VehiclesPage() {
 
   const handleOpenModal = () => setShowVehicleModal(true);
 
-  // search by name and plate
   const filteredVehicles = vehicles.filter(
     (v) =>
       v.name.toLowerCase().includes(search.toLowerCase()) ||
       v.plate.toLowerCase().includes(search.toLowerCase()),
   );
+
+  // NEW: real per-vehicle document count, replacing the static v.documents
+  // mock number. Same fix applied to VehicleDetailPage earlier.
+  const getDocumentCount = (vehicleId: string) =>
+    documents.filter((d) => d.vehicleId === vehicleId).length;
 
   return (
     <div className="vehicles-page">
@@ -97,15 +103,15 @@ export default function VehiclesPage() {
           />
         ) : (
           filteredVehicles.map((v: Vehicle) => (
-            // Click card to go to documents
-            <div
+            // FIX: removed the wrapping div's onClick to /vehicles/${v.id}/documents —
+            // it was conflicting with VehicleCard's own <Link to={/vehicles/${id}}>,
+            // and the Link always won, silently making this outer onClick dead code.
+            <VehicleCard
               key={v.id}
-              onClick={() => navigate(`/vehicles/${v.id}/documents`)}
-              style={{ cursor: "pointer" }}
-            >
-              <VehicleCard {...v} onDelete={deleteVehicle} />{" "}
-              {/* <-- ADDED onDelete */}
-            </div>
+              {...v}
+              documents={getDocumentCount(v.id)}
+              onDelete={deleteVehicle}
+            />
           ))
         )}
       </div>
