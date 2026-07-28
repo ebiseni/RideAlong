@@ -1,47 +1,81 @@
 /* Onboarding.css */
 
+* {
+  box-sizing: border-box;
+}
+
 .onboarding-container {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to right, #d1f4e0 50%, #ffffff 50%);
+  cursor: pointer;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  width: 100vw;
-  background-color: #ffffff;
-  cursor: pointer;
+}
+
+/* --- Splash Screen Fix (Removes the white box entirely) --- */
+.onboarding-container.splash {
+  background: #00a651 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.onboarding-container.splash .onboarding-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: transparent !important;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+.splash-logo {
+  max-width: 320px;
+  width: 80%;
+  height: auto;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* --- Onboarding Steps Layout --- */
+.onboarding-content {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
   position: relative;
 }
 
-.onboarding-content {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 40px 60px;
-  width: 90%;
-  max-width: 1200px;
-}
-
+/* Left Side (Green Half) */
 .onboarding-image {
   flex: 1;
   display: flex;
-  justify-content: flex-end;
-  min-width: 300px;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  background: transparent;
 }
 
 .onboarding-image img {
-  max-width: 600px;
-  max-height: 450px;
+  max-width: 500px;
   width: 100%;
-  height: auto;
+  max-height: 60vh;
   object-fit: contain;
 }
 
+/* Right Side (White Half) */
 .onboarding-text {
   flex: 1;
   display: flex;
   flex-direction: column;
-  text-align: left;
-  min-width: 300px;
+  justify-content: center;
+  padding-left: 80px;
+  background: transparent;
 }
 
 .onboarding-text h1 {
@@ -49,25 +83,28 @@
   color: #111827;
   margin-bottom: 20px;
   font-weight: 700;
-  line-height: normal;
+  line-height: 1.2;
 }
 
 .onboarding-text p {
   font-size: 20px;
   color: #374151;
-  line-height: normal;
-  max-width: 507px;
-  font-weight: 600;
-  margin-top: 16px;
+  line-height: 1.5;
+  max-width: 450px;
+  font-weight: 500;
+  margin: 0;
 }
 
-/* Footer Controls: Progress Bar & Skip Button */
+/* Footer Controls */
 .onboarding-footer {
+  position: absolute;
+  bottom: 50px;
+  left: 0;
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 40px;
+  padding: 0 40px;
 }
 
 .progress-bar-container {
@@ -78,7 +115,7 @@
 .progress-bar-dot {
   width: 40px;
   height: 4px;
-  background-color: #e2e8f0;
+  background-color: #a7e0be;
   border-radius: 2px;
   transition: background-color 0.3s ease;
 }
@@ -93,7 +130,7 @@
   color: #0a5c36;
   font-weight: 600;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   padding: 0;
 }
 
@@ -101,75 +138,95 @@
   text-decoration: underline;
 }
 
-.onboarding-container.splash {
-  background-color: #00a651 !important;
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* --- Tap Hint Popup Styles --- */
+.tap-hint-popup {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #111827;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: bounce 1.5s infinite;
+  z-index: 10;
+  pointer-events: none;
 }
 
-.splash-logo {
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  max-width: 100%;
-  height: auto;
-}
-
-/* --- Responsive Breakpoints --- */
-
-@media (max-width: 900px) {
-  .onboarding-content {
-    gap: 30px;
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
   }
-
-  .onboarding-text h1 {
-    font-size: 36px;
-  }
-
-  .onboarding-text p {
-    font-size: 18px;
+  50% {
+    transform: translateX(-50%) translateY(-6px);
   }
 }
 
-@media (max-width: 480px) {
+/* --- Responsive Breakpoints (Mobile) --- */
+@media (max-width: 768px) {
   .onboarding-container {
-    padding: 20px;
+    background: #ffffff;
+    height: auto;
+    min-height: 100vh;
   }
 
   .onboarding-content {
     flex-direction: column;
-    text-align: center;
-    gap: 20px;
+    padding-bottom: 100px;
   }
 
   .onboarding-image {
+    flex: 1;
+    display: flex;
     justify-content: center;
-    min-width: 100%;
+    align-items: center;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 20px;
   }
 
   .onboarding-image img {
-    max-height: 260px;
     max-width: 100%;
+    width: 500px;
+    max-height: 60vh;
+    object-fit: contain;
+    background: transparent !important;
+    mix-blend-mode: multiply;
   }
 
   .onboarding-text {
+    padding: 40px 20px;
     align-items: center;
     text-align: center;
-    min-width: 100%;
+    width: 100%;
   }
 
   .onboarding-text h1 {
-    font-size: 28px;
+    font-size: 32px;
   }
 
   .onboarding-text p {
     font-size: 16px;
-    margin: 0 auto;
   }
 
   .onboarding-footer {
-    margin-top: 20px;
+    padding: 0 20px;
+    bottom: 30px;
+  }
+
+  .progress-bar-dot {
+    background-color: #e2e8f0;
+  }
+
+  .tap-hint-popup {
+    position: absolute;
+    top: calc(50% + 150px);
+    bottom: auto;
+    margin-top: 0;
   }
 }

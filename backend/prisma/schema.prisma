@@ -61,54 +61,54 @@ model PasswordResetToken {
 }
 
 model Vehicle {
-  id     String @id @default(uuid())
-  userId String
+  id               String @id @default(uuid())
+  userId           String
 
-  name        String?
-  plateNumber String
-  make        String
-  model       String
-  year        Int
+  name             String?
+  plateNumber      String
+  make             String
+  model            String
+  year             Int
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user             User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   vehicleDocuments VehicleDocument[]
 }
 
 model VehicleDocument {
-  id        String @id @default(uuid())
-  vehicleId String
-  userId    String
+  id             String   @id @default(uuid())
+  vehicleId      String
+  userId         String
 
   documentType   String
   issueDate      DateTime
   expirationDate DateTime
   imageUrl       String
 
-  createdAt DateTime @default(now())
+  createdAt      DateTime @default(now())
 
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  user           User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicle        Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
-  reminders Reminder[]
+  reminders      Reminder[]
 }
 
 model Reminder {
-  id String @id @default(uuid())
+  id                String @id @default(uuid())
 
   userId            String
   vehicleDocumentId String
 
-  reminderDate DateTime
+  reminderDate      DateTime
 
-  status           ReminderStatus @default(PENDING)
-  notificationSent Boolean        @default(false)
+  status            ReminderStatus @default(PENDING)
+  notificationSent  Boolean @default(false)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  vehicleDocument VehicleDocument @relation(fields: [vehicleDocumentId], references: [id], onDelete: Cascade)
+  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicleDocument   VehicleDocument @relation(fields: [vehicleDocumentId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([vehicleDocumentId])
