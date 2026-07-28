@@ -89,16 +89,23 @@
 }
 
 .document-upload-file-status {
-  color: #0a5c36;
-  font-weight: 700;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .document-upload-file-delete {
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 14px;
-  color: #e53e3e;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.document-upload-file-delete img {
+  width: 16px;
+  height: 16px;
 }
 
 .document-upload-actions {
@@ -133,4 +140,26 @@
 .document-upload-next-btn:disabled {
   background: #a0c4b0;
   cursor: not-allowed;
+}
+
+.document-upload-expiry-field {
+  margin-top: 16px;
+}
+
+.document-upload-expiry-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 6px;
+}
+
+.document-upload-expiry-field input[type="date"] {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #1a202c;
+  box-sizing: border-box;
 }

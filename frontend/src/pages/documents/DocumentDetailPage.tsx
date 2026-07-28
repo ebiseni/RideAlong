@@ -14,7 +14,10 @@ export default function DocumentDetailPage() {
   if (!document) {
     return (
       <div className="document-detail-container">
-        <button className="document-detail-back-btn" onClick={() => navigate("/documents")}>
+        <button
+          className="document-detail-back-btn"
+          onClick={() => navigate("/documents")}
+        >
           ← My Documents
         </button>
         <p className="document-detail-not-found">Document not found.</p>
@@ -25,7 +28,10 @@ export default function DocumentDetailPage() {
   return (
     <div className="document-detail-container">
       <div className="document-detail-header">
-        <button className="document-detail-back-btn" onClick={() => navigate("/documents")}>
+        <button
+          className="document-detail-back-btn"
+          onClick={() => navigate("/documents")}
+        >
           ← My Documents
         </button>
         <button className="document-detail-menu-btn" aria-label="More options">
@@ -39,15 +45,26 @@ export default function DocumentDetailPage() {
       </div>
 
       <div className="document-detail-cards">
-        {/* TEMP: no real uploaded image data exists yet — DocumentItem has no
-            frontImageUrl/backImageUrl field, and nothing from
-            DocumentUploadModal persists the uploaded file into useDocuments.
-            These are placeholder slots until real upload + storage is wired. */}
-        <div className="document-detail-card-placeholder">
-          <p className="document-detail-card-placeholder-text">Front of document</p>
+        <div className="document-detail-card-image-slot">
+          {document.frontImageUrl ? (
+            <img
+              src={document.frontImageUrl}
+              alt={`${document.name} — front`}
+              className="document-detail-card-image"
+            />
+          ) : (
+            <p className="document-detail-card-placeholder-text">
+              Front of document
+            </p>
+          )}
         </div>
-        <div className="document-detail-card-placeholder">
-          <p className="document-detail-card-placeholder-text">Back of document</p>
+        <div className="document-detail-card-image-slot">
+          {/* TEMP: no second-image capture in the upload flow yet — the modal only
+        accepts one file per document, so "back" always stays a placeholder
+        until a two-sided upload step is designed. */}
+          <p className="document-detail-card-placeholder-text">
+            Back of document
+          </p>
         </div>
       </div>
     </div>

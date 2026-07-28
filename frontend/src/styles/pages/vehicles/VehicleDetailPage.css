@@ -168,3 +168,103 @@
   font-size: 14px;
   margin-top: 4px;
 }
+
+.documents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.documents-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 14px 16px;
+  background: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.documents-list-item:hover {
+  background: #f7fafc;
+}
+
+.documents-list-item-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.documents-list-item-status {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.documents-list-item-status.status-valid {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.documents-list-item-status.status-expiring {
+  background: #fefcbf;
+  color: #744210;
+}
+
+.documents-list-item-status.status-expired {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+@media (max-width: 900px) {
+  .vehicle-detail-page {
+    padding: 16px;
+  }
+
+  .detail-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .vehicle-detail-page {
+    padding: 12px;
+  }
+
+  .detail-header-card,
+  .detail-documents-card {
+    padding: 16px;
+  }
+
+  .detail-header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .detail-title {
+    font-size: 20px;
+  }
+
+  .documents-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .documents-header .btn-primary {
+    width: 100%;
+  }
+
+  .documents-list-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

@@ -25,7 +25,7 @@ export const VehicleCard = ({
   onDelete,
 }: VehicleCardProps) => (
   <Link
-    to={`/vehicles/${id}`}
+    to={`/vehicles/${id}/documents`}
     className="vehicle-card-link-wrapper"
     style={{ textDecoration: "none", color: "inherit", display: "block" }}
   >
