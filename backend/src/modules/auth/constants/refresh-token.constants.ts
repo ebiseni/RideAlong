@@ -1,5 +1,0 @@
-export const REFRESH_TOKEN_EXPIRES_IN_DAYS = 30;
-
-export const REFRESH_TOKEN_BYTES = 32;
-
-export const REFRESH_TOKEN_HASH_ALGORITHM = "sha256";

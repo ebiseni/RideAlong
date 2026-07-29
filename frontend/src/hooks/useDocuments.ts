@@ -1,85 +1,123 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  where,
+  serverTimestamp,
+  Timestamp,
+  doc,
+  deleteDoc
+} from "firebase/firestore";
+import { onAuthStateChanged,type User } from "firebase/auth";
+import { db, auth } from "../api/firebase";
+import { differenceInDays } from "date-fns";
 
-interface DocumentItem {
-  id: number;
+// Helper: Convert file to base64 string
+const fileToBase64 = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+  });
+
+// Data as it comes FROM firestore
+type DocumentFromFirestore = {
   name: string;
-  expiryDate: string;
-  vehicleId?: string; // NEW: links a document to a vehicle from useVehicles. Optional
-  // since documents uploaded via the standalone /documents/add
-  // flow (no vehicle context) won't have one.
-  frontImageUrl?: string; // NEW: object URL created from the uploaded File.
-  // Only persists for the current browser session —
-  // object URLs are revoked on page reload, so this
-  // is a stopgap until real file storage/upload to
-  // a backend exists.
-  documentNumber?: string; // NEW: e.g. license/policy/plate number, captured
-  // at upload time. Optional since the 4 seeded
-  // mock documents predate this field.
+  expiryDate: Timestamp | null;
+  vehicleId?: string | null;
+  frontImageUrl?: string | null;
+  backImageUrl?: string | null;
+  documentNumber?: string | null;
+  uid: string;
+  createdAt: Timestamp;
 }
 
-// TEMP: mock data to unblock the Create Reminder modal's Document dropdown
-// until this hook is wired to real backend data. Remove once the backend
-// document-list endpoint is confirmed and integrated.
-const INITIAL_MOCK_DOCUMENTS: DocumentItem[] = [
-  {
-    id: 1,
-    name: "Driver's License",
-    expiryDate: "2026-08-02",
-    documentNumber: "BU-485-7299",
-  },
-  {
-    id: 2,
-    name: "Insurance",
-    expiryDate: "2026-08-15",
-    documentNumber: "INS-2024-44567",
-  },
-  {
-    id: 3,
-    name: "Vehicle Registration",
-    expiryDate: "2026-06-10",
-    documentNumber: "REG-2023-11890",
-  },
-  {
-    id: 4,
-    name: "Roadworthy Certificate",
-    expiryDate: "2026-09-30",
-    documentNumber: "RW-2024-00321",
-  },
-];
+export interface DocumentItem extends Omit<DocumentFromFirestore, "expiryDate"> {
+  id: string;
+  expiryDate: string;
+  status: "valid" | "expiring" | "expired";
+  diffDays: number;
+}
+
+export type NewDocumentInput = {
+  name: string;
+  expiryDate: string;
+  vehicleId?: string;
+  file?: File; // front
+  backFile?: File | null; // FIX: allow null
+  documentNumber?: string;
+};
 
 export const useDocuments = () => {
-  // TEMP: seeded with mock data instead of empty array — swap back to
-  // useState<DocumentItem[]>([]) once real backend data replaces this
-  // FIX: was missing a setter, same bug pattern as the original useReminders —
-  // no way for any other code to ever add/change documents.
-  const [documentsData, setDocumentsData] = useState<DocumentItem[]>(
-    INITIAL_MOCK_DOCUMENTS,
-  );
+  const [documentsData, setDocumentsData] = useState<(DocumentFromFirestore & { id: string })[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    let unsubscribeSnapshot: (() => void) | null = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, (user: User | null) => {
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+        unsubscribeSnapshot = null;
+      }
+
+      if (!user) {
+        setDocumentsData([]);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      const q = query(collection(db, "documents"), where("uid", "==", user.uid));
+
+      unsubscribeSnapshot = onSnapshot(
+        q,
+        (snapshot) => {
+          const docs = snapshot.docs.map((docSnap) => ({
+            id: docSnap.id,
+       ...(docSnap.data() as DocumentFromFirestore),
+          }));
+          setDocumentsData(docs);
+          setLoading(false);
+        },
+        (error) => {
+          console.error("Error fetching documents:", error);
+          setLoading(false);
+        }
+      );
+    });
+
+    return () => {
+      if (unsubscribeSnapshot) unsubscribeSnapshot();
+      unsubscribeAuth();
+    };
+  }, []);
 
   const today = new Date();
 
-  // Automatically calculate status based on expiryDate vs today
-  const documents = documentsData.map((doc) => {
-    const expDate = new Date(doc.expiryDate);
-    const diffTime = expDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const documents: DocumentItem[] = documentsData.map((doc) => {
+    const expDate = doc.expiryDate?.toDate();
+    const diffDays = expDate? differenceInDays(expDate, today) : 999;
 
     let status: "valid" | "expiring" | "expired";
+    if (diffDays < 0) status = "expired";
+    else if (diffDays <= 30) status = "expiring";
+    else status = "valid";
 
-    if (diffDays < 0) {
-      status = "expired";
-    } else if (diffDays <= 30) {
-      status = "expiring";
-    } else {
-      status = "valid";
-    }
-
-    return { ...doc, status, diffDays };
+    return {
+ ...doc,
+      status,
+      diffDays,
+      expiryDate: expDate? expDate.toISOString().split("T")[0] : ""
+    };
   });
 
   const validCount = documents.filter((d) => d.status === "valid").length;
   const expiredCount = documents.filter((d) => d.status === "expired").length;
-
   const expiringDocs = documents.filter((d) => d.status === "expiring");
   const expiringCount = expiringDocs.length;
 
@@ -87,50 +125,63 @@ export const useDocuments = () => {
     if (expiringDocs.length === 0) return "";
     const minDays = Math.min(...expiringDocs.map((d) => d.diffDays));
     if (minDays <= 0) return "Expiring today";
-    return `Within ${minDays} ${minDays === 1 ? "day" : "days"}`;
+    return `Within ${minDays} ${minDays === 1? "day" : "days"}`;
   };
 
-  // NEW: called from AddDocumentsPage once a file upload completes.
-  // TEMP: expiryDate has no real input source yet — nothing in the upload
-  // flow captures it. Defaults to 1 year from today until an expiry-date
-  // field is added to DocumentUploadModal or confirmed from the backend.
-  // UPDATED: now accepts an optional vehicleId so uploads from
-  // VehicleDetailPage can be tagged to that vehicle.
-  // UPDATED: now accepts an optional File, converted to an object URL for
-  // display on DocumentDetailPage. TEMP — object URLs don't survive a page
-  // reload and there's no real backend upload yet.
-  const addDocument = (
-    name: string,
-    expiryDate?: string,
-    vehicleId?: string,
-    file?: File,
-    documentNumber?: string,
-  ) => {
-    const newId = Math.max(0, ...documentsData.map((d) => d.id)) + 1;
-    const fallbackExpiry = new Date();
-    fallbackExpiry.setFullYear(fallbackExpiry.getFullYear() + 1);
+  const addDocument = async (data: NewDocumentInput) => {
+    const user = auth.currentUser;
+    if (!user) throw new Error("Not authenticated");
 
-    setDocumentsData((prev) => [
-      ...prev,
-      {
-        id: newId,
-        name,
-        expiryDate: expiryDate ?? fallbackExpiry.toISOString().split("T")[0],
-        vehicleId,
-        frontImageUrl: file ? URL.createObjectURL(file) : undefined,
-        documentNumber,
-      },
-    ]);
+    setUploading(true);
+    try {
+      const expiryTimestamp = data.expiryDate? Timestamp.fromDate(new Date(data.expiryDate)) : null;
+      let frontUrl: string | null = null;
+      let backUrl: string | null = null;
 
-    return newId;
+      // Convert front file to base64
+      if (data.file) {
+        if (data.file.size > 450 * 1024) {
+          throw new Error("Front file too large. Max 450KB per image");
+        }
+        frontUrl = await fileToBase64(data.file);
+      }
+
+      // Convert back file to base64 - handle null
+      if (data.backFile) {
+        if (data.backFile.size > 450 * 1024) {
+          throw new Error("Back file too large. Max 450KB per image");
+        }
+        backUrl = await fileToBase64(data.backFile);
+      }
+
+      await addDoc(collection(db, "documents"), {
+        uid: user.uid,
+        name: data.name,
+        expiryDate: expiryTimestamp,
+        vehicleId: data.vehicleId || null,
+        documentNumber: data.documentNumber || null,
+        frontImageUrl: frontUrl,
+        backImageUrl: backUrl,
+        createdAt: serverTimestamp(),
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const deleteDocument = async (id: string) => {
+    await deleteDoc(doc(db, "documents", id));
   };
 
   return {
     documents,
+    loading,
+    uploading,
     validCount,
     expiringCount,
     expiredCount,
     expiringSubtext: getExpiringSubtext(),
     addDocument,
+    deleteDocument,
   };
 };

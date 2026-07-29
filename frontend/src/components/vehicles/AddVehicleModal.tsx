@@ -5,7 +5,7 @@ import "../../styles/pages/vehicles/VehicleFormPage.css"; // keeping your file n
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: { vehicleNumber: string; make: string; model: string; year: string }) => void;
+  onSave: (data: { vehicleNumber: string; make: string; model: string; year: string }) => Promise<void>; // Promise<void>
 }
 
 export default function AddVehicleModal({ isOpen, onClose, onSave }: Props) {

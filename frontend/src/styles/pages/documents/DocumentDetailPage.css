@@ -26,13 +26,15 @@
   cursor: pointer;
 }
 
-.document-detail-menu-btn {
-  background: transparent;
+.document-detail-delete-btn { /* you used this in JSX */
+  background: #fee2e2;
   border: none;
-  font-size: 18px;
-  color: #718096;
+  font-size: 13px;
+  font-weight: 600;
+  color: #b91c1c;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
 }
 
 .document-detail-title-row {
@@ -49,6 +51,56 @@
   color: #1a202c;
 }
 
+/* NEW: Document info rows */
+.document-detail-info {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  background: #fff;
+}
+
+.document-detail-info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.document-detail-info-row:last-child {
+  border-bottom: none;
+}
+.document-detail-info-row span:first-child {
+  color: #718096;
+  font-weight: 500;
+}
+.document-detail-info-row span:last-child {
+  color: #1a202c;
+  font-weight: 600;
+}
+
+/* NEW: Wrapper for Front + Back */
+.document-detail-images {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.document-detail-image-col {
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.document-detail-image-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0 0 8px;
+}
+
+/* Keep your old card slot for backwards compat */
 .document-detail-cards {
   display: flex;
   gap: 16px;
@@ -71,13 +123,14 @@
 .document-detail-card-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain; /* changed from cover so full doc is visible */
 }
 
 .document-detail-card-placeholder-text {
   margin: 0;
   font-size: 13px;
   color: #a0aec0;
+  text-align: center;
 }
 
 .document-detail-not-found {
@@ -90,7 +143,12 @@
     padding: 10px;
   }
 
-  .document-detail-cards {
+  .document-detail-cards,
+  .document-detail-images { /* stack on mobile */
     flex-direction: column;
+  }
+
+  .document-detail-image-col {
+    min-width: 100%;
   }
 }

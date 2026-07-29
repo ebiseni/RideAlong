@@ -7,18 +7,19 @@ interface CreateReminderModalProps {
   onClose: () => void;
   onSave: (data: {
     vehicleId: string;
-    documentId: number;
+    documentId: string;
     reminderType: "before" | "onExpiry";
     notifyDays: number;
     notificationMethods: ("inApp" | "email")[];
   }) => void;
   initialData?: {
     vehicleId: string;
-    documentId: number;
+    documentId: string;
     reminderType: "before" | "onExpiry";
     notifyDays: number;
     notificationMethods: ("inApp" | "email")[];
   } | null;
+  saving?: boolean;
 }
 
 const NOTIFY_OPTIONS = [45, 30, 14, 7, 1];
@@ -27,22 +28,21 @@ export default function CreateReminderModal({
   onClose,
   onSave,
   initialData,
+  saving = false,
 }: CreateReminderModalProps) {
   const { vehicles } = useVehicles();
   const { documents } = useDocuments();
   const isEditMode = Boolean(initialData);
 
-  const [vehicleId, setVehicleId] = useState(initialData?.vehicleId ?? "");
-  const [documentId, setDocumentId] = useState(
-    initialData ? String(initialData.documentId) : "",
-  );
+  const [vehicleId, setVehicleId] = useState(initialData?.vehicleId?? "");
+  const [documentId, setDocumentId] = useState(initialData?.documentId?? "");
   const [reminderType, setReminderType] = useState<"before" | "onExpiry">(
-    initialData?.reminderType ?? "before",
+    initialData?.reminderType?? "before",
   );
-  const [notifyDays, setNotifyDays] = useState(initialData?.notifyDays ?? 30);
+  const [notifyDays, setNotifyDays] = useState(initialData?.notifyDays?? 30);
   const [notificationMethods, setNotificationMethods] = useState<
     ("inApp" | "email")[]
-  >(initialData?.notificationMethods ?? ["inApp"]);
+  >(initialData?.notificationMethods?? ["inApp"]);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -51,25 +51,38 @@ export default function CreateReminderModal({
     };
   }, []);
 
+  // REMOVED: useEffect that was setting documentId
+  // FIX: Reset document when vehicle changes, inside onChange instead
+
+  const handleVehicleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setVehicleId(e.target.value);
+    setDocumentId(""); // reset here instead of in useEffect
+  };
+
   const toggleMethod = (method: "inApp" | "email") => {
     setNotificationMethods((prev) =>
       prev.includes(method)
-        ? prev.filter((m) => m !== method)
+       ? prev.filter((m) => m!== method)
         : [...prev, method],
     );
   };
 
-  const handleSubmit = () => {
-    if (!vehicleId || !documentId) return; // both are required selects, no-op if either is unset
+  const handleSubmit = async () => {
+    if (!vehicleId ||!documentId || notificationMethods.length === 0) return;
 
     onSave({
       vehicleId,
-      documentId: Number(documentId), // convert back to number to match DocumentItem.id
+      documentId,
       reminderType,
-      notifyDays,
+      notifyDays: reminderType === "onExpiry"? 0 : notifyDays,
       notificationMethods,
     });
   };
+
+  // Only show docs for selected vehicle
+  const filteredDocuments = vehicleId
+   ? documents.filter((d) => d.vehicleId === vehicleId)
+    : documents;
 
   return (
     <div className="create-reminder-backdrop" onClick={onClose}>
@@ -78,11 +91,11 @@ export default function CreateReminderModal({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="create-reminder-title">
-          {isEditMode ? "Edit Reminder" : "Create Reminder"}
+          {isEditMode? "Edit Reminder" : "Create Reminder"}
         </h2>
         <p className="create-reminder-subtitle">
           {isEditMode
-            ? "Update the details for this reminder."
+           ? "Update the details for this reminder."
             : "Set a reminder so you'll never miss a document renewal."}
         </p>
 
@@ -91,7 +104,8 @@ export default function CreateReminderModal({
             <label>Vehicle</label>
             <select
               value={vehicleId}
-              onChange={(e) => setVehicleId(e.target.value)}
+              onChange={handleVehicleChange} // FIX: use handler
+              disabled={saving}
             >
               <option value="" disabled>
                 Select vehicle
@@ -109,11 +123,12 @@ export default function CreateReminderModal({
             <select
               value={documentId}
               onChange={(e) => setDocumentId(e.target.value)}
+              disabled={!vehicleId || saving}
             >
               <option value="" disabled>
-                Select document
+                {vehicleId? "Select document" : "Select vehicle first"}
               </option>
-              {documents.map((d) => (
+              {filteredDocuments.map((d) => (
                 <option key={d.id} value={d.id}>
                   {d.name}
                 </option>
@@ -131,6 +146,7 @@ export default function CreateReminderModal({
                 name="reminderType"
                 checked={reminderType === "before"}
                 onChange={() => setReminderType("before")}
+                disabled={saving}
               />
               <p>Before Expiry</p>
             </label>
@@ -140,30 +156,34 @@ export default function CreateReminderModal({
                 name="reminderType"
                 checked={reminderType === "onExpiry"}
                 onChange={() => setReminderType("onExpiry")}
+                disabled={saving}
               />
               <p>On Expiry Date</p>
             </label>
           </div>
         </div>
 
-        <div className="create-reminder-field">
-          <label>Notify Me</label>
-          <p className="create-reminder-hint">
-            Choose when you want to be reminded.
-          </p>
-          <div className="create-reminder-pill-group">
-            {NOTIFY_OPTIONS.map((days) => (
-              <button
-                key={days}
-                type="button"
-                className={`create-reminder-pill ${notifyDays === days ? "active" : ""}`}
-                onClick={() => setNotifyDays(days)}
-              >
-                {days} {days === 1 ? "Day" : "Days"}
-              </button>
-            ))}
+        {reminderType === "before" && (
+          <div className="create-reminder-field">
+            <label>Notify Me</label>
+            <p className="create-reminder-hint">
+              Choose when you want to be reminded.
+            </p>
+            <div className="create-reminder-pill-group">
+              {NOTIFY_OPTIONS.map((days) => (
+                <button
+                  key={days}
+                  type="button"
+                  className={`create-reminder-pill ${notifyDays === days? "active" : ""}`}
+                  onClick={() => setNotifyDays(days)}
+                  disabled={saving}
+                >
+                  {days} {days === 1? "Day" : "Days"}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="create-reminder-field">
           <label>Notification Method</label>
@@ -176,6 +196,7 @@ export default function CreateReminderModal({
                 type="checkbox"
                 checked={notificationMethods.includes("inApp")}
                 onChange={() => toggleMethod("inApp")}
+                disabled={saving}
               />
               <p>In-app Notification</p>
             </label>
@@ -184,6 +205,7 @@ export default function CreateReminderModal({
                 type="checkbox"
                 checked={notificationMethods.includes("email")}
                 onChange={() => toggleMethod("email")}
+                disabled={saving}
               />
               <p>Email</p>
             </label>
@@ -191,11 +213,19 @@ export default function CreateReminderModal({
         </div>
 
         <div className="create-reminder-actions">
-          <button className="create-reminder-cancel-btn" onClick={onClose}>
+          <button
+            className="create-reminder-cancel-btn"
+            onClick={onClose}
+            disabled={saving}
+          >
             Cancel
           </button>
-          <button className="create-reminder-submit-btn" onClick={handleSubmit}>
-            {isEditMode ? "Save Changes" : "Create Reminder"}
+          <button
+            className="create-reminder-submit-btn"
+            onClick={handleSubmit}
+            disabled={saving ||!vehicleId ||!documentId || notificationMethods.length === 0}
+          >
+            {saving? "Saving..." : isEditMode? "Save Changes" : "Create Reminder"}
           </button>
         </div>
       </div>

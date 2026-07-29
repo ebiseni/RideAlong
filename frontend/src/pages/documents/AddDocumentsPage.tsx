@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react"; // removed useEffect
 import { useNavigate, useSearchParams } from "react-router-dom";
 import DocumentUploadModal from "../../components/documents/DocumentUploadModal";
 import ConfirmModal from "../../components/shared/ConfirmModal";
@@ -18,38 +18,57 @@ const DOCUMENT_TYPES = [
 export default function AddDocumentsPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const vehicleId = searchParams.get("vehicleId") ?? undefined;
+  const vehicleId = searchParams.get("vehicleId")?? undefined;
 
-  const { addDocument } = useDocuments();
+  const { addDocument, loading, uploading, documents } = useDocuments();
   const { vehicles } = useVehicles();
-  const linkedVehicle = vehicleId ? vehicles.find((v) => v.id === vehicleId) : null;
+  const linkedVehicle = vehicleId? vehicles.find((v) => v.id === vehicleId) : null;
 
   const [uploadingDocId, setUploadingDocId] = useState<string | null>(null);
-  // TEMP: tracks which items have been uploaded in this session only.
-  // Not persisted — swap for real document state once the backend upload
-  // endpoint and DocumentItem schema are confirmed.
-  const [uploadedIds, setUploadedIds] = useState<string[]>([]);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
 
-  const handleUploadComplete = (
+  // Derive uploaded doc names from Firestore
+  const uploadedNames = useMemo(() => {
+    return documents
+   .filter(d =>!vehicleId || d.vehicleId === vehicleId)
+   .map(d => d.name);
+  }, [documents, vehicleId]);
+
+  const handleUploadComplete = async (
     docId: string,
     expiryDate: string,
     file: File,
+    backFile: File | null,
     documentNumber: string,
   ) => {
     const docType = DOCUMENT_TYPES.find((d) => d.id === docId);
-    if (docType) {
-      addDocument(docType.name, expiryDate, vehicleId, file, documentNumber);
+    if (!docType) return;
+
+    if (uploadedNames.includes(docType.name)) {
+      alert("This document is already uploaded. Delete it first to re-upload.");
+      setUploadingDocId(null);
+      return;
     }
 
-    const updatedUploadedIds = [...uploadedIds, docId];
-    setUploadedIds(updatedUploadedIds);
-    setUploadingDocId(null);
+    try {
+      await addDocument({
+        name: docType.name,
+        expiryDate,
+        vehicleId,
+        file,
+        backFile,
+        documentNumber,
+      });
+      setUploadingDocId(null);
 
-    // NEW: once every checklist item has been uploaded, show a confirmation
-    // instead of leaving the person on a fully-checked list with no next step.
-    if (updatedUploadedIds.length === DOCUMENT_TYPES.length) {
-      setShowCompleteModal(true);
+      // FIX: Check completion here instead of useEffect
+      const newUploadedCount = uploadedNames.length + 1;
+      if (newUploadedCount >= DOCUMENT_TYPES.length) {
+        setShowCompleteModal(true);
+      }
+    } catch (err: unknown) { // FIX: no any
+      console.error("Failed to add document:", err);
+      alert(err instanceof Error? err.message : "Failed to upload document");
     }
   };
 
@@ -68,28 +87,31 @@ export default function AddDocumentsPage() {
       </button>
       <p className="add-documents-subtitle">
         {linkedVehicle
-          ? `Select and upload documents for ${linkedVehicle.name}.`
+      ? `Select and upload documents for ${linkedVehicle.name}.`
           : "Select and upload your vehicle documents."}
       </p>
 
        <div className="add-documents-list">
         {DOCUMENT_TYPES.map((doc) => {
-          const isUploaded = uploadedIds.includes(doc.id);
+          const isUploaded = uploadedNames.includes(doc.name);
           return (
             <button
               key={doc.id}
               className="add-documents-item"
               onClick={() => setUploadingDocId(doc.id)}
+              disabled={loading || uploading || isUploaded}
             >
               <div className="add-documents-item-icon-wrapper">
                 <img src={documentIcon} alt="" className="add-documents-item-icon" />
               </div>
               <div className="add-documents-item-text">
                 <p className="add-documents-item-name">{doc.name}</p>
-                <p className="add-documents-item-hint">Upload file (PDF, JPG, PNG)</p>
+                <p className="add-documents-item-hint">
+                  {isUploaded? "Uploaded ✓" : "Upload file (PDF, JPG, PNG)"}
+                </p>
               </div>
-              <span className={`add-documents-item-check ${isUploaded ? "checked" : ""}`}>
-                {isUploaded ? "✓" : ""}
+              <span className={`add-documents-item-check ${isUploaded? "checked" : ""}`}>
+                {isUploaded? "✓" : ""}
               </span>
             </button>
           );
@@ -98,14 +120,14 @@ export default function AddDocumentsPage() {
 
       <p className="add-documents-footer-note">
         <span className="add-documents-footer-icon">ⓘ</span>
-        Ensure the documents are in the right format before saving.
+        Ensure the documents are in the right format before saving. Max 400KB per image.
       </p>
 
        {uploadingDocId && (
         <DocumentUploadModal
           onClose={() => setUploadingDocId(null)}
-          onComplete={(expiryDate, file, documentNumber) =>
-            handleUploadComplete(uploadingDocId, expiryDate, file, documentNumber)
+          onComplete={(expiryDate, file, backFile, documentNumber) =>
+            handleUploadComplete(uploadingDocId, expiryDate, file, backFile, documentNumber)
           }
         />
       )}

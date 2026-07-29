@@ -7,18 +7,19 @@
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   margin-bottom: 12px;
-  position: relative; /* NEW: so delete button positions correctly */
+  position: relative; 
   transition: box-shadow 0.2s;
 }
 
 .vehicle-card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); /* NEW: subtle hover */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .vehicle-left {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* CHANGED: was center, so doc list aligns top */
   gap: 16px;
+  flex: 1;
 }
 
 .vehicle-avatar {
@@ -32,12 +33,14 @@
   width: 44px;
   height: 44px;
   flex-shrink: 0;
+  margin-top: 4px; /* NEW: align with name */
 }
 
 .vehicle-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  flex: 1;
 }
 
 .vehicle-name {
@@ -54,7 +57,7 @@
 }
 
 .vehicle-documents {
-  margin: 0;
+  margin: 0 0 8px 0; /* ADDED bottom margin */
   font-size: 13px;
   color: #718096;
 }
@@ -68,7 +71,7 @@
 .vehicle-right {
   display: flex;
   align-items: center;
-  gap: 12px; /* CHANGED: was 20px to fit delete button */
+  gap: 12px;
 }
 
 .compliance-wrapper {
@@ -110,7 +113,6 @@
 }
 
 .compliance-badge.red {
-  /* MOVED UP + ADDED ICON COLOR */
   background-color: #fff5f5;
   color: #e53e3e;
   border-color: #fed7d7;
@@ -129,7 +131,6 @@
   color: #718096;
 }
 
-/* NEW: DELETE BUTTON STYLES */
 .btn-delete-card {
   background: none;
   border: none;
@@ -141,7 +142,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
-  z-index: 2; /* make sure it's clickable above the Link */
+  z-index: 2;
 }
 .btn-delete-card:hover {
   background: #fee2e2;
@@ -155,22 +156,64 @@
 }
 
 /* =========================================
+   NEW: DOCUMENT LIST STYLES
+   ========================================= */
+.vehicle-doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.vehicle-doc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.vehicle-doc-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.vehicle-doc-expiry {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  font-size: 12px;
+  color: #718096;
+}
+
+.vehicle-doc-days {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.vehicle-doc-days.upcoming { 
+  color: #d97706; /* amber-600 */
+} 
+.vehicle-doc-days.overdue { 
+  color: #dc2626; /* red-600 */
+}
+
+/* =========================================
    RESPONSIVE STYLES FOR MOBILE
    ========================================= */
 @media (max-width: 600px) {
   .vehicle-card {
     flex-direction: column !important;
     align-items: stretch !important;
-    justify-content: flex-start !important;
     gap: 12px !important;
     padding: 16px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
   }
 
   .vehicle-left {
-    display: flex !important;
-    align-items: center !important;
+    align-items: flex-start !important; /* CHANGED for mobile */
     gap: 12px !important;
     width: 100% !important;
   }
@@ -187,7 +230,6 @@
 
   .vehicle-name {
     font-size: 14px !important;
-    font-weight: 600 !important;
   }
 
   .vehicle-plate,
@@ -195,20 +237,30 @@
     font-size: 12px !important;
   }
 
+  .vehicle-doc-list {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+
+  .vehicle-doc-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .vehicle-doc-expiry {
+    align-items: flex-start;
+  }
+
   .vehicle-right {
     width: 100% !important;
-    display: flex !important;
-    flex-direction: row !important;
     justify-content: space-between !important;
-    align-items: center !important;
     border-top: 1px solid #f1f5f9 !important;
     padding-top: 10px !important;
-    margin-top: 2px !important;
   }
 
   .compliance-wrapper {
     align-items: flex-start !important;
-    width: auto !important;
   }
 
   .compliance-badge {
@@ -218,6 +270,5 @@
 
   .compliance-subtext {
     font-size: 11px !important;
-    color: #64748b !important;
   }
 }

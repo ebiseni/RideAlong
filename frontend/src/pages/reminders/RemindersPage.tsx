@@ -6,7 +6,7 @@ import CreateReminderModal from "../../components/reminders/CreateReminderModal"
 import "../../styles/pages/reminders/RemindersPage.css";
 
 import calendarIcon from "../../assets/icons/reminder-calendar-icon.svg";
-import clockIcon from "../../assets/icons/create-reminder.svg"; // note: filename says "create-reminder" but it's actually a clock icon
+import clockIcon from "../../assets/icons/create-reminder.svg";
 import bellIcon from "../../assets/icons/bell-outline.svg";
 import searchIcon from "../../assets/icons/reminder-search-icon.svg";
 import filterIcon from "../../assets/icons/reminder-filter-icon.svg";
@@ -18,7 +18,7 @@ import UserAvatarButton from "../../hooks/UserAvatarButton";
 
 export default function RemindersPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [editingReminderId, setEditingReminderId] = useState<number | null>(
+  const [editingReminderId, setEditingReminderId] = useState<string | null>(
     null,
   );
   const {
@@ -32,6 +32,7 @@ export default function RemindersPage() {
     addReminder,
     updateReminder,
     getRawReminderById,
+    loading,
   } = useReminders();
 
   const tabs: { key: "upcoming" | "overdue" | "all"; label: string }[] = [
@@ -39,6 +40,36 @@ export default function RemindersPage() {
     { key: "overdue", label: "Overdue" },
     { key: "all", label: "All" },
   ];
+
+  const handleSave = async (data: {
+    vehicleId: string;
+    documentId: string;
+    reminderType: "before" | "onExpiry";
+    notifyDays: number;
+    notificationMethods: ("inApp" | "email")[];
+  }) => {
+    try {
+      if (editingReminderId !== null) {
+        await updateReminder(editingReminderId, data);
+      } else {
+        await addReminder(data);
+      }
+      setIsCreateModalOpen(false);
+      setEditingReminderId(null);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save reminder");
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    const confirmed = window.confirm(
+      `Delete this reminder? This can't be undone.`,
+    );
+    if (confirmed) {
+      await deleteReminder(id);
+    }
+  };
 
   return (
     <div className="reminders-container">
@@ -128,7 +159,9 @@ export default function RemindersPage() {
         </div>
       </div>
 
-      {reminders.length === 0 ? (
+      {loading ? (
+        <p style={{ textAlign: "center", padding: "40px" }}>Loading reminders...</p>
+      ) : reminders.length === 0 ? (
         <div className="reminders-empty-wrapper">
           <EmptyState
             icon={
@@ -142,8 +175,8 @@ export default function RemindersPage() {
               activeTab === "overdue"
                 ? "No overdue reminders"
                 : activeTab === "upcoming"
-                  ? "No upcoming reminders"
-                  : "No reminders yet"
+                ? "No upcoming reminders"
+                : "No reminders yet"
             }
             description={
               activeTab === "overdue"
@@ -171,17 +204,11 @@ export default function RemindersPage() {
                   <td>
                     <div className="reminders-doc-cell">
                       <div className="reminders-doc-icon-wrapper">
-                        <img
-                          src={r.icon}
-                          alt=""
-                          className="reminders-doc-icon"
-                        />
+                        <img src={r.icon} alt="" className="reminders-doc-icon" />
                       </div>
                       <div>
                         <p className="reminders-doc-type">{r.documentType}</p>
-                        <p className="reminders-doc-number">
-                          {r.documentNumber}
-                        </p>
+                        <p className="reminders-doc-number">{r.documentNumber}</p>
                       </div>
                     </div>
                   </td>
@@ -192,13 +219,13 @@ export default function RemindersPage() {
                   <td>
                     <p>{r.expiryFormatted}</p>
                     <p className={`reminders-days-left ${r.status}`}>
-                      {r.label}
+                      {r.expiryDaysLabel}  {/* FIXED */}
                     </p>
                   </td>
                   <td>
                     <p>{r.reminderFormatted}</p>
                     <p className={`reminders-days-left ${r.status}`}>
-                      {r.label}
+                      {r.reminderDaysLabel}  {/* FIXED */}
                     </p>
                   </td>
                   <td>
@@ -218,14 +245,7 @@ export default function RemindersPage() {
                       <button
                         className="reminders-action-btn"
                         aria-label="Delete"
-                        onClick={() => {
-                          const confirmed = window.confirm(
-                            `Delete reminder for "${r.documentType}"? This can't be undone.`,
-                          );
-                          if (confirmed) {
-                            deleteReminder(r.id);
-                          }
-                        }}
+                        onClick={() => handleDelete(r.id)}
                       >
                         <img src={deleteIcon} alt="" />
                       </button>
@@ -240,23 +260,14 @@ export default function RemindersPage() {
       {(isCreateModalOpen || editingReminderId !== null) && (
         <CreateReminderModal
           initialData={
-            editingReminderId !== null
-              ? getRawReminderById(editingReminderId)
-              : null
+            editingReminderId !== null ? getRawReminderById(editingReminderId) : null
           }
           onClose={() => {
             setIsCreateModalOpen(false);
             setEditingReminderId(null);
           }}
-          onSave={(data) => {
-            if (editingReminderId !== null) {
-              updateReminder(editingReminderId, data);
-            } else {
-              addReminder(data);
-            }
-            setIsCreateModalOpen(false);
-            setEditingReminderId(null);
-          }}
+          onSave={handleSave}
+          saving={loading}
         />
       )}
     </div>

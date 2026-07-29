@@ -5,7 +5,6 @@ import {
   type Vehicle,
   type NewVehicleInput,
 } from "../../hooks/useVehicles";
-import { useDocuments } from "../../hooks/useDocuments";
 import { VehicleCard } from "../../components/vehicles/VehicleCard";
 import AddVehicleModal from "../../components/vehicles/AddVehicleModal";
 import EmptyState from "../../components/shared/EmptyState";
@@ -14,15 +13,20 @@ import "../../styles/pages/vehicles/VehicleListPage.css";
 
 export default function VehiclesPage() {
   const navigate = useNavigate();
-  const { vehicles, totalVehicles, addVehicle, deleteVehicle } = useVehicles(); // <-- ADDED deleteVehicle
-  const { documents } = useDocuments();
+  const { vehicles, totalVehicles, addVehicle, deleteVehicle, loading } = useVehicles(); // added loading
   const [showVehicleModal, setShowVehicleModal] = useState(false);
   const [search, setSearch] = useState("");
   const [view, setView] = useState<"grid" | "list">("grid");
 
-  const handleSaveVehicle = (data: NewVehicleInput) => {
-    addVehicle(data);
-    setShowVehicleModal(false);
+  const handleSaveVehicle = async (data: NewVehicleInput) => {
+    try {
+      await addVehicle(data);
+      setShowVehicleModal(false);
+    } catch (error: unknown) {
+      console.error("Failed to save vehicle:", error);
+      const message = (error as Error).message;
+      alert(`Failed to save vehicle: ${message}`);
+    }
   };
 
   const handleOpenModal = () => setShowVehicleModal(true);
@@ -32,11 +36,6 @@ export default function VehiclesPage() {
       v.name.toLowerCase().includes(search.toLowerCase()) ||
       v.plate.toLowerCase().includes(search.toLowerCase()),
   );
-
-  // NEW: real per-vehicle document count, replacing the static v.documents
-  // mock number. Same fix applied to VehicleDetailPage earlier.
-  const getDocumentCount = (vehicleId: string) =>
-    documents.filter((d) => d.vehicleId === vehicleId).length;
 
   return (
     <div className="vehicles-page">
@@ -53,7 +52,6 @@ export default function VehiclesPage() {
         </div>
 
         <div className="vehicles-header-actions">
-          {/* View Toggle */}
           <div className="view-toggle">
             <button
               className={view === "grid" ? "active" : ""}
@@ -85,36 +83,43 @@ export default function VehiclesPage() {
       />
 
       {/* Vehicles Grid/List */}
-      <div className={view === "grid" ? "vehicles-grid" : "vehicles-list"}>
-        {filteredVehicles.length === 0 ? (
-          <EmptyState
-            icon={
-              <img
-                src={emptyVehicleIllustration}
-                alt="No vehicles"
-                style={{ width: 150 }}
-              />
-            }
-            title="You haven't added any vehicle yet."
-            description="Add your vehicles to start organizing and managing their documents."
-            actionText="Add Your Vehicle"
-            actionLink="#"
-            onActionClick={handleOpenModal}
-          />
-        ) : (
-          filteredVehicles.map((v: Vehicle) => (
-            // FIX: removed the wrapping div's onClick to /vehicles/${v.id}/documents —
-            // it was conflicting with VehicleCard's own <Link to={/vehicles/${id}}>,
-            // and the Link always won, silently making this outer onClick dead code.
-            <VehicleCard
-              key={v.id}
-              {...v}
-              documents={getDocumentCount(v.id)}
-              onDelete={deleteVehicle}
+      {loading ? (
+        <p style={{textAlign: "center", padding: "40px"}}>Loading vehicles...</p>
+      ) : (
+        <div className={view === "grid" ? "vehicles-grid" : "vehicles-list"}>
+          {filteredVehicles.length === 0 ? (
+            <EmptyState
+              icon={
+                <img
+                  src={emptyVehicleIllustration}
+                  alt="No vehicles"
+                  style={{ width: 150 }}
+                />
+              }
+              title="You haven't added any vehicle yet."
+              description="Add your vehicles to start organizing and managing their documents."
+              actionText="Add Your Vehicle"
+              actionLink="#"
+              onActionClick={handleOpenModal}
             />
-          ))
-        )}
-      </div>
+          ) : (
+            filteredVehicles.map((v: Vehicle) => (
+              <VehicleCard
+                key={v.id}
+                id={v.id}
+                name={v.name}
+                plate={v.plate}
+                documents={v.documentCount} // now comes from hook
+                status={v.status}
+                statusClass={v.statusClass}
+                subText={v.subText}
+                vehicleDocuments={v.documents} // NEW: pass full array so card can show each doc
+                onDelete={deleteVehicle}
+              />
+            ))
+          )}
+        </div>
+      )}
 
       {/* Modal */}
       <AddVehicleModal
