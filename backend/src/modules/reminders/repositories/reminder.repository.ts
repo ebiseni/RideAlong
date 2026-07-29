@@ -39,6 +39,13 @@ export class ReminderRepository {
   ): Promise<Reminder | null> {
     return prisma.reminder.findUnique({
       where: { id },
+      include: {
+        vehicleDocument: {
+          include: {
+            vehicle: true,
+          },
+        },
+      },
     });
   }
 
@@ -50,7 +57,7 @@ export class ReminderRepository {
 
   async findUserReminders(
     userId: string
-  ): Promise<Reminder[]> {
+  ) {
     return prisma.reminder.findMany({
       where: {
         userId,
@@ -59,7 +66,11 @@ export class ReminderRepository {
         reminderDate: "asc",
       },
       include: {
-        vehicleDocument: true,
+        vehicleDocument: {
+          include: {
+            vehicle: true,
+          },
+        },
       },
     });
   }
