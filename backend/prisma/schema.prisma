@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ReminderStatus {
+  PENDING
+  SENT
+  DISMISSED
+}
+
 model User {
   id                    String   @id @default(uuid())
   fullName              String
