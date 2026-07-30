@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react"; // FIX 1: type-only
 import { useNavigate } from "react-router-dom";
@@ -170,3 +171,5 @@ export default function LoginPage() {
         </div>
     );
 }
+=======
+>>>>>>> 5c3ca13bbe3dac2ccf8624060caa7867596932f0

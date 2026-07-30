@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .register-page {
     display: flex;
     flex-direction: row;
@@ -315,3 +316,5 @@
         padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
     }
 }
+=======
+>>>>>>> 5c3ca13bbe3dac2ccf8624060caa7867596932f0
