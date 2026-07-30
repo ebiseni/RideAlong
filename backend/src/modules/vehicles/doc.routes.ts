@@ -54,17 +54,17 @@ const getCloudinaryPublicId = (url: string) => {
   return publicIdWithExtension.substring(0, publicIdWithExtension.lastIndexOf('.'));
 };
 
-router.post('/', protect, upload.single('imageUrl'), async (req: AuthenticatedRequest, res: Response) => {
+router.post('/add', protect, upload.single('file'), async (req: AuthenticatedRequest, res: Response) => {
   try {
     if (!req.body || Object.keys(req.body).length === 0) {
       return res.status(400).json({ message: 'Request form data fields are missing.' });
     }
 
-    const { vehicleId, documentType, issueDate, expirationDate } = req.body;
+    const { vehicleId, documentType, documentNumber,expiryDate } = req.body;
     const userId = req.user?.id;
 
-    if (!vehicleId || !documentType || !issueDate || !expirationDate) {
-      return res.status(400).json({ message: 'vehicleId, documentType, issueDate, and expirationDate are required.' });
+    if (!vehicleId || !documentType || !documentNumber || !expiryDate) {
+      return res.status(400).json({ message: 'Request Form Data are missing.' });
     }
 
     if (!userId) {
@@ -89,9 +89,9 @@ router.post('/', protect, upload.single('imageUrl'), async (req: AuthenticatedRe
         userId,
         vehicleId: vehicleId as string,
         documentType,
-        issueDate: new Date(issueDate),
-        expirationDate: new Date(expirationDate),
-        imageUrl: imageUrl,
+        documentNumber,
+        expiryDate: new Date(expiryDate),
+        file: imageUrl,
       },
     });
 
@@ -126,43 +126,43 @@ router.get('/vehicle/:vehicleId', protect, async (req: AuthenticatedRequest, res
   }
 });
 
-router.post('/', protect, upload.single('documentImage'), async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const userId = req.user?.id;
-    const { vehicleId, documentType, issueDate, expirationDate } = req.body;
+// router.post('/', protect, upload.single('file'), async (req: AuthenticatedRequest, res: Response) => {
+//   try {
+//     const userId = req.user?.id;
+//     const { vehicleId, documentType, documentNumber, expiryDate } = req.body;
 
-    if (!req.file) {
-      return res.status(400).json({ message: 'File is required' });
-    }
+//     if (!req.file) {
+//       return res.status(400).json({ message: 'File is required' });
+//     }
 
-    const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId } });
-    if (!vehicle || vehicle.userId !== userId) {
-      return res.status(403).json({ message: 'Not authorized to add documents to this vehicle' });
-    }
+//     const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId } });
+//     if (!vehicle || vehicle.userId !== userId) {
+//       return res.status(403).json({ message: 'Not authorized to add documents to this vehicle' });
+//     }
 
-    const newDocument = await prisma.vehicleDocument.create({
-      data: {
-        vehicleId,
-        userId,
-        documentType,
-        issueDate: new Date(issueDate),
-        expirationDate: new Date(expirationDate),
-        imageUrl: req.file.path,
-      },
-    });
+//     const newDocument = await prisma.vehicleDocument.create({
+//       data: {
+//         vehicleId,
+//         userId,
+//         documentType,
+//         documentNumber,
+//         expiryDate: new Date(expiryDate),
+//         file: req.file.path,
+//       },
+//     });
 
-    return res.status(201).json(newDocument);
-  } catch (error) {
-    console.error('Upload Error:', error);
-    return res.status(500).json({ message: 'Server error uploading document' });
-  }
-});
+//     return res.status(201).json(newDocument);
+//   } catch (error) {
+//     console.error('Upload Error:', error);
+//     return res.status(500).json({ message: 'Server error uploading document' });
+//   }
+// });
 
-router.patch('/:id', protect, upload.single('imageUrl'), async (req: AuthenticatedRequest, res: Response) => {
+router.patch('/:id', protect, upload.single('file'), async (req: AuthenticatedRequest, res: Response) => {
   try {
     const id = req.params.id as string;
     const userId = req.user?.id;
-    const { documentType, issueDate, expirationDate } = req.body;
+    const { documentType,documentNumber, expiryDate } = req.body;
 
     const existingDoc = await prisma.vehicleDocument.findUnique({
       where: { id },
@@ -177,13 +177,13 @@ router.patch('/:id', protect, upload.single('imageUrl'), async (req: Authenticat
       return res.status(403).json({ message: 'Not authorized to update this document' });
     }
 
-    let imageUrl = existingDoc.imageUrl;
+    let imageUrl = existingDoc.file;
 
     if (req.file) {
-      if (existingDoc.imageUrl) {
+      if (existingDoc.file) {
         try {
-          const publicId = getCloudinaryPublicId(existingDoc.imageUrl);
-          const isPdf = existingDoc.imageUrl.toLowerCase().endsWith('.pdf');
+          const publicId = getCloudinaryPublicId(existingDoc.file);
+          const isPdf = existingDoc.file.toLowerCase().endsWith('.pdf');
 
           await cloudinary.uploader.destroy(publicId, {
             resource_type: isPdf ? 'raw' : 'image',
@@ -200,10 +200,9 @@ router.patch('/:id', protect, upload.single('imageUrl'), async (req: Authenticat
     const updatedDocument = await prisma.vehicleDocument.update({
       where: { id },
       data: {
-        documentType: documentType !== undefined ? documentType : existingDoc.documentType,
-        issueDate: issueDate !== undefined ? new Date(issueDate) : existingDoc.issueDate,
-        expirationDate: expirationDate ? new Date(expirationDate) : existingDoc.expirationDate,
-        imageUrl,
+        documentNumber: documentNumber !== undefined ? documentNumber : existingDoc.documentNumber,
+        expiryDate: expiryDate !== undefined ? new Date(expiryDate) : existingDoc.expiryDate,
+        file: imageUrl,
       },
     });
 
@@ -211,6 +210,32 @@ router.patch('/:id', protect, upload.single('imageUrl'), async (req: Authenticat
   } catch (error) {
     console.error('Update Document Error:', error);
     return res.status(500).json({ message: 'Server error updating document' });
+  }
+});
+router.get("/", protect, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user?.id
+
+if (!userId) {
+  return res.status(401).json({
+    message: "Unauthorized",
+  });
+}
+
+const documents = await prisma.vehicleDocument.findMany({
+  where: {
+    userId,
+  },
+  orderBy: {
+    createdAt: "desc",
+  },
+});
+    return res.status(200).json(documents);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Failed to fetch documents",
+    });
   }
 });
 

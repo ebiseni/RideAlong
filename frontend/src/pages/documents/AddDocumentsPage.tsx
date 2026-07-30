@@ -31,18 +31,26 @@ export default function AddDocumentsPage() {
   const [uploadedIds, setUploadedIds] = useState<string[]>([]);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
 
-  const handleUploadComplete = (
-    docId: string,
+  const handleUploadComplete = async (
+    id: string,
     expiryDate: string,
     file: File,
     documentNumber: string,
   ) => {
-    const docType = DOCUMENT_TYPES.find((d) => d.id === docId);
-    if (docType) {
-      addDocument(docType.name, expiryDate, vehicleId, file, documentNumber);
-    }
+    const docType = DOCUMENT_TYPES.find((d) => d.id === id);
+      if (!vehicleId) {
+        console.error("Vehicle ID is missing");
+        return;
+      }
+    await addDocument(
+      expiryDate,
+      vehicleId,
+      file,
+      documentNumber,
+      docType?.name ?? ""
+    );
 
-    const updatedUploadedIds = [...uploadedIds, docId];
+    const updatedUploadedIds = [...uploadedIds, id];
     setUploadedIds(updatedUploadedIds);
     setUploadingDocId(null);
 

@@ -109,6 +109,7 @@ export default function DocumentUploadModal({
             className="document-upload-next-btn"
             disabled={!canProceed}
             onClick={() => file && onComplete(expiryDate, file, documentNumber.trim())}
+            type="submit"
           >
             Next
           </button>

@@ -89,17 +89,19 @@
   border: 1px solid;
 }
 
-.compliance-badge.green {
+.compliance-badge.green,.compliance-badge.compliant,
+.status-pill.compliant{
   background-color: #f0fff4;
   color: #276749;
   border-color: #c6f6d5;
 }
 
-.compliance-badge.green .badge-icon {
+.compliance-badge.green .badge-icon, .compliance-badge.compliant .badge-icon {
   color: #38a169;
 }
 
-.compliance-badge.yellow {
+.compliance-badge.yellow, .compliance-badge.expiring-soon,
+.status-pill.expiring-soon{
   background-color: #fffaf0;
   color: #b7791f;
   border-color: #feebc8;

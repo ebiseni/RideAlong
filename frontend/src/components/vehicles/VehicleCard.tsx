@@ -7,26 +7,48 @@ type VehicleCardProps = {
   id: string;
   name: string;
   plate: string;
-  documents: number;
-  status: string;
-  statusClass: "green" | "yellow" | "red"; // only allow these 3
-  subText?: string; // optional
+  documentsCount: number;
+  vehicleDocs ?: { id: string; name: string; expiryDate: string }[];
   onDelete?: (id: string) => void; // Made optional so it can be hidden on the dashboard
 };
 
-export const VehicleCard = ({
+export function  VehicleCard({
   id,
   name,
-  plate,
-  documents,
-  status,
-  statusClass,
-  subText,
+  plate, 
+  documentsCount,
+  vehicleDocs = [],
   onDelete,
-}: VehicleCardProps) => (
-  <Link
-    to={`/vehicles/${id}/documents`}
-    className="vehicle-card-link-wrapper"
+}: VehicleCardProps){
+      let statusText = "No documents";
+      let statusClass = "no-documents";
+      let subText = "Add documents to track expiry";
+
+       if (documentsCount > 0) {
+          const now = new Date();
+      
+          // Check if any document is expiring within 30 days
+          const isExpiring = vehicleDocs.some((doc) => {
+            if (!doc.expiryDate) return false;
+            const expiry = new Date(doc.expiryDate);
+            const diffDays = (expiry.getTime() - now.getTime()) / (1000 * 3600 * 24);
+            return diffDays > 0 && diffDays <= 30;
+          });
+      
+          if (isExpiring) {
+            statusText = "Expiring Soon";
+            statusClass = "expiring-soon";
+            subText = "1 document expiring soon";
+          } else {
+            statusText = "Compliant";
+            statusClass = "compliant";
+            subText = "All documents up to date";
+          }
+        }
+       return (
+            <Link
+               to={`/vehicles/${id}/documents`}
+                className="vehicle-card-link-wrapper"
     style={{ textDecoration: "none", color: "inherit", display: "block" }}
   >
     <div className="vehicle-card">
@@ -35,14 +57,14 @@ export const VehicleCard = ({
         <div className="vehicle-info">
           <h3 className="vehicle-name">{name}</h3>
           <p className="vehicle-plate">{plate}</p>
-          <p className="vehicle-documents">{documents} Documents</p>
+          <p className="vehicle-documents">{documentsCount} Documents</p>
         </div>
       </div>
 
       <div className="vehicle-right">
         <div className="compliance-wrapper">
           <span className={`compliance-badge ${statusClass}`}>
-            {statusClass === "green" ? (
+            {statusClass === "compliant" ? (
               <svg
                 className="badge-icon"
                 width="15"
@@ -52,7 +74,7 @@ export const VehicleCard = ({
               >
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
               </svg>
-            ) : statusClass === "yellow" ? (
+            ) : statusClass === "expiring-soon" ? (
               <svg
                 className="badge-icon"
                 width="15"
@@ -73,7 +95,7 @@ export const VehicleCard = ({
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
               </svg>
             )}
-            {status}
+            {statusText}
           </span>
           {subText && <span className="compliance-subtext">{subText}</span>}
         </div>
@@ -99,3 +121,4 @@ export const VehicleCard = ({
     </div>
   </Link>
 );
+}

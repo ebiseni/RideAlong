@@ -12,28 +12,13 @@ export default function VehicleDetailPage() {
   const vehicle = vehicles.find((v) => v.id === id);
   const vehicleDocuments = documents.filter((d) => d.vehicleId === id);
 
-  if (!vehicle) {
+  const hasDocuments = vehicleDocuments.length > 0;
+  const statusText = hasDocuments ? "Compliant" : "No documents";
+  const statusClass = hasDocuments ? "active" : "no-documents";
+  
+  if (!vehicle) return <p>Vehicle not found</p>;
     return (
       <div className="vehicle-detail-page">
-        <div className="detail-card">
-          <h1>Vehicle not found</h1>
-          <button
-            className="btn-secondary"
-            onClick={() => navigate("/vehicles")}
-          >
-            ← Back to Vehicles
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="vehicle-detail-page">
-      <button onClick={() => navigate("/vehicles")} className="back-link">
-        ← Back to Vehicles
-      </button>
-
       {/* Header Card */}
       <div className="detail-header-card">
         <div className="detail-header-top">
@@ -41,8 +26,8 @@ export default function VehicleDetailPage() {
             <h1 className="detail-title">{vehicle.name}</h1>
             <p className="detail-plate">{vehicle.plate}</p>
           </div>
-          <span className={`status-pill status-${vehicle.statusClass}`}>
-            {vehicle.status}
+          <span className={`status-pill status-${statusClass}`}>
+            {statusText}
           </span>
         </div>
 
@@ -59,8 +44,8 @@ export default function VehicleDetailPage() {
         </div>
         <div className="stat-card">
           <p className="stat-label">Compliance</p>
-          <p className={`stat-value status-text-${vehicle.statusClass}`}>
-            {vehicle.status}
+          <p className={`stat-value status-text-${statusClass}`}>
+            {statusText}
           </p>
         </div>
       </div>
@@ -102,5 +87,6 @@ export default function VehicleDetailPage() {
         )}
       </div>
     </div>
-  );
-}
+    );
+  }
+

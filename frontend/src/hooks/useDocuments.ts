@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface DocumentItem {
-  id: number;
+  id: string;
   name: string;
   expiryDate: string;
   vehicleId?: string; // NEW: links a document to a vehicle from useVehicles. Optional
@@ -20,42 +20,39 @@ interface DocumentItem {
 // TEMP: mock data to unblock the Create Reminder modal's Document dropdown
 // until this hook is wired to real backend data. Remove once the backend
 // document-list endpoint is confirmed and integrated.
-const INITIAL_MOCK_DOCUMENTS: DocumentItem[] = [
-  {
-    id: 1,
-    name: "Driver's License",
-    expiryDate: "2026-08-02",
-    documentNumber: "BU-485-7299",
-  },
-  {
-    id: 2,
-    name: "Insurance",
-    expiryDate: "2026-08-15",
-    documentNumber: "INS-2024-44567",
-  },
-  {
-    id: 3,
-    name: "Vehicle Registration",
-    expiryDate: "2026-06-10",
-    documentNumber: "REG-2023-11890",
-  },
-  {
-    id: 4,
-    name: "Roadworthy Certificate",
-    expiryDate: "2026-09-30",
-    documentNumber: "RW-2024-00321",
-  },
-];
+// const INITIAL_MOCK_DOCUMENTS: DocumentItem[] = [
+//   {
+//     id: "1",
+//     name: "Driver's License",
+//     expiryDate: "2026-08-02",
+//     documentNumber: "BU-485-7299",
+//   },
+//   {
+//     id: "2",
+//     name: "Insurance",
+//     expiryDate: "2026-08-15",
+//     documentNumber: "INS-2024-44567",
+//   },
+//   {
+//     id: "3",
+//     name: "Vehicle Registration",
+//     expiryDate: "2026-06-10",
+//     documentNumber: "REG-2023-11890",
+//   },
+//   {
+//     id: "4",
+//     name: "Roadworthy Certificate",
+//     expiryDate: "2026-09-30",
+//     documentNumber: "RW-2024-00321",
+//   },
+// ];
 
 export const useDocuments = () => {
   // TEMP: seeded with mock data instead of empty array — swap back to
   // useState<DocumentItem[]>([]) once real backend data replaces this
   // FIX: was missing a setter, same bug pattern as the original useReminders —
   // no way for any other code to ever add/change documents.
-  const [documentsData, setDocumentsData] = useState<DocumentItem[]>(
-    INITIAL_MOCK_DOCUMENTS,
-  );
-
+ const [documentsData, setDocumentsData] = useState<DocumentItem[]>([]);
   const today = new Date();
 
   // Automatically calculate status based on expiryDate vs today
@@ -99,32 +96,89 @@ export const useDocuments = () => {
   // UPDATED: now accepts an optional File, converted to an object URL for
   // display on DocumentDetailPage. TEMP — object URLs don't survive a page
   // reload and there's no real backend upload yet.
-  const addDocument = (
-    name: string,
-    expiryDate?: string,
-    vehicleId?: string,
-    file?: File,
-    documentNumber?: string,
-  ) => {
-    const newId = Math.max(0, ...documentsData.map((d) => d.id)) + 1;
-    const fallbackExpiry = new Date();
-    fallbackExpiry.setFullYear(fallbackExpiry.getFullYear() + 1);
+const fetchDocuments = async () => {
+  const token = localStorage.getItem("accessToken");
 
-    setDocumentsData((prev) => [
-      ...prev,
-      {
-        id: newId,
-        name,
-        expiryDate: expiryDate ?? fallbackExpiry.toISOString().split("T")[0],
-        vehicleId,
-        frontImageUrl: file ? URL.createObjectURL(file) : undefined,
-        documentNumber,
+  const response = await fetch("http://localhost:5000/api/documents", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+
+  const result: ApiDocument[] = await response.json();
+  type ApiDocument = {
+  id: string;
+  documentType: string;
+  documentNumber: string;
+  expiryDate: string;
+  vehicleId: string;
+  file: string;
+};
+  setDocumentsData(
+    
+    result.map((doc: ApiDocument) => ({
+      id: doc.id,
+      name: doc.documentType,
+      documentNumber: doc.documentNumber,
+      expiryDate: doc.expiryDate,
+      vehicleId: doc.vehicleId,
+      frontImageUrl: doc.file,
+    }))
+  );
+  
+};
+ const addDocument = async (
+  expiryDate: string,
+  vehicleId: string,
+  file: File,
+  documentNumber: string,
+  documentType: string,
+) => {
+  const token = localStorage.getItem("accessToken");
+
+  const formData = new FormData();
+
+  formData.append("vehicleId", vehicleId);
+  formData.append("documentNumber", documentNumber);
+  formData.append("expiryDate", expiryDate);
+  formData.append("documentType", documentType);
+  formData.append("file", file);
+
+  const response = await fetch(
+    "http://localhost:5000/api/documents/add",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-    ]);
+      body: formData,
+    }
+  );
 
-    return newId;
-  };
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  const result = await response.json();
+  console.log(result);
+  const newDocument: DocumentItem = {
+  id: result.id,
+  name: result.documentType,      
+  documentNumber: result.documentNumber,
+  expiryDate: result.expiryDate,
+  frontImageUrl: result.file,
+};
 
+  setDocumentsData((prev) => [newDocument,...prev,]);
+
+  return result;
+};
+useEffect(() => {
+  fetchDocuments();
+}, []);
   return {
     documents,
     validCount,

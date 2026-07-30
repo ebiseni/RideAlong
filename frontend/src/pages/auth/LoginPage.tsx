@@ -39,6 +39,10 @@ export default function LoginPage() {
         const data = await res.json();
         if (!res.ok) throw Error(data.message || "failed to login");
 
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        console.log(localStorage.getItem("accessToken"));
         localStorage.setItem("token", data.accessToken);
 
         navigate("/dashboard");

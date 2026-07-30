@@ -39,9 +39,11 @@ function RegisterPage(){
         body: JSON.stringify(form), // {name, email, password}
       });
 
+   
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to create account");
-
+      console.log("Status:", res.status);
+      console.log("Response:", data);
       // 1. Save token from backend
       localStorage.setItem("token", data.accessToken); 
       

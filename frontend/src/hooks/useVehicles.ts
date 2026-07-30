@@ -127,16 +127,45 @@ export const useVehicles = () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(rawVehicles));
   }, [rawVehicles]);
 
-  const addVehicle = (data: NewVehicleInput) => {
-    const newVehicle: RawVehicle = {
-      id: crypto.randomUUID(),
+ const addVehicle = async (data: NewVehicleInput) => {
+  const token = localStorage.getItem("accessToken");
+
+  const response = await fetch("http://localhost:5000/api/vehicles", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
       name: `${data.make} ${data.model}`,
-      plate: data.vehicleNumber,
-      documents: 0,
-      expiryDate: undefined,
-    };
-    setRawVehicles((prev) => [newVehicle, ...prev]);
-  };
+      plateNumber: data.vehicleNumber,
+      make: data.make,
+      model: data.model,
+      year: Number(data.year),
+    }),
+  });
+
+  const result = await response.json();
+
+  console.log(result);
+
+  if (!response.ok) {
+    throw new Error(result.message);
+  }
+
+setRawVehicles((prev) => [
+  {
+    id: result.id,
+    name: result.name,
+    plate: result.plateNumber,
+    documents: result.documents ?? 0,
+    expiryDate: result.expiryDate,
+  },
+  ...prev,
+]);
+
+  return result;
+};
 
   const deleteVehicle = (id: string) => {
     setRawVehicles((prev) => prev.filter((v) => v.id !== id));

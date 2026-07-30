@@ -35,9 +35,6 @@ export default function VehiclesPage() {
 
   // NEW: real per-vehicle document count, replacing the static v.documents
   // mock number. Same fix applied to VehicleDetailPage earlier.
-  const getDocumentCount = (vehicleId: string) =>
-    documents.filter((d) => d.vehicleId === vehicleId).length;
-
   return (
     <div className="vehicles-page">
       {/* Header */}
@@ -102,17 +99,21 @@ export default function VehiclesPage() {
             onActionClick={handleOpenModal}
           />
         ) : (
-          filteredVehicles.map((v: Vehicle) => (
-            // FIX: removed the wrapping div's onClick to /vehicles/${v.id}/documents —
-            // it was conflicting with VehicleCard's own <Link to={/vehicles/${id}}>,
-            // and the Link always won, silently making this outer onClick dead code.
+        filteredVehicles.map((v: Vehicle) => {
+          const vehicleDocs = documents.filter((d) => d.vehicleId === v.id);
+        
+          return (
             <VehicleCard
               key={v.id}
-              {...v}
-              documents={getDocumentCount(v.id)}
+              id={v.id}
+              name={v.name}
+              plate={v.plate}
+              documentsCount={vehicleDocs.length}
+              vehicleDocs={vehicleDocs} // 👈 Crucial for status computation
               onDelete={deleteVehicle}
             />
-          ))
+          );
+        })
         )}
       </div>
 

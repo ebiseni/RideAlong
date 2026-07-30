@@ -55,8 +55,8 @@ export class AuthService {
     if (existingUser) {
       throw new AppError(
         400,
-        "REGISTRATION_FAILED",
-        "Unable to complete registration"
+        "USER_ALREADY_EXISTS",
+        "A user with this email already exists"
       );
     }
 

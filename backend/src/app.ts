@@ -72,5 +72,6 @@ app.use((_req, res) => {
  * Must always be the last middleware.
  */
 app.use(errorHandler);
-
+// In your backend server file (server.ts / app.ts)
+app.set('etag', false); 
 export default app;
