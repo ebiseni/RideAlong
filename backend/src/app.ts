@@ -16,40 +16,6 @@ import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
 
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  process.env.CLIENT_URL, // e.g. https://ridealong3-xxxx.vercel.app
-];
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // 1. Allow non-browser requests (Postman, mobile, curl)
-      if (!origin) return callback(null, true);
-
-      // 2. Check allowed list or Vercel preview domains
-      const isAllowed =
-        allowedOrigins.includes(origin) ||
-        origin.endsWith('.vercel.app');
-
-      if (isAllowed) {
-        // Return null for error, true to allow
-        callback(null, true);
-      } else {
-        // 🔴 CRITICAL FIX: Pass null as the 1st argument and false as the 2nd
-        // Do NOT use callback(new Error('Not allowed by CORS'))!
-        callback(null, false);
-      }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    credentials: true,
-  })
-);
-
-// Explicitly handle OPTIONS preflight globally
-app.options('*', cors());
 /**
  * Security headers
  */
