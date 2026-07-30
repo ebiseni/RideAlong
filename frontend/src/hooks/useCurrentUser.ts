@@ -1,18 +1,40 @@
+import { useState, useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../api/firebase";
+
 export interface CurrentUser {
   name: string;
   email: string;
   avatarUrl: string | null;
 }
 
-// TEMP: reads from localStorage until AuthContext/useAuth is wired in and
-// the login/get-current-user response shape is confirmed against the backend.
-// Once that happens, swap the body of this hook to pull from AuthContext
-// instead — the return shape (CurrentUser) should stay the same so nothing
-// downstream (Sidebar, UserAvatarButton) needs to change.
 export function useCurrentUser(): CurrentUser {
-  const name = localStorage.getItem("userName") || "User";
-  const email = localStorage.getItem("userEmail") || "";
-  const avatarUrl = localStorage.getItem("userAvatarUrl") || null;
+  const [user, setUser] = useState<CurrentUser>({
+    name: localStorage.getItem("userName") || "User",
+    email: localStorage.getItem("userEmail") || "",
+    avatarUrl: localStorage.getItem("userAvatarUrl") || null,
+  });
 
-  return { name, email, avatarUrl };
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        const storedAvatar =
+          localStorage.getItem(`userAvatar_${firebaseUser.uid}`) ||
+          firebaseUser.photoURL ||
+          null;
+        setUser({
+          name:
+            firebaseUser.displayName ||
+            firebaseUser.email?.split("@")[0] ||
+            "User",
+          email: firebaseUser.email || "",
+          avatarUrl: storedAvatar,
+        });
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return user;
 }

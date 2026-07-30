@@ -1,8 +1,8 @@
 .personal-info-container {
   padding: 24px;
-  background: #f8fafc;
+  /* background: transparent; */
   min-height: 100vh;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 /* Header */
@@ -34,7 +34,7 @@
 
 /* Main Card */
 .pi-card {
-  background: white;
+  /* background: white; */
   border-radius: 16px;
   padding: 24px;
   display: flex;
@@ -181,7 +181,7 @@
   width: 220px;
   outline: none;
   margin-top: 2px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 .pi-edit-input:focus {
   box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
@@ -191,7 +191,8 @@
   display: flex;
   gap: 8px;
 }
-.pi-save,.pi-cancel {
+.pi-save,
+.pi-cancel {
   border: none;
   border-radius: 6px;
   padding: 6px;
@@ -201,16 +202,16 @@
   justify-content: center;
   transition: all 0.2s;
 }
-.pi-save { 
-  background: #16a34a; 
-  color: white; 
+.pi-save {
+  background: #16a34a;
+  color: white;
 }
 .pi-save:hover {
   background: #15803d;
 }
-.pi-cancel { 
-  background: #f3f4f6; 
-  color: #6b7280; 
+.pi-cancel {
+  background: #f3f4f6;
+  color: #6b7280;
 }
 .pi-cancel:hover {
   background: #e5e7eb;
@@ -238,12 +239,21 @@
   text-align: left;
 }
 .pi-overview-card:hover {
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
 }
-.pi-overview-card.green .pi-overview-icon { color: #16a34a; background: #f0fdf4; }
-.pi-overview-card.orange { border-color: #fed7aa; background: #fff7ed; }
-.pi-overview-card.orange .pi-overview-icon { color: #ea580c; background: #ffedd5; }
+.pi-overview-card.green .pi-overview-icon {
+  color: #16a34a;
+  background: #f0fdf4;
+}
+.pi-overview-card.orange {
+  border-color: #fed7aa;
+  background: #fff7ed;
+}
+.pi-overview-card.orange .pi-overview-icon {
+  color: #ea580c;
+  background: #ffedd5;
+}
 
 .pi-overview-top {
   display: flex;
@@ -277,7 +287,13 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .pi-card { flex-direction: column; }
-  .pi-overview-grid { grid-template-columns: 1fr; }
-  .pi-edit-input { width: 100%; }
+  .pi-card {
+    flex-direction: column;
+  }
+  .pi-overview-grid {
+    grid-template-columns: 1fr;
+  }
+  .pi-edit-input {
+    width: 100%;
+  }
 }

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { auth } from "../../api/firebase";
 import sidebarLogo from "../../assets/logos/sidebar-logo.svg";
 import dashboardIcon from "../../assets/icons/dashboard-icon.svg";
 import documentIcon from "../../assets/icons/document-icon.svg";
@@ -16,6 +17,23 @@ export default function Sidebar() {
   const closeMobileMenu = () => setMobileOpen(false);
   const user = useCurrentUser();
   const { t } = useSettings();
+
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      const savedAvatar =
+        localStorage.getItem(`userAvatar_${currentUser.uid}`) ||
+        localStorage.getItem("userAvatarUrl") ||
+        user.avatarUrl ||
+        currentUser.photoURL ||
+        null;
+      setAvatarUrl(savedAvatar);
+    } else {
+      setAvatarUrl(user.avatarUrl || null);
+    }
+  }, [user]);
 
   const NAV_ITEMS = [
     { label: t("dashboard"), path: "/dashboard", icon: dashboardIcon },
@@ -83,11 +101,12 @@ export default function Sidebar() {
         </nav>
 
         <div className="sidebar-profile">
-          {user.avatarUrl ? (
+          {avatarUrl ? (
             <img
-              src={user.avatarUrl}
+              src={avatarUrl}
               alt={user.name}
               className="sidebar-avatar"
+              style={{ objectFit: "cover" }}
             />
           ) : (
             <div className="sidebar-avatar sidebar-avatar-placeholder">

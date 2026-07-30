@@ -13,10 +13,10 @@ import RemindersPage from "../pages/reminders/RemindersPage";
 import VehicleListPage from "../pages/vehicles/VehicleListPage";
 import VehicleDetailPage from "../pages/vehicles/VehicleDetailPage";
 import ProfilePage from "../pages/profile/ProfilePage";
-import PersonalInformationPage from "../pages/profile/PersonalInformationPage"; 
+import PersonalInformationPage from "../pages/profile/PersonalInformationPage";
 import ReminderPreferencesPage from "../pages/profile/ReminderPreferencesPage"; // ADD
-import SecurityPage from "../pages/profile/SecurityPage";
-// import PaymentMethodsPage from "../pages/profile/PaymentMethodsPage"; 
+
+// import PaymentMethodsPage from "../pages/profile/PaymentMethodsPage";
 import SettingsPage from "../pages/settings/SettingsPage";
 import DocumentsListPage from "../pages/documents/DocumentsListPage";
 import AddDocumentsPage from "../pages/documents/AddDocumentsPage";
@@ -35,20 +35,21 @@ export default function AppRoutes() {
       {/* 2. Protected routes with AppShell - Sidebar stays here */}
       <Route element={<AppShell />}>
         <Route path="/dashboard" element={<DashboardPage />} />
-         <Route path="/documents" element={<DocumentsListPage />} />
+        <Route path="/documents" element={<DocumentsListPage />} />
         <Route path="/documents/add" element={<AddDocumentsPage />} />
         <Route path="/documents/:documentId" element={<DocumentDetailPage />} />
         <Route path="/reminders" element={<RemindersPage />} />
         <Route path="/vehicles" element={<VehicleListPage />} />
         <Route path="/vehicles/:id/documents" element={<VehicleDetailPage />} />
-        
         {/* Profile Routes */}
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/personal" element={<PersonalInformationPage />} />
-        <Route path="/profile/reminders" element={<ReminderPreferencesPage />} /> {/* NEW */}
-        <Route path="/profile/security" element={<SecurityPage />} /> 
+        <Route
+          path="/profile/reminders"
+          element={<ReminderPreferencesPage />}
+        />{" "}
+        {/* NEW */}
         {/* <Route path="/profile/payment" element={<PaymentMethodsPage />} /> */}
-        
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
 
