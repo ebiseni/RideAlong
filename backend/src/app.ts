@@ -26,13 +26,29 @@ app.use(helmet());
  * Required because refresh tokens will be stored
  * in httpOnly cookies.
  */
+// app.use(
+//   cors({
+//     origin: env.CLIENT_URL,
+//     credentials: true,
+//   })
+// );
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://ridealong3.vercel.app",
+];
+
 app.use(
   cors({
-    origin: env.CLIENT_URL,
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
-
 /**
  * Body parsers
  */
