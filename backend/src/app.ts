@@ -18,25 +18,38 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://ridealong3-przhihau1-victoria-vees-projects.vercel.app',
-  // You can also use a wildcard regex or check your main production domain:
-  // /^https:\/\/ridealong3.*\.vercel\.app$/
+  'http://localhost:3000',
+  process.env.CLIENT_URL, // e.g. https://ridealong3-xxxx.vercel.app
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin || allowedOrigins.includes(origin)) {
+      // 1. Allow non-browser requests (Postman, mobile, curl)
+      if (!origin) return callback(null, true);
+
+      // 2. Check allowed list or Vercel preview domains
+      const isAllowed =
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app');
+
+      if (isAllowed) {
+        // Return null for error, true to allow
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        // 🔴 CRITICAL FIX: Pass null as the 1st argument and false as the 2nd
+        // Do NOT use callback(new Error('Not allowed by CORS'))!
+        callback(null, false);
       }
     },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     credentials: true,
   })
 );
 
+// Explicitly handle OPTIONS preflight globally
+app.options('*', cors());
 /**
  * Security headers
  */
