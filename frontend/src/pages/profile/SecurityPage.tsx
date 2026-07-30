@@ -7,8 +7,14 @@ const STORAGE_KEY = "roadguard_security_prefs";
 
 export default function SecurityPage() {
   const navigate = useNavigate();
+  type SecurityState = {
+  renewal: boolean;
+  sms: boolean;
+  twoFactor: boolean;
+  // add any other keys present in your initial object
+};
 
-  const [security, setSecurity] = useState(() => {
+  const [security, setSecurity] = useState<SecurityState>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     return saved? JSON.parse(saved) : {
       renewal: true,
