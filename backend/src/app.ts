@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
+import vehicleRoutes from "./modules/vehicles/reg.routes";
+import vehicleDocRoutes from "./modules/vehicles/doc.routes";
 
 import { env } from "./lib/env";
 
@@ -53,7 +55,8 @@ app.get("/health", (_req, res) => {
  */
 // app.use("/api/auth", authRoutes);
 app.use("/api", routes);
-
+app.use("/api/vehicles", vehicleRoutes);
+app.use("/api/documents", vehicleDocRoutes);
 /**
  * 404 Handler
  */
