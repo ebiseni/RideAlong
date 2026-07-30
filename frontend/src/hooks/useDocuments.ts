@@ -96,10 +96,13 @@ export const useDocuments = () => {
   // UPDATED: now accepts an optional File, converted to an object URL for
   // display on DocumentDetailPage. TEMP — object URLs don't survive a page
   // reload and there's no real backend upload yet.
+  // 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 const fetchDocuments = async () => {
   const token = localStorage.getItem("accessToken");
 
-  const response = await fetch("http://localhost:5000/api/documents", {
+
+  const response = await fetch(`${API_BASE_URL}/api/documents`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -149,7 +152,7 @@ const fetchDocuments = async () => {
   formData.append("file", file);
 
   const response = await fetch(
-    "http://localhost:5000/api/documents/add",
+    `${API_BASE_URL}/api/documents/add`,
     {
       method: "POST",
       headers: {

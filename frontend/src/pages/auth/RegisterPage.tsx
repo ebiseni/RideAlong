@@ -3,7 +3,7 @@ import '../../styles/pages/auth/RegisterPage.css'
 import eyeIcon from '../../assets/eyeIcon.svg'
 import eyeOffIcon from '../../assets/eyeOffIcon.svg'
 import authImage from "../../assets/Auth-img.png"
-const API_URL = "http://localhost:5000"
+const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 function RegisterPage(){
  const [form, setForm] = useState({ fullName: "", email: "", password: "" });

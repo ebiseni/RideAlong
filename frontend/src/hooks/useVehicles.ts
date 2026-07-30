@@ -127,10 +127,12 @@ export const useVehicles = () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(rawVehicles));
   }, [rawVehicles]);
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
  const addVehicle = async (data: NewVehicleInput) => {
   const token = localStorage.getItem("accessToken");
 
-  const response = await fetch("http://localhost:5000/api/vehicles", {
+  const response = await fetch(`${API_BASE_URL}/api/vehicles`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
