@@ -1,0 +1,270 @@
+.vehicle-detail-page {
+  padding: 24px;
+  background: #f7fafc;
+  min-height: 100vh;
+}
+
+.back-link {
+  background: none;
+  border: none;
+  color: #3182ce;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.detail-header-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.detail-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.detail-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+}
+
+.detail-plate {
+  font-size: 16px;
+  color: #718096;
+  margin: 4px 0 0 0;
+}
+
+.detail-subtext {
+  font-size: 14px;
+  color: #718096;
+  margin-top: 8px;
+}
+
+/* Status Pills - same as dashboard */
+.status-pill {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.status-green {
+  background: #c6f6d5;
+  color: #22543d;
+}
+.status-yellow {
+  background: #fefcbf;
+  color: #744210;
+}
+.status-red {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.status-text-green {
+  color: #38a169;
+}
+.status-text-yellow {
+  color: #d69e2e;
+}
+.status-text-red {
+  color: #e53e3e;
+}
+
+/* Stats */
+.detail-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #718096;
+  margin: 0 0 8px 0;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+}
+
+/* Documents */
+.detail-documents-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.documents-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.documents-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+}
+
+.btn-primary {
+  background: #3182ce;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+.btn-primary:hover {
+  background: #2c5282;
+}
+
+.btn-secondary {
+  background: #e2e8f0;
+  color: #2d3748;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.documents-empty {
+  text-align: center;
+  padding: 40px 20px;
+  border: 2px dashed #e2e8f0;
+  border-radius: 8px;
+  color: #718096;
+}
+
+.documents-subtext {
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.documents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.documents-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 14px 16px;
+  background: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.documents-list-item:hover {
+  background: #f7fafc;
+}
+
+.documents-list-item-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.documents-list-item-status {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.documents-list-item-status.status-valid {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.documents-list-item-status.status-expiring {
+  background: #fefcbf;
+  color: #744210;
+}
+
+.documents-list-item-status.status-expired {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+@media (max-width: 900px) {
+  .vehicle-detail-page {
+    padding: 16px;
+  }
+
+  .detail-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .vehicle-detail-page {
+    padding: 12px;
+  }
+
+  .detail-header-card,
+  .detail-documents-card {
+    padding: 16px;
+  }
+
+  .detail-header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .detail-title {
+    font-size: 20px;
+  }
+
+  .documents-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .documents-header .btn-primary {
+    width: 100%;
+  }
+
+  .documents-list-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

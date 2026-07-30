@@ -1,13 +1,25 @@
+<<<<<<< HEAD
+// src/App.tsx
+import AppRoutes from "./app/routes";
+import { SettingsProvider } from "./context/SettingsContext";
+=======
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
+>>>>>>> 5c3ca13bbe3dac2ccf8624060caa7867596932f0
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
+<<<<<<< HEAD
+    <SettingsProvider>
+      <AppRoutes />
+    </SettingsProvider>
+  );
+=======
     <>
       <section id="center">
         <div className="hero">
@@ -117,6 +129,7 @@ function App() {
       <section id="spacer"></section>
     </>
   )
+>>>>>>> 5c3ca13bbe3dac2ccf8624060caa7867596932f0
 }
 
 export default App

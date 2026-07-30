@@ -1,0 +1,248 @@
+.sidebar {
+  width: 220px;
+  height: 100%;
+  border-radius: 0px 20px 20px 0px;
+  background: #0D622C;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 0 0rem 0rem;
+}
+
+.sidebar-logo {
+  height: auto;
+  width: 70%;
+  margin: 0 0rem 1.5rem 0.85rem;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-left: 1.2rem;
+  flex: 1;
+}
+
+.sidebar-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: 999px 0 0 999px;
+  color: #d1d5db;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.sidebar-link.active {
+  background: #f4f8fb;
+  color: #111827;
+  font-weight: 700;
+  font-size: 1.3rem;
+  border-radius: 999px 0 0 999px;
+}
+
+.sidebar-link.active::before,
+.sidebar-link.active::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.sidebar-link.active::before {
+  top: -20px;
+  background: radial-gradient(circle at top left, transparent 20px, #f4f8fb 0);
+}
+
+.sidebar-link.active::after {
+  bottom: -20px;
+  background: radial-gradient(
+    circle at bottom left,
+    transparent 20px,
+    #f4f8fb 0
+  );
+}
+
+.sidebar-link:hover:not(.active) {
+  background: #d9d9d927;
+}
+
+.sidebar-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: filter 0.15s ease;
+}
+
+.sidebar-link.active .sidebar-icon {
+  filter: brightness(0) saturate(100%) invert(9%) sepia(12%) saturate(1826%)
+    hue-rotate(190deg) brightness(94%) contrast(90%);
+}
+
+.sidebar-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.1rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  margin-top: auto;
+}
+
+.sidebar-avatar {
+  border: 1px solid #d9d9d9;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.sidebar-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.sidebar-profile-text {
+  overflow: hidden;
+}
+
+.sidebar-profile-name {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin: 0 0 0.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-profile-email {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.75rem;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Hide the mobile top bar and close button on desktop by default */
+.sidebar-mobile-bar {
+  display: none;
+}
+
+.sidebar-close {
+  display: none;
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
+/* Tablet / mobile */
+@media (max-width: 900px) {
+  /* Top bar: logo + hamburger */
+  .sidebar-mobile-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0D622C;
+    padding: 1rem 1.25rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .sidebar-mobile-bar .sidebar-logo {
+    height: 22px;
+    width: auto;
+    margin: 0;
+  }
+
+  .sidebar-hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .sidebar-hamburger span {
+    width: 24px;
+    height: 2px;
+    background: #ffffff;
+    border-radius: 2px;
+  }
+
+  /* Off-canvas drawer */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    transform: translateX(-100%);
+    transition: transform 0.8s ease;
+    z-index: 100;
+    flex-direction: column;
+  }
+
+  .sidebar-nav {
+    padding-right: 1.2rem;
+  }
+
+  .sidebar-link.active {
+    border-radius: 999px;
+  }
+
+  .sidebar-link.active::before,
+  .sidebar-link.active::after {
+    display: none;
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem 0 0.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .sidebar-header .sidebar-logo {
+    margin: 0 0 0 0.85rem;
+  }
+
+  .sidebar-close {
+    display: block;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 1.25rem;
+    cursor: pointer;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Backdrop behind the drawer */
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 99;
+  }
+}
