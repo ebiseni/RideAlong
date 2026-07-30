@@ -2,6 +2,8 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
 import prisma from '../../lib/prisma';
 import { tokenService } from '../auth/services/token.service';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import imageUrl from '../vehicles/doc.routes';
 
 const router = Router();
 
@@ -160,10 +162,10 @@ router.delete('/:id', protect, async (req: AuthenticatedRequest, res: Response) 
     }
 
     for (const doc of vehicle.vehicleDocuments) {
-      if (doc.imageUrl) {
+      if (doc.file) {
         try {
-          const publicId = getCloudinaryPublicId(doc.imageUrl);
-          const isPdf = doc.imageUrl.toLowerCase().endsWith('.pdf');
+          const publicId = getCloudinaryPublicId(doc.file);
+          const isPdf = doc.file.toLowerCase().endsWith('.pdf');
           await cloudinary.uploader.destroy(publicId, {
             resource_type: isPdf ? 'raw' : 'image',
           });
