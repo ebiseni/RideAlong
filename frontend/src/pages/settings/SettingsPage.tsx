@@ -1,4 +1,3 @@
-// src/pages/settings/SettingsPage.tsx
 import React, { useState } from "react";
 import { Search, Bell, Monitor, LogOut, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -73,7 +72,10 @@ const SettingsPage: React.FC = () => {
         <div className="settings-sidebar-column">
           <div className="settings-sidebar-menu">
             <span className="menu-category">Account</span>
-            <button className="sub-menu-item">
+            <button
+              className="sub-menu-item"
+              onClick={() => navigate("/profile")}
+            >
               <Bell size={16} /> My Profile
             </button>
             <button className="sub-menu-item active">

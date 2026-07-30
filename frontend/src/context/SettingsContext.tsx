@@ -1,4 +1,3 @@
-// src/context/SettingsContext.tsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 type Language = "English" | "Spanish" | "French";
@@ -127,16 +126,26 @@ const SettingsContext = createContext<SettingsContextType | undefined>(
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [appearance, setAppearance] = useState<Appearance>("Light");
-  const [language, setLanguage] = useState<Language>("English");
+  const [appearance, setAppearance] = useState<Appearance>(() => {
+    return (localStorage.getItem("app_appearance") as Appearance) || "Light";
+  });
+
+  const [language, setLanguage] = useState<Language>(() => {
+    return (localStorage.getItem("app_language") as Language) || "English";
+  });
 
   useEffect(() => {
+    localStorage.setItem("app_appearance", appearance);
     if (appearance === "Dark") {
       document.body.classList.add("dark-theme");
     } else {
       document.body.classList.remove("dark-theme");
     }
   }, [appearance]);
+
+  useEffect(() => {
+    localStorage.setItem("app_language", language);
+  }, [language]);
 
   const t = (key: string): string => {
     return translations[language][key] || key;

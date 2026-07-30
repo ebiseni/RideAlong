@@ -97,12 +97,7 @@ export default function DashboardPage() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <NotificationBell
-            hasUnread={
-              reminders.length > 0 || expiredCount > 0 || expiringCount > 0
-            }
-            onClick={() => navigate("/reminders")}
-          />
+          <NotificationBell />
           <UserAvatarButton />
         </div>
       </div>
@@ -226,11 +221,18 @@ export default function DashboardPage() {
                 <img src={AddVehicleIcon} alt="" className="action-icon" /> Add
                 Vehicle
               </button>
-              <Link to="/documents" className="action-button-outline">
+
+              {/* Updated to point directly to the Add Documents upload page */}
+              <Link to="/documents/add" className="action-button-outline">
                 <img src={UploadDocIcon} alt="" className="action-icon" />{" "}
                 Upload Document
               </Link>
-              <Link to="/reminders" className="action-button-outline">
+
+              {/* Updated to point to reminders with an action query to trigger creation */}
+              <Link
+                to="/reminders?action=create"
+                className="action-button-outline"
+              >
                 <img src={CreateReminderIcon} alt="" className="action-icon" />{" "}
                 Create Reminder
               </Link>

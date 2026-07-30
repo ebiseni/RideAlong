@@ -13,7 +13,8 @@ import "../../styles/pages/vehicles/VehicleListPage.css";
 
 export default function VehiclesPage() {
   const navigate = useNavigate();
-  const { vehicles, totalVehicles, addVehicle, deleteVehicle, loading } = useVehicles(); // added loading
+  const { vehicles, totalVehicles, addVehicle, deleteVehicle, loading } =
+    useVehicles();
   const [showVehicleModal, setShowVehicleModal] = useState(false);
   const [search, setSearch] = useState("");
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -84,7 +85,9 @@ export default function VehiclesPage() {
 
       {/* Vehicles Grid/List */}
       {loading ? (
-        <p style={{textAlign: "center", padding: "40px"}}>Loading vehicles...</p>
+        <p style={{ textAlign: "center", padding: "40px" }}>
+          Loading vehicles...
+        </p>
       ) : (
         <div className={view === "grid" ? "vehicles-grid" : "vehicles-list"}>
           {filteredVehicles.length === 0 ? (
@@ -109,11 +112,11 @@ export default function VehiclesPage() {
                 id={v.id}
                 name={v.name}
                 plate={v.plate}
-                documents={v.documentCount} // now comes from hook
+                documents={v.documentCount}
                 status={v.status}
-                statusClass={v.statusClass}
+                statusClass={v.statusClass as any}
                 subText={v.subText}
-                vehicleDocuments={v.documents} // NEW: pass full array so card can show each doc
+                vehicleDocuments={v.documents}
                 onDelete={deleteVehicle}
               />
             ))

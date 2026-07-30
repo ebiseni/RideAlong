@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useReminders } from "../../hooks/useReminders";
 import NotificationBell from "../../components/shared/NotificationBell";
 import EmptyState from "../../components/shared/EmptyState";
@@ -17,10 +18,12 @@ import emptyStateIllustration from "../../assets/images/reminder-emptysate-illus
 import UserAvatarButton from "../../hooks/UserAvatarButton";
 
 export default function RemindersPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingReminderId, setEditingReminderId] = useState<string | null>(
     null,
   );
+
   const {
     allReminders: reminders,
     reminderCounts: counts,
@@ -34,6 +37,15 @@ export default function RemindersPage() {
     getRawReminderById,
     loading,
   } = useReminders();
+
+  // Automatically open the create modal if ?action=create is in the URL
+  useEffect(() => {
+    if (searchParams.get("action") === "create") {
+      setIsCreateModalOpen(true);
+      searchParams.delete("action");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const tabs: { key: "upcoming" | "overdue" | "all"; label: string }[] = [
     { key: "upcoming", label: "Upcoming" },
@@ -81,7 +93,7 @@ export default function RemindersPage() {
           </p>
         </div>
         <div className="reminders-header-actions">
-          <NotificationBell hasUnread={counts.total > 0} onClick={() => {}} />
+          <NotificationBell />
           <UserAvatarButton />
         </div>
       </div>
@@ -160,7 +172,9 @@ export default function RemindersPage() {
       </div>
 
       {loading ? (
-        <p style={{ textAlign: "center", padding: "40px" }}>Loading reminders...</p>
+        <p style={{ textAlign: "center", padding: "40px" }}>
+          Loading reminders...
+        </p>
       ) : reminders.length === 0 ? (
         <div className="reminders-empty-wrapper">
           <EmptyState
@@ -175,8 +189,8 @@ export default function RemindersPage() {
               activeTab === "overdue"
                 ? "No overdue reminders"
                 : activeTab === "upcoming"
-                ? "No upcoming reminders"
-                : "No reminders yet"
+                  ? "No upcoming reminders"
+                  : "No reminders yet"
             }
             description={
               activeTab === "overdue"
@@ -204,11 +218,17 @@ export default function RemindersPage() {
                   <td>
                     <div className="reminders-doc-cell">
                       <div className="reminders-doc-icon-wrapper">
-                        <img src={r.icon} alt="" className="reminders-doc-icon" />
+                        <img
+                          src={r.icon}
+                          alt=""
+                          className="reminders-doc-icon"
+                        />
                       </div>
                       <div>
                         <p className="reminders-doc-type">{r.documentType}</p>
-                        <p className="reminders-doc-number">{r.documentNumber}</p>
+                        <p className="reminders-doc-number">
+                          {r.documentNumber}
+                        </p>
                       </div>
                     </div>
                   </td>
@@ -219,13 +239,13 @@ export default function RemindersPage() {
                   <td>
                     <p>{r.expiryFormatted}</p>
                     <p className={`reminders-days-left ${r.status}`}>
-                      {r.expiryDaysLabel}  {/* FIXED */}
+                      {r.expiryDaysLabel} {/* FIXED */}
                     </p>
                   </td>
                   <td>
                     <p>{r.reminderFormatted}</p>
                     <p className={`reminders-days-left ${r.status}`}>
-                      {r.reminderDaysLabel}  {/* FIXED */}
+                      {r.reminderDaysLabel} {/* FIXED */}
                     </p>
                   </td>
                   <td>
@@ -260,7 +280,9 @@ export default function RemindersPage() {
       {(isCreateModalOpen || editingReminderId !== null) && (
         <CreateReminderModal
           initialData={
-            editingReminderId !== null ? getRawReminderById(editingReminderId) : null
+            editingReminderId !== null
+              ? getRawReminderById(editingReminderId)
+              : null
           }
           onClose={() => {
             setIsCreateModalOpen(false);

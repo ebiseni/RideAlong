@@ -1,17 +1,17 @@
 // src/hooks/useVehicles.ts
 import { useState, useEffect } from "react";
-import { 
-  collection, 
-  query, 
-  where, 
-  onSnapshot, 
-  addDoc, 
-  deleteDoc, 
-  doc, 
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  addDoc,
+  deleteDoc,
+  doc,
   updateDoc,
   serverTimestamp,
   orderBy,
-  Timestamp // 1. IMPORT Timestamp
+  Timestamp,
 } from "firebase/firestore";
 import { auth, db } from "../api/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -19,6 +19,7 @@ import { differenceInCalendarDays, parseISO, format } from "date-fns";
 
 export type VehicleDocument = {
   id: string;
+  vehicleId: string;
   name: string;
   type: string;
   documentNumber?: string;
@@ -27,7 +28,7 @@ export type VehicleDocument = {
   daysLabel: string;
   status: "upcoming" | "overdue";
   daysLeft: number;
-}
+};
 
 export type Vehicle = {
   id: string;
@@ -48,20 +49,21 @@ type RawVehicle = {
   uid: string;
   name: string;
   plate: string;
-  documents: number;
-  expiryDate?: string;
-  createdAt?: Timestamp; // FIX: was any, now Timestamp
+  createdAt?: Timestamp;
 };
 
 type RawDocument = {
   id: string;
-  vehicleId: string;
+  vehicleId?: string;
+  vehicle_id?: string;
+  carId?: string;
+  vehicleNumber?: string;
   name: string;
-  type: string;
+  type?: string;
   documentNumber?: string;
-  expiryDate: string;
-  uid: string;
-}
+  expiryDate: any;
+  uid?: string;
+};
 
 export type NewVehicleInput = {
   vehicleNumber: string;
@@ -71,6 +73,7 @@ export type NewVehicleInput = {
 };
 
 const getDaysFromToday = (dateString: string) => {
+  if (!dateString) return Infinity;
   const today = new Date();
   const date = parseISO(dateString);
   return differenceInCalendarDays(date, today);
@@ -79,7 +82,7 @@ const getDaysFromToday = (dateString: string) => {
 const getTimeText = (diffDays: number) => {
   if (diffDays < 0) return `Expired ${Math.abs(diffDays)} days ago`;
   if (diffDays === 0) return `Expires today`;
-  return `Expires in ${diffDays} day${diffDays === 1 ? "" : "s"}`;
+  return `expiring in ${diffDays} day${diffDays === 1 ? "" : "s"}`;
 };
 
 const calculateVehicleCompliance = (docs: VehicleDocument[]) => {
@@ -89,28 +92,31 @@ const calculateVehicleCompliance = (docs: VehicleDocument[]) => {
       statusClass: "green" as const,
       subText: "Add documents to track expiry",
       diffDays: Infinity,
-      nextExpiryDate: undefined
+      nextExpiryDate: undefined,
     };
   }
 
-  const sorted = [...docs].sort((a,b) => a.daysLeft - b.daysLeft);
+  const sorted = [...docs].sort((a, b) => a.daysLeft - b.daysLeft);
   const worstDoc = sorted[0];
   const diffDays = worstDoc.daysLeft;
 
-  let status: string, statusClass: "green" | "yellow" | "red", subText: string;
+  let status: string;
+  let statusClass: "green" | "yellow" | "red";
+  let subText: string;
 
   if (diffDays < 0) {
-    status = "Expired";
+    status = "Action required";
     statusClass = "red";
-    subText = `${sorted.filter(d => d.status === "overdue").length} document${sorted.filter(d => d.status === "overdue").length === 1 ? "" : "s"} expired`;
+    const overdueCount = sorted.filter((d) => d.daysLeft < 0).length;
+    subText = `${overdueCount} expired document${overdueCount === 1 ? "" : "s"}`;
   } else if (diffDays <= 30) {
-    status = "Expiring Soon";
+    status = "Fully compliant";
     statusClass = "yellow";
-    subText = `${sorted.filter(d => d.status === "upcoming" && d.daysLeft <= 30).length} document expiring in ${diffDays} day${diffDays === 1 ? "" : "s"}`;
+    subText = `1 expiring in ${diffDays} day${diffDays === 1 ? "" : "s"}`;
   } else {
     status = "Fully compliant";
     statusClass = "green";
-    subText = "All documents valid";
+    subText = `${docs.length} document${docs.length === 1 ? "" : "s"}`;
   }
 
   return {
@@ -118,7 +124,7 @@ const calculateVehicleCompliance = (docs: VehicleDocument[]) => {
     statusClass,
     subText,
     diffDays,
-    nextExpiryDate: worstDoc.expiryDate
+    nextExpiryDate: worstDoc.expiryDate,
   };
 };
 
@@ -144,12 +150,13 @@ export const useVehicles = () => {
       const vehiclesQuery = query(
         collection(db, "vehicles"),
         where("uid", "==", user.uid),
-        orderBy("createdAt", "desc")
+        orderBy("createdAt", "desc"),
       );
 
+      // FIX: Filter documents by uid just like useDocuments does, preventing permission or empty snapshot failures
       const docsQuery = query(
         collection(db, "documents"),
-        where("uid", "==", user.uid)
+        where("uid", "==", user.uid),
       );
 
       let rawVehicles: RawVehicle[] = [];
@@ -157,22 +164,61 @@ export const useVehicles = () => {
 
       const processData = () => {
         const mappedVehicles: Vehicle[] = rawVehicles.map((vehicle) => {
-          const vehicleDocsRaw = rawDocs.filter(d => d.vehicleId === vehicle.id);
-          
-          const vehicleDocuments: VehicleDocument[] = vehicleDocsRaw.map(d => {
-            const daysLeft = getDaysFromToday(d.expiryDate);
-            return {
-              id: d.id,
-              name: d.name,
-              type: d.type,
-              documentNumber: d.documentNumber,
-              expiryDate: d.expiryDate,
-              expiryFormatted: format(parseISO(d.expiryDate), "d MMM yyyy"),
-              daysLeft,
-              daysLabel: getTimeText(daysLeft),
-              status: daysLeft < 0 ? "overdue" : "upcoming"
-            }
+          const vehicleDocsRaw = rawDocs.filter((d) => {
+            const linkedId = (
+              d.vehicleId ||
+              d.vehicle_id ||
+              d.carId ||
+              ""
+            ).trim();
+            const targetId = vehicle.id.trim();
+            const targetPlate = (vehicle.plate || "").trim().toLowerCase();
+            const targetName = (vehicle.name || "").trim().toLowerCase();
+            const docVehicleNumber = (d.vehicleNumber || "")
+              .trim()
+              .toLowerCase();
+
+            return (
+              linkedId === targetId ||
+              docVehicleNumber === targetPlate ||
+              docVehicleNumber === targetName ||
+              (vehicle.plate && linkedId.toLowerCase() === targetPlate) ||
+              (vehicle.name && linkedId.toLowerCase() === targetName)
+            );
           });
+
+          const vehicleDocuments: VehicleDocument[] = vehicleDocsRaw.map(
+            (d) => {
+              // Handle Firestore Timestamp conversion safely
+              let expiryStr = "";
+              if (d.expiryDate && typeof d.expiryDate.toDate === "function") {
+                expiryStr = d.expiryDate.toDate().toISOString().split("T")[0];
+              } else if (typeof d.expiryDate === "string") {
+                expiryStr = d.expiryDate;
+              }
+
+              const daysLeft = getDaysFromToday(expiryStr);
+              let formattedDate = "";
+              try {
+                formattedDate = format(parseISO(expiryStr), "d MMM yyyy");
+              } catch {
+                formattedDate = expiryStr;
+              }
+
+              return {
+                id: d.id,
+                vehicleId: d.vehicleId || vehicle.id,
+                name: d.name,
+                type: d.type || "document",
+                documentNumber: d.documentNumber ?? undefined,
+                expiryDate: expiryStr,
+                expiryFormatted: formattedDate,
+                daysLeft,
+                daysLabel: getTimeText(daysLeft),
+                status: daysLeft < 0 ? "overdue" : "upcoming",
+              };
+            },
+          );
 
           const compliance = calculateVehicleCompliance(vehicleDocuments);
 
@@ -183,7 +229,7 @@ export const useVehicles = () => {
             plate: vehicle.plate,
             documents: vehicleDocuments,
             documentCount: vehicleDocuments.length,
-            ...compliance
+            ...compliance,
           };
         });
 
@@ -191,24 +237,34 @@ export const useVehicles = () => {
         setLoading(false);
       };
 
-      unsubscribeVehicles = onSnapshot(vehiclesQuery, 
+      unsubscribeVehicles = onSnapshot(
+        vehiclesQuery,
         (snapshot) => {
           rawVehicles = snapshot.docs.map((docSnap) => ({
-            ...(docSnap.data() as Omit<RawVehicle, "id">), // FIX: spread first
+            ...(docSnap.data() as Omit<RawVehicle, "id">),
             id: docSnap.id,
           }));
           processData();
-        }
+        },
+        (error) => {
+          console.error("Error fetching vehicles:", error);
+          setLoading(false);
+        },
       );
 
-      unsubscribeDocs = onSnapshot(docsQuery,
+      unsubscribeDocs = onSnapshot(
+        docsQuery,
         (snapshot) => {
           rawDocs = snapshot.docs.map((docSnap) => ({
-            ...(docSnap.data() as Omit<RawDocument, "id">), // FIX: spread first
+            ...(docSnap.data() as Omit<RawDocument, "id">),
             id: docSnap.id,
           }));
           processData();
-        }
+        },
+        (error) => {
+          console.error("Error fetching documents:", error);
+          setLoading(false);
+        },
       );
     });
 
@@ -227,7 +283,7 @@ export const useVehicles = () => {
       uid: user.uid,
       name: `${data.make} ${data.model}`,
       plate: data.vehicleNumber,
-      createdAt: serverTimestamp()
+      createdAt: serverTimestamp(),
     });
   };
 
@@ -235,7 +291,10 @@ export const useVehicles = () => {
     await deleteDoc(doc(db, "vehicles", id));
   };
 
-  const updateVehicle = async (id: string, updates: Partial<Omit<RawVehicle, "id" | "uid">>) => {
+  const updateVehicle = async (
+    id: string,
+    updates: Partial<Omit<RawVehicle, "id" | "uid">>,
+  ) => {
     await updateDoc(doc(db, "vehicles", id), updates);
   };
 
