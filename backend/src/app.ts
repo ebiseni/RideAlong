@@ -16,6 +16,27 @@ import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://ridealong3-przhihau1-victoria-vees-projects.vercel.app',
+  // You can also use a wildcard regex or check your main production domain:
+  // /^https:\/\/ridealong3.*\.vercel\.app$/
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+  })
+);
+
 /**
  * Security headers
  */
