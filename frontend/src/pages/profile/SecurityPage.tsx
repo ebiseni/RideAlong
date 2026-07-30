@@ -22,7 +22,8 @@ export default function SecurityPage() {
   }, [security]);
 
   const toggleSecurity = (key: keyof typeof security) => {
-    setSecurity(prev => ({...prev, [key]:!prev[key] }));
+    // setSecurity(prev => ({...prev, [key]:!prev[key] }));
+    setSecurity((prev: typeof security) => ({ ...prev, [key]: !prev[key] }));
   };
 
   const handleDeactivate = () => {
@@ -70,7 +71,7 @@ export default function SecurityPage() {
       {/* Toggle Card */}
       <div className="sec-card">
         {securityItems.map((item) => (
-          <div key={item.key} className="sec-item">
+          <div key={String(item.key)} className="sec-item">
             <div className="sec-item-left">
               <div className="sec-item-icon">
                 {item.icon}
