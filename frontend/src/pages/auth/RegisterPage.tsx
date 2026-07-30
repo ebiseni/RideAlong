@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { useState } from 'react'
 import type { FormEvent, ChangeEvent } from 'react' // FIX 1: type-only import
 import '../../styles/pages/auth/RegisterPage.css'
@@ -198,5 +197,3 @@ function RegisterPage(){
 }
 
 export default RegisterPage
-=======
->>>>>>> 5c3ca13bbe3dac2ccf8624060caa7867596932f0
