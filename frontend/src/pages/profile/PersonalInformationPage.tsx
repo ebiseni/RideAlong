@@ -177,7 +177,7 @@ export default function PersonalInformationPage() {
 
   const [tempValue, setTempValue] = useState("");
 
-  // Fetch auth user, load persisted avatar, and fetch/generate dynamic driver ID from Firestore
+  // Fetch auth user, load persisted avatar from Firestore, and fetch/generate dynamic driver ID
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
@@ -196,16 +196,21 @@ export default function PersonalInformationPage() {
           formattedDate = `${day}${suffix} ${month}, ${year}`;
         }
 
-        const savedAvatar =
-          localStorage.getItem(`userAvatar_${firebaseUser.uid}`) ||
-          firebaseUser.photoURL ||
-          "";
-
+        let savedAvatar = firebaseUser.photoURL || "";
         let dynamicDriverId = "RA-22498";
+
         try {
-          dynamicDriverId = await getOrCreateDriverId(firebaseUser);
+          const userRef = doc(db, "users", firebaseUser.uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const data = userSnap.data();
+            if (data.avatarUrl) savedAvatar = data.avatarUrl;
+            if (data.driverId) dynamicDriverId = data.driverId;
+          } else {
+            dynamicDriverId = await getOrCreateDriverId(firebaseUser);
+          }
         } catch (error) {
-          console.error("Error fetching driver ID:", error);
+          console.error("Error fetching user profile from Firestore:", error);
         }
 
         setUser((prev) => ({
@@ -246,24 +251,23 @@ export default function PersonalInformationPage() {
 
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (file && currentUser) {
       const reader = new FileReader();
       reader.onload = async () => {
         const resultString = reader.result as string;
         setUser((prev) => ({ ...prev, avatar: resultString }));
 
-        if (currentUser) {
-          localStorage.setItem(`userAvatar_${currentUser.uid}`, resultString);
-          localStorage.setItem("userAvatarUrl", resultString);
-
-          try {
-            await updateProfile(currentUser, { photoURL: resultString });
-          } catch (error) {
-            console.warn(
-              "Firebase photoURL update skipped due to payload size limit, saved locally instead.",
-            );
-          }
+        // Persist permanently to Firestore user document so it survives logouts and deployments
+        try {
+          const userRef = doc(db, "users", currentUser.uid);
+          await setDoc(userRef, { avatarUrl: resultString }, { merge: true });
+        } catch (error) {
+          console.error("Error saving avatar to Firestore:", error);
         }
+
+        // Optional local backup sync
+        localStorage.setItem(`userAvatar_${currentUser.uid}`, resultString);
+        localStorage.setItem("userAvatarUrl", resultString);
       };
       reader.readAsDataURL(file);
     }
