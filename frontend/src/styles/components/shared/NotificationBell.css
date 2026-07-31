@@ -10,13 +10,13 @@
   align-items: center;
   justify-content: center;
   padding: 6px;
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: transparent; /* Changed from gray tint to transparent */
   border-radius: 50%;
   transition: background-color 0.2s ease;
 }
 
 .notification-bell-icon-wrapper:hover {
-  background-color: rgba(0, 0, 0, 0.08);
+  background-color: rgba(0, 0, 0, 0.04); /* Subtle hover background instead */
 }
 
 .notification-icon {

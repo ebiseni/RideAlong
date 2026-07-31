@@ -131,7 +131,7 @@
   margin: 0;
 }
 
-.btn-primary {
+.btn-primary.documents-header {
   background: #3182ce;
   color: white;
   border: none;
@@ -141,7 +141,7 @@
   font-weight: 600;
   font-size: 14px;
 }
-.btn-primary:hover {
+.btn-primary.documents-header:hover {
   background: #2c5282;
 }
 
