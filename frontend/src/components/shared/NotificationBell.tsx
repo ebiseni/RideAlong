@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useVehicles } from "../../hooks/useVehicles";
+import { useDocuments } from "../../hooks/useDocuments";
 import "../../styles/components/shared/NotificationBell.css";
 
 interface ExpiringDocument {
@@ -17,10 +18,9 @@ export default function NotificationBell() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  // Pull vehicles directly using the same custom hook as the dashboard
   const { vehicles } = useVehicles();
+  const { documents: firebaseDocuments } = useDocuments();
 
-  // Check if in-app notifications are enabled in settings
   const checkInAppEnabled = () => {
     const savedPrefs = localStorage.getItem("notificationPreferences");
     if (savedPrefs) {
@@ -30,10 +30,12 @@ export default function NotificationBell() {
     return true;
   };
 
-  // Process and filter documents expiring within 60 days or already expired
+  // Run only when data updates or dropdown opens, safely avoiding re-trigger loops
   useEffect(() => {
     try {
       let allDocs: ExpiringDocument[] = [];
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
       if (vehicles && Array.isArray(vehicles)) {
         vehicles.forEach((veh: any) => {
@@ -44,14 +46,11 @@ export default function NotificationBell() {
               if (!expiryDateStr) return;
 
               const expiry = new Date(expiryDateStr);
-              const today = new Date();
-              today.setHours(0, 0, 0, 0);
               expiry.setHours(0, 0, 0, 0);
 
               const diffTime = expiry.getTime() - today.getTime();
               const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
-              // Include if expired or expiring within the next 60 days
               if (diffDays <= 60) {
                 allDocs.push({
                   id: doc.id || Math.random().toString(),
@@ -62,7 +61,7 @@ export default function NotificationBell() {
                     "Vehicle Document",
                   expiryDate: expiryDateStr,
                   daysLeft: diffDays,
-                  vehicleName: veh.name || veh.vehicleName || "Vehicle",
+                  vehicleName: veh.name || "Vehicle",
                 });
               }
             });
@@ -70,36 +69,41 @@ export default function NotificationBell() {
         });
       }
 
-      // Also check standalone documents if any exist
-      const standaloneDocs = localStorage.getItem("documents");
-      if (standaloneDocs) {
-        const docs = JSON.parse(standaloneDocs);
-        docs.forEach((doc: any) => {
-          const expiryDateStr =
-            doc.expiryDate || doc.expiry || doc.expirationDate || doc.date;
+      if (firebaseDocuments && Array.isArray(firebaseDocuments)) {
+        firebaseDocuments.forEach((doc: any) => {
+          const expiryDateStr = doc.expiryDate;
           if (!expiryDateStr) return;
 
           const expiry = new Date(expiryDateStr);
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
           expiry.setHours(0, 0, 0, 0);
 
           const diffTime = expiry.getTime() - today.getTime();
           const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
           if (diffDays <= 60) {
+            let vehicleLabel = "Not Linked";
+            if (doc.vehicleId && vehicles) {
+              const matchedVeh = vehicles.find(
+                (v: any) => v.id === doc.vehicleId,
+              );
+              if (matchedVeh) {
+                vehicleLabel = matchedVeh.name || "Linked Vehicle";
+              } else {
+                vehicleLabel = "Linked Vehicle";
+              }
+            }
+
             allDocs.push({
-              id: doc.id || Math.random().toString(),
-              title: doc.documentType || doc.name || doc.title || "Document",
+              id: doc.id,
+              title: doc.name || "Document",
               expiryDate: expiryDateStr,
               daysLeft: diffDays,
-              vehicleName: doc.vehicleName || "General Document",
+              vehicleName: vehicleLabel,
             });
           }
         });
       }
 
-      // Remove duplicates and sort by most urgent (expired first, then closest expiry date)
       const uniqueDocs = Array.from(
         new Map(
           allDocs.map((doc) => [`${doc.title}-${doc.expiryDate}`, doc]),
@@ -111,12 +115,13 @@ export default function NotificationBell() {
     } catch (err) {
       console.error("Error loading notification documents:", err);
     }
-  }, [vehicles, isOpen]);
+  }, [
+    vehicles ? vehicles.length : 0,
+    firebaseDocuments ? firebaseDocuments.length : 0,
+  ]);
 
-  // Show indicator dot on the bell if there are urgent docs AND in-app notifications are enabled
   const showIndicator = urgentDocs.length > 0 && checkInAppEnabled();
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
