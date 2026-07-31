@@ -48,24 +48,35 @@ export default function ProfilePage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [driverId, setDriverId] = useState("RA-22498");
 
-  // Fetch the actual authenticated user from Firebase, load avatar, and fetch/generate dynamic driver ID
+  // Fetch authenticated user, pull persistent avatar from Firestore, and fetch/generate dynamic driver ID
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user) {
-        const savedAvatar =
+        let savedAvatar =
+          user.photoURL ||
           localStorage.getItem(`userAvatar_${user.uid}`) ||
           localStorage.getItem("userAvatarUrl") ||
-          user.photoURL ||
           null;
-        setAvatarUrl(savedAvatar);
+
+        let dynamicDriverId = "RA-22498";
 
         try {
-          const uniqueId = await getOrCreateDriverId(user);
-          setDriverId(uniqueId);
+          const userRef = doc(db, "users", user.uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const data = userSnap.data();
+            if (data.avatarUrl) savedAvatar = data.avatarUrl;
+            if (data.driverId) dynamicDriverId = data.driverId;
+          } else {
+            dynamicDriverId = await getOrCreateDriverId(user);
+          }
         } catch (error) {
-          console.error("Error fetching driver ID:", error);
+          console.error("Error fetching user profile from Firestore:", error);
         }
+
+        setAvatarUrl(savedAvatar);
+        setDriverId(dynamicDriverId);
       }
       setLoading(false);
     });
