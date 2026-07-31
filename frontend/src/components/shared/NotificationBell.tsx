@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useVehicles } from "../../hooks/useVehicles";
 import "../../styles/components/shared/NotificationBell.css";
 
 interface ExpiringDocument {
@@ -16,6 +17,9 @@ export default function NotificationBell() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  // Pull vehicles directly using the same custom hook as the dashboard
+  const { vehicles } = useVehicles();
+
   // Check if in-app notifications are enabled in settings
   const checkInAppEnabled = () => {
     const savedPrefs = localStorage.getItem("notificationPreferences");
@@ -26,80 +30,88 @@ export default function NotificationBell() {
     return true;
   };
 
-  // Load and sort the most urgent documents across storage
+  // Process and filter documents expiring within 60 days or already expired
   useEffect(() => {
     try {
-      const savedVehicles =
-        localStorage.getItem("vehicles") ||
-        localStorage.getItem("ridealong_vehicles");
       let allDocs: ExpiringDocument[] = [];
 
-      if (savedVehicles) {
-        const vehicles = JSON.parse(savedVehicles);
+      if (vehicles && Array.isArray(vehicles)) {
         vehicles.forEach((veh: any) => {
           if (veh.documents && Array.isArray(veh.documents)) {
             veh.documents.forEach((doc: any) => {
-              const expiry = new Date(doc.expiryDate || doc.expiry);
-              const today = new Date();
-              const diffTime = expiry.getTime() - today.getTime();
-              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              const expiryDateStr =
+                doc.expiryDate || doc.expiry || doc.expirationDate || doc.date;
+              if (!expiryDateStr) return;
 
-              allDocs.push({
-                id: doc.id || Math.random().toString(),
-                title: doc.documentType || doc.name || "Vehicle Document",
-                expiryDate: doc.expiryDate || doc.expiry,
-                daysLeft: diffDays,
-                vehicleName: veh.name || veh.vehicleName || "Vehicle",
-              });
+              const expiry = new Date(expiryDateStr);
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              expiry.setHours(0, 0, 0, 0);
+
+              const diffTime = expiry.getTime() - today.getTime();
+              const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+              // Include if expired or expiring within the next 60 days
+              if (diffDays <= 60) {
+                allDocs.push({
+                  id: doc.id || Math.random().toString(),
+                  title:
+                    doc.documentType ||
+                    doc.name ||
+                    doc.title ||
+                    "Vehicle Document",
+                  expiryDate: expiryDateStr,
+                  daysLeft: diffDays,
+                  vehicleName: veh.name || veh.vehicleName || "Vehicle",
+                });
+              }
             });
           }
         });
       }
 
+      // Also check standalone documents if any exist
       const standaloneDocs = localStorage.getItem("documents");
       if (standaloneDocs) {
         const docs = JSON.parse(standaloneDocs);
         docs.forEach((doc: any) => {
-          const expiry = new Date(doc.expiryDate || doc.expiry);
-          const today = new Date();
-          const diffTime = expiry.getTime() - today.getTime();
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          const expiryDateStr =
+            doc.expiryDate || doc.expiry || doc.expirationDate || doc.date;
+          if (!expiryDateStr) return;
 
-          allDocs.push({
-            id: doc.id || Math.random().toString(),
-            title: doc.documentType || doc.name || "Document",
-            expiryDate: doc.expiryDate || doc.expiry,
-            daysLeft: diffDays,
-            vehicleName: doc.vehicleName || "General Document",
-          });
+          const expiry = new Date(expiryDateStr);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          expiry.setHours(0, 0, 0, 0);
+
+          const diffTime = expiry.getTime() - today.getTime();
+          const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+          if (diffDays <= 60) {
+            allDocs.push({
+              id: doc.id || Math.random().toString(),
+              title: doc.documentType || doc.name || doc.title || "Document",
+              expiryDate: expiryDateStr,
+              daysLeft: diffDays,
+              vehicleName: doc.vehicleName || "General Document",
+            });
+          }
         });
       }
 
-      if (allDocs.length === 0) {
-        allDocs = [
-          {
-            id: "1",
-            title: "Car Insurance",
-            expiryDate: "2026-08-01",
-            daysLeft: 1,
-            vehicleName: "G wagon Benz",
-          },
-          {
-            id: "2",
-            title: "Vehicle License",
-            expiryDate: "2026-08-05",
-            daysLeft: 5,
-            vehicleName: "G wagon Benz",
-          },
-        ];
-      }
+      // Remove duplicates and sort by most urgent (expired first, then closest expiry date)
+      const uniqueDocs = Array.from(
+        new Map(
+          allDocs.map((doc) => [`${doc.title}-${doc.expiryDate}`, doc]),
+        ).values(),
+      );
 
-      allDocs.sort((a, b) => a.daysLeft - b.daysLeft);
-      setUrgentDocs(allDocs.slice(0, 2));
+      uniqueDocs.sort((a, b) => a.daysLeft - b.daysLeft);
+      setUrgentDocs(uniqueDocs.slice(0, 2));
     } catch (err) {
       console.error("Error loading notification documents:", err);
     }
-  }, [isOpen]);
+  }, [vehicles, isOpen]);
 
   // Show indicator dot on the bell if there are urgent docs AND in-app notifications are enabled
   const showIndicator = urgentDocs.length > 0 && checkInAppEnabled();
