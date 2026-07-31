@@ -5,6 +5,7 @@ import AppShell from "./AppShell";
 import LandingPage from "../pages/marketing/LandingPage";
 import LoginPage from "../pages/auth/LoginPage";
 import RegisterPage from "../pages/auth/RegisterPage";
+import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage"; // ADDED
 import Onboarding from "../pages/onboarding/Onboarding";
 
 import DashboardPage from "../pages/dashboard/DashboardPage";
@@ -14,7 +15,7 @@ import VehicleListPage from "../pages/vehicles/VehicleListPage";
 import VehicleDetailPage from "../pages/vehicles/VehicleDetailPage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import PersonalInformationPage from "../pages/profile/PersonalInformationPage";
-import ReminderPreferencesPage from "../pages/profile/ReminderPreferencesPage"; // ADD
+import ReminderPreferencesPage from "../pages/profile/ReminderPreferencesPage";
 
 // import PaymentMethodsPage from "../pages/profile/PaymentMethodsPage";
 import SettingsPage from "../pages/settings/SettingsPage";
@@ -29,6 +30,8 @@ export default function AppRoutes() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />{" "}
+        {/* ADDED */}
         <Route path="/onboarding" element={<Onboarding />} />
       </Route>
 
@@ -47,8 +50,7 @@ export default function AppRoutes() {
         <Route
           path="/profile/reminders"
           element={<ReminderPreferencesPage />}
-        />{" "}
-        {/* NEW */}
+        />
         {/* <Route path="/profile/payment" element={<PaymentMethodsPage />} /> */}
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
