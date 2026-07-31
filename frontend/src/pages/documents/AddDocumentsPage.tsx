@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import DocumentUploadModal from "../../components/documents/DocumentUploadModal";
 import ConfirmModal from "../../components/shared/ConfirmModal";
@@ -29,14 +29,6 @@ export default function AddDocumentsPage() {
   const [uploadingDocId, setUploadingDocId] = useState<string | null>(null);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
 
-  // Enforce that a vehicle must exist or be selected
-  useEffect(() => {
-    if (vehicles && vehicles.length === 0 && !vehicleId) {
-      alert("Please register a vehicle before adding documents.");
-      navigate("/vehicles");
-    }
-  }, [vehicles, vehicleId, navigate]);
-
   // Derive uploaded doc names from Firestore
   const uploadedNames = useMemo(() => {
     return documents
@@ -64,8 +56,7 @@ export default function AddDocumentsPage() {
       await addDocument({
         name: docType.name,
         expiryDate,
-        vehicleId:
-          vehicleId || (vehicles.length > 0 ? vehicles[0].id : undefined),
+        vehicleId,
         file,
         backFile,
         documentNumber,
