@@ -127,7 +127,7 @@ export const useVehicles = () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(rawVehicles));
   }, [rawVehicles]);
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://ridealong-production-e183.up.railway.app";
 
  const addVehicle = async (data: NewVehicleInput) => {
   const token = localStorage.getItem("accessToken");

@@ -12,7 +12,7 @@ const envSchema = z.object({
 
   DATABASE_URL: z.url(),
 
-  CLIENT_URL: z.url().default("http://localhost:5173"),
+  CLIENT_URL: z.url().default("https://ridealong3-victoria-vees-projects.vercel.app"),
 
   JWT_SECRET: z
     .string()

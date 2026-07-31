@@ -34,7 +34,7 @@ app.use(helmet());
 // );
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://ridealong3.vercel.app",
+  "https://ridealong3-victoria-vees-projects.vercel.app",
 ];
 
 app.use(

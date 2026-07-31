@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL= process.env.VITE_API_URL || 'http://localhost:5000/api';
+const BASE_URL= process.env.VITE_API_URL || 'https://ridealong-production-e183.up.railway.app';
 
 export const api = axios.create({
   baseURL: BASE_URL,

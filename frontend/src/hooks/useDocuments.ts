@@ -97,7 +97,7 @@ export const useDocuments = () => {
   // display on DocumentDetailPage. TEMP — object URLs don't survive a page
   // reload and there's no real backend upload yet.
   // 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://ridealong-production-e183.up.railway.app";
 const fetchDocuments = async () => {
   const token = localStorage.getItem("accessToken");
 
